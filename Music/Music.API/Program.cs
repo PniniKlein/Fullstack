@@ -43,11 +43,6 @@ builder.Configuration["AWS:Region"] = Env.GetString("AWS_REGION");
 builder.Configuration["AWS:AccessKey"] = Env.GetString("AWS_ACCESS_KEY");
 builder.Configuration["AWS:SecretKey"] = Env.GetString("AWS_SECRET_KEY");
 
-Console.WriteLine($"Bucket: {builder.Configuration["AWS:BucketName"]}");
-Console.WriteLine($"Region: {builder.Configuration["AWS:Region"]}");
-Console.WriteLine($"AccessKey: {builder.Configuration["AWS:AccessKey"]}");
-Console.WriteLine($"SecretKey: {builder.Configuration["AWS:SecretKey"]}");
-
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 

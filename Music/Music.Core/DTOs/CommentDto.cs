@@ -11,6 +11,7 @@ namespace Music.Core.DTOs
         public int Id { get; set; }
         public string Content { get; set; }
         public int Star { get; set; }
+        public DateTime Create_at { get; set; }
         public int SongId { get; set; }
         public int UserId { get; set; }
     }

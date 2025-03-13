@@ -1,11 +1,10 @@
-import { User } from "./User";
-
 export type Song ={
     id:number,
-    songId:number,
-    userId:number,
-    user: User,
-    content: string,
-    star:number,
-    create_at: Date,
+    title:string,
+    create_at:string,
+    gener?: string,
+    isPublic: boolean,
+    pathSong:string,
+    userId: number,
+    comments?:Comment[],
 } 

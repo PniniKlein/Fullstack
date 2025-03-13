@@ -39,6 +39,7 @@ namespace Music.Service.services
         public async Task<CommentDto> AddAsync(CommentDto commentDto)
         {
             Comment comment = _mapper.Map<Comment>(commentDto);
+            comment.Create_at = DateTime.UtcNow;
             comment = await _iManager._commentRepository.AddAsync(comment);
             if (comment != null)
                 await _iManager.SaveAsync();

@@ -47,11 +47,11 @@ namespace Music.Service.services
             if (!IsValidPassword(userDto.Password))
                 return Result<UserDto>.BadRequest("Invalid Password");
             var user = _mapper.Map<User>(userDto);
-
             var res = await _iManager._userRepository.GetAsync();
             if (res.Any(u => u.Email == user.Email))
                 return Result<UserDto>.Failure("user already exist");
             user.Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
+            user.Create_at = DateTime.UtcNow;
             user = await _iManager._userRepository.AddAsync(user);
             if (user == null)
                 return Result<UserDto>.Failure("unable to add the user this time");

@@ -18,10 +18,8 @@ namespace Music.Core.Entities
         public DateTime Create_at { get; set; } = DateTime.UtcNow;
         public GenerType Gener { get; set; }
         public bool IsPublic { get; set; }
-        public string PathPicture { get; set; }
         public string PathSong { get; set; }
         public int UserId { get; set; }
-        //public User User { get; set; }
         public List<Comment> Comments { get; set; }
 
         public Song()

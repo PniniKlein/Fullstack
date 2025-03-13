@@ -1,9 +1,11 @@
+import { Song } from "./Song";
+
 export type User ={
     id:number,
-    songId:number,
-    userId:number,
-    user: User,
-    content: string,
-    star:number,
-    create_at: Date,
+    userName?:string,
+    email:string,
+    password: string,
+    pathProfile?: string,
+    create_at:string,
+    songs?: Song[],
 } 

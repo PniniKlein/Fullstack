@@ -1,0 +1,6 @@
+@Music.API_HostAddress = http://localhost:5188
+
+GET {{Music.API_HostAddress}}/UserController/
+Accept: application/json
+
+###

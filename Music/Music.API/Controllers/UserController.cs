@@ -24,7 +24,7 @@ namespace Music.API.Controllers
 
         // GET: api/<UserController>
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Policy = "Admin")]
         public async Task<IEnumerable<UserDto>> Get()
         {
             return await _iService.GetAsync();
@@ -35,7 +35,12 @@ namespace Music.API.Controllers
         {
             return await _iService.GetFullAsync();
         }
-
+        [HttpGet("PublicSong")]
+        [AllowAnonymous]
+        public async Task<IEnumerable<UserDto>> GetUsersWithPublicSongs()
+        {
+            return await _iService.GetUsersWithPublicSongsAsync();
+        }
         // GET api/<UserControllers>/5
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDto>> Get(int id)

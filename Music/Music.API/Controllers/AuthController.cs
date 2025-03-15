@@ -27,11 +27,10 @@ namespace Music.API.Controllers
             if (!result.IsSuccess)
                 return StatusCode(result.StatusCode, result.ErrorMessage);
             return Ok(result.Data);
-            return StatusCode(result.StatusCode, result.Data);
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register([FromBody] UserPostModel user)
+        public async Task<ActionResult<LoginResponseDto>> Register([FromBody] UserPostModel user)
         {
             if (user == null)
                 return BadRequest("User data is required.");

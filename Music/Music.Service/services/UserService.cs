@@ -29,6 +29,12 @@ namespace Music.Service.services
         {
             return await _iManager._userRepository.GetFullAsync();
         }
+        public async Task<IEnumerable<User>> GetUsersWithPublicSongsAsync()
+        {
+            var users = await _iManager._userRepository.GetUsersWithPublicSongsAsync();
+            var userDtos = _mapper.Map<IEnumerable<UserDto>>(users);
+            return userDtos;
+        }
         public async Task<UserDto?> GetByIdAsync(int id)
         {
             var user = await _iManager._userRepository.GetByIdAsync(id);
@@ -47,8 +53,7 @@ namespace Music.Service.services
             if (!IsValidPassword(userDto.Password))
                 return Result<UserDto>.BadRequest("Invalid Password");
             var user = _mapper.Map<User>(userDto);
-            var res = await _iManager._userRepository.GetAsync();
-            if (res.Any(u => u.Email == user.Email))
+            if (await _iManager._userRepository.ExistsAsync(userDto.Email))
                 return Result<UserDto>.Failure("user already exist");
             user.Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
             user.Create_at = DateTime.UtcNow;
@@ -110,5 +115,6 @@ namespace Music.Service.services
             bool hasDigit = password.Any(char.IsDigit);
             return hasLetter && hasDigit;
         }
+
     }
 }

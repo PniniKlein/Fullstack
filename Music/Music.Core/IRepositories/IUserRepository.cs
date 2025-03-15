@@ -1,4 +1,5 @@
-﻿using Music.Core.Entities;
+﻿using Music.Core.DTOs;
+using Music.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,9 @@ namespace Music.Core.IRepositories
         Task<IEnumerable<User>> GetFullAsync();
         Task<User> GetByIdFullAsync(int id);
         User? GetUserWithRoles(string email);
+        Task<(int Id, string PasswordHash)?> GetPasswordAndIdByEmailAsync(string email);
         Task<User?> GetUserWithFolowee(int id);
+        Task<IEnumerable<User>> GetUsersWithPublicSongsAsync();
+        Task<bool> ExistsAsync(string email);
     }
 }

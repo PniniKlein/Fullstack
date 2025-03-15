@@ -6,5 +6,5 @@ export type Song ={
     isPublic: boolean,
     pathSong:string,
     userId: number,
-    comments?:Comment[],
+    comments?:[],
 } 

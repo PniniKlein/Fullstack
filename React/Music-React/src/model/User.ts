@@ -1,5 +1,3 @@
-import { Song } from "./Song";
-
 export type User ={
     id:number,
     userName?:string,
@@ -7,5 +5,5 @@ export type User ={
     password: string,
     pathProfile?: string,
     create_at:string,
-    songs?: Song[],
+    songs?: [],
 } 

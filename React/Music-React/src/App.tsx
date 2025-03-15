@@ -1,15 +1,16 @@
 import './App.css'
 import store from './store/store'
 import { Provider } from 'react-redux'
-import { Outlet } from 'react-router-dom'
-import Header from './component/Header'
+import { RouterProvider } from 'react-router'
+// import Header from './component/Header'
+import { router } from './Router'
+import api from './interceptor/axiosConfig'
 
 function App() {
   return (
     <>
     <Provider store={store}>
-      <Header/>
-      <Outlet/>
+    <RouterProvider router={router} />
     </Provider>
     </>
   )

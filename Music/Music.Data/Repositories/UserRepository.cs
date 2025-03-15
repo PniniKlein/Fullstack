@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Music.Core.DTOs;
 using Music.Core.Entities;
 using Music.Core.IRepositories;
 using System;
@@ -37,6 +38,23 @@ namespace Music.Data.Repositories
             return await _dataSet
              .Include(u => u.Followers)
              .FirstOrDefaultAsync(u => u.Id == id);
+        }
+        public async Task<IEnumerable<User>> GetUsersWithPublicSongsAsync()
+        {
+            return await _dataSet
+                .Where(u => u.Songs.Any(s => s.IsPublic))
+                .ToListAsync();
+        }
+        public async Task<bool> ExistsAsync(string email)
+        {
+            return await _dataSet.AnyAsync(u => u.Email == email);
+        }
+        public async Task<(int Id, string PasswordHash)?> GetPasswordAndIdByEmailAsync(string email)
+        {
+            return await _dataSet
+                .Where(u => u.Email == email)
+                .Select(u => new ValueTuple<int, string>(u.Id, u.Password))
+                .FirstOrDefaultAsync();
         }
     }
 }

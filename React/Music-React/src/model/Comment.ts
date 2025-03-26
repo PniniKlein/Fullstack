@@ -7,5 +7,5 @@ export type Comment ={
     create_at: Date,
     songId:number,
     userId:number,
-    user?: User,
+    user: User,
 } 

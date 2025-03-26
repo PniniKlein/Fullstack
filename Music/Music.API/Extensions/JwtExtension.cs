@@ -27,7 +27,6 @@ namespace Music.Api.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
                     };
             });
-            
         }
         public static void AddJwtAuthorization(this WebApplicationBuilder builder)
         {

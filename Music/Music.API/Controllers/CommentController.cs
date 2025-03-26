@@ -20,13 +20,13 @@ namespace Music.API.Controllers
 
         // GET: api/<CommentController>
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Policy = "Admin")]
         public async Task<IEnumerable<CommentDto>> Get()
         {
             return await _iService.GetAsync();
         }
         [HttpGet("Full")]
-        [AllowAnonymous]
+        [Authorize(Policy = "Admin")]
         public async Task<IEnumerable<Comment>> GetFull()
         {
             return await _iService.GetFullAsync();

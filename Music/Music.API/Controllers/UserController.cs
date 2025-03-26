@@ -43,6 +43,7 @@ namespace Music.API.Controllers
         }
         // GET api/<UserControllers>/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<UserDto>> Get(int id)
         {
             UserDto userDto = await _iService.GetByIdAsync(id);
@@ -53,11 +54,22 @@ namespace Music.API.Controllers
         [HttpGet("{id}/Full")]
         public async Task<ActionResult<User>> GetFull(int id)
         {
+            Console.WriteLine("function");
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
             var tokenId = int.Parse(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
             if (tokenId != id)
                 return Forbid();
             var user = await _iService.GetByIdFullAsync(id);
+            if (user == null)
+                return NotFound();
+            return Ok(user);
+        }
+
+        [HttpGet("{id}/FullPublic")]
+        [AllowAnonymous]
+        public async Task<ActionResult<User>> GetFullPublic(int id)
+        {
+            var user = await _iService.GetByIdFullPublicAsync(id);
             if (user == null)
                 return NotFound();
             return Ok(user);
@@ -111,7 +123,7 @@ namespace Music.API.Controllers
         }
 
         [HttpGet("upload-url")]
-        [Authorize]
+        [AllowAnonymous]
         public async Task<IActionResult> GetUploadUrl([FromQuery] string fileName, [FromQuery] string contentType)
         {
             if (string.IsNullOrEmpty(fileName))
@@ -121,6 +133,7 @@ namespace Music.API.Controllers
         }
 
         [HttpGet("download-url/{fileName}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetDownloadUrl(string fileName)
         {
             var url = await _s3Service.GetDownloadUrlAsync(fileName);

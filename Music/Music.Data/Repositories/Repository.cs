@@ -46,7 +46,7 @@ namespace Music.Data.Repositories
                 return null;
             }
             var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                      .Where(prop => prop.Name != "Id");
+                                      .Where(prop => prop.Name != "Id" && prop.Name != "Create_at");
 
             foreach (var property in properties)
             {

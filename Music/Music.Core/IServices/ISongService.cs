@@ -15,10 +15,12 @@ namespace Music.Core.IServices
         Task<IEnumerable<SongDto>> GetPublicAsync();
         Task<IEnumerable<SongDto>> GetByCategoryPublicAsync(string gener);
         Task<IEnumerable<Song>> GetByUserIdAsync(int userId);
-        Task<SongDto> GetByIdAsync(int id);
+        Task<Song> GetByIdFullAsync(int id);
+        Task<SongDto>? GetByIdAsync(int id);
         Task<SongDto> AddAsync(SongDto attractionDto);
         Task<SongDto> UpdateAsync(int id, SongDto attractionDto);
         Task<SongDto> UpdatePublicAsync(int id);
         Task<bool> DeleteAsync(int id);
+        //List<string> GetGenerTypes();
     }
 }

@@ -12,6 +12,7 @@ namespace Music.Core.IRepositories
     {
         Task<IEnumerable<User>> GetFullAsync();
         Task<User> GetByIdFullAsync(int id);
+        Task<User> GetByIdFullPublicAsync(int id);
         User? GetUserWithRoles(string email);
         Task<(int Id, string PasswordHash)?> GetPasswordAndIdByEmailAsync(string email);
         Task<User?> GetUserWithFolowee(int id);

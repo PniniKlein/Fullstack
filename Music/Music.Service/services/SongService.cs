@@ -44,6 +44,13 @@ namespace Music.Service.services
         {
             return await _iManager._songRepository.GetByUserIdAsync(userId);
         }
+        public async Task<Song>? GetByIdFullAsync(int id)
+        {
+            Song song = await _iManager._songRepository.GetByIdFullAsync(id);
+            //SongDto songDto = _mapper.Map<SongDto>(song);
+            return song;
+        }
+
         public async Task<SongDto>? GetByIdAsync(int id)
         {
             Song song = await _iManager._songRepository.GetByIdAsync(id);
@@ -94,5 +101,9 @@ namespace Music.Service.services
                 await _iManager.SaveAsync();
             return flag;
         }
+        //public List<string> GetGenerTypes()
+        //{
+        //    return _iManager._songRepository.GetGenerTypes();
+        //}
     }
 }

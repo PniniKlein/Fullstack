@@ -14,7 +14,7 @@ namespace Music.Core.IRepositories
         Task<IEnumerable<Song>> GetByCategoryPublicAsync(string gener);
         Task<IEnumerable<Song>> GetByUserIdAsync(int userId);
         Task<Song> UpdatePublicAsync(int id);
-        //לקבל לפי קטגוריות
-
+        Task<Song> GetByIdFullAsync(int id);
+        //List<string> GetGenerTypes();
     }
 }

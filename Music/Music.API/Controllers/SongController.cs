@@ -40,12 +40,12 @@ namespace Music.API.Controllers
         {
             return await _iService.GetPublicAsync();
         }
-        [HttpGet("Category")]
+        [HttpGet("Category/{gener}")]
         public async Task<IEnumerable<SongDto>> GetByCategoryPublic(string gener)
         {
             return await _iService.GetByCategoryPublicAsync(gener);
         }
-        [HttpGet("user/{userId}")]
+        [HttpGet("User/{userId}")]
         public async Task<IEnumerable<Song>> GetByUserId(int userId)
         {
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
@@ -53,6 +53,15 @@ namespace Music.API.Controllers
             if (tokenId != userId)
                 return null;
             return await _iService.GetByUserIdAsync(userId);
+        }
+        [HttpGet("{id}/Full")]
+        [AllowAnonymous]
+        public async Task<ActionResult<Song>> Get(int id)
+        {
+            Song song=await _iService.GetByIdFullAsync(id);
+            if (song == null)
+                return NotFound();
+            return Ok(song);
         }
 
         //public async Task<IEnumerable<Song>> GetByEnum(int userId)
@@ -125,6 +134,12 @@ namespace Music.API.Controllers
                 return Forbid();
             return await _iService.DeleteAsync(id);
         }
+        //[HttpGet("Category")]
+        //[AllowAnonymous]
+        //public List<string> GetGenerTypes()
+        //{
+        //    return _iService.GetGenerTypes();
+        //}
         [HttpGet("upload-url")]
         [Authorize]
         public async Task<IActionResult> GetUploadUrl([FromQuery] string fileName, [FromQuery] string contentType)
@@ -136,6 +151,7 @@ namespace Music.API.Controllers
         }
 
         [HttpGet("download-url/{fileName}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetDownloadUrl(string fileName)
         {
             var url = await _s3Service.GetDownloadUrlAsync(fileName);

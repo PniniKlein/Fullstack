@@ -27,6 +27,11 @@ namespace Music.Data.Repositories
             return await _dataSet.Where(x => x.Id == id).Include(x => x.Songs).FirstOrDefaultAsync();
         }
 
+        public async Task<User?> GetByIdFullPublicAsync(int id)
+        {
+            return await _dataSet.Where(x => x.Id == id).Include(x => x.Songs.Where(s => s.IsPublic)).FirstOrDefaultAsync();
+        }
+
         public User? GetUserWithRoles(string email)
         {
             return _dataSet.Where(u => u.Email == email)
@@ -45,6 +50,7 @@ namespace Music.Data.Repositories
                 .Where(u => u.Songs.Any(s => s.IsPublic))
                 .ToListAsync();
         }
+
         public async Task<bool> ExistsAsync(string email)
         {
             return await _dataSet.AnyAsync(u => u.Email == email);
@@ -56,5 +62,6 @@ namespace Music.Data.Repositories
                 .Select(u => new ValueTuple<int, string>(u.Id, u.Password))
                 .FirstOrDefaultAsync();
         }
+
     }
 }

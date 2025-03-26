@@ -1,9 +1,9 @@
 export type User ={
     id:number,
-    userName?:string,
+    userName:string,
     email:string,
     password: string,
     pathProfile?: string,
     create_at:string,
-    songs?: [],
+    songs: [],
 } 

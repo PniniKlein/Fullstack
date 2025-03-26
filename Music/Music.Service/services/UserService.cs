@@ -29,7 +29,7 @@ namespace Music.Service.services
         {
             return await _iManager._userRepository.GetFullAsync();
         }
-        public async Task<IEnumerable<User>> GetUsersWithPublicSongsAsync()
+        public async Task<IEnumerable<UserDto>> GetUsersWithPublicSongsAsync()
         {
             var users = await _iManager._userRepository.GetUsersWithPublicSongsAsync();
             var userDtos = _mapper.Map<IEnumerable<UserDto>>(users);
@@ -44,6 +44,12 @@ namespace Music.Service.services
         public async Task<User> GetByIdFullAsync(int id)
         {
             var user = await _iManager._userRepository.GetByIdFullAsync(id);
+            return user;
+        }
+
+        public async Task<User> GetByIdFullPublicAsync(int id)
+        {
+            var user = await _iManager._userRepository.GetByIdFullPublicAsync(id);
             return user;
         }
         public async Task<Result<UserDto>> AddAsync(UserDto userDto)
@@ -67,7 +73,7 @@ namespace Music.Service.services
         public async Task<UserDto> UpdateAsync(int id, UserDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
-            user.Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
+            //user.Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
             user = await _iManager._userRepository.UpdateAsync(id, user);
             if (user != null)
                 await _iManager.SaveAsync();

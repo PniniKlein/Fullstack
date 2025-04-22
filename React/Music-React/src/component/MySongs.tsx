@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { getUserDataFromToken } from "./AppLayout";
 import PublicIcon from '@mui/icons-material/Public';
-import { resetSong, updateSong } from "../store/songSlice";
+import { loadSong, resetSong, updateSong } from "../store/songSlice";
 
 const MySwal = withReactContent(Swal);
 
@@ -21,8 +21,8 @@ const MySongs = () => {
   const user = useSelector((store: StoreType) => store.user.user);
   const songs = useSelector((state: StoreType) => state.user.user.songs || []);
   const songPlayer = useSelector((state: StoreType) => state.songPlayer.song);
-  const [currentSong, setCurrentSong] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentSong] = useState<string | null>(null);
+  const [isPlaying] = useState(false);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -60,6 +60,13 @@ const MySongs = () => {
         if (songId == songPlayer.id)
           dispatch(resetSong())
         setSnackbarMessage("השיר נמחק בהצלחה!");
+        const token = localStorage.getItem("authToken");
+        if (token) {
+          const id = getUserDataFromToken(token);
+          if (id) {
+            dispatch(loadUser(id));
+          }
+        }
         setSnackbarOpen(true);
       } else {
         setSnackbarMessage("שגיאה במחיקת השיר");
@@ -70,28 +77,22 @@ const MySongs = () => {
 
   const updateToPublic = async (songId: number) => {
     await updateSongToPublic(songId);
-    songPlayer.isPublic = true;
-    dispatch(updateSong(songPlayer))
+    if (songPlayer.id === songId) {
+      const updatedSong = { ...songPlayer, isPublic: true };
+      dispatch(loadSong(updatedSong));
+    }
     const token = localStorage.getItem("authToken");
+    setSnackbarMessage("השיר הפך לציבורי!");
     if (token) {
       const id = getUserDataFromToken(token);
       if (id) {
         dispatch(loadUser(id));
       }
     }
+    setOpenMenuId(null)
+    setSnackbarOpen(true);
   };
 
-  const handlePlayPause = (songUrl: string) => {
-    if (currentSong === songUrl && isPlaying) {
-      audioRef.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.src = songUrl;
-      audioRef.play();
-      setIsPlaying(true);
-      setCurrentSong(songUrl);
-    }
-  };
   const handleCardClick = (event: React.MouseEvent, songId: number) => {
     const target = event.target as HTMLElement;
     if ((target.closest("button, svg"))) {
@@ -113,14 +114,26 @@ const MySongs = () => {
           alignItems: "center",
           position: "sticky",
           top: 62,  // דואג שהאלמנט יישאר למעלה
-          backgroundColor: "#212121", // אם רוצים צבע רקע כדי שהאלמנט יהיה תמיד בולט
+          backgroundColor: "#1A1A1A", // אם רוצים צבע רקע כדי שהאלמנט יהיה תמיד בולט
           zIndex: 1, // חשוב לשים ז-אינדקס אם יש אלמנטים אחרים עליהם הוא צריך להישאר
           padding: "20px", // אם צריך ריפוד נוסף
         }}
       >
 
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "right", marginRight: "5%" }}>
-          <Typography variant="h3" fontWeight="bold" fontSize="50px" noWrap width="310px">
+          <Typography
+            width="310px"
+            noWrap
+            variant="h3"
+            fontWeight="bold"
+            fontSize="50px"
+            sx={{
+              background: "linear-gradient(90deg, #D59039, #F7C26B)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              marginLeft: "20px", // ריווח מהניווט אם צריך
+            }}
+          >
             השירים שלי
           </Typography>
           <Box sx={{ display: "flex", gap: "40px", marginRight: "15%" }}>
@@ -140,12 +153,13 @@ const MySongs = () => {
                   display: "block",
                   width: filter === 'private' ? "60%" : "0%", // פס רק לשיר הציבורי
                   height: "3px",
-                  backgroundColor: "#FFA726",
+                  background: "linear-gradient(90deg, #D59039, #F7C26B)",
                   borderRadius: "2px",
                   position: "absolute",
                   bottom: "0",
                   left: "50%",
                   transform: "translateX(-50%)",
+                  transition: "width 0.3s ease",
                 },
               }}
             >
@@ -167,12 +181,13 @@ const MySongs = () => {
                   display: "block",
                   width: filter === 'public' ? "60%" : "0%", // פס רק לשיר הציבורי
                   height: "3px",
-                  backgroundColor: "#FFA726",
+                  background: "linear-gradient(90deg, #D59039, #F7C26B)",
                   borderRadius: "2px",
                   position: "absolute",
                   bottom: "0",
                   left: "50%",
                   transform: "translateX(-50%)",
+                  transition: "width 0.3s ease",
                 },
               }}
             >
@@ -223,7 +238,7 @@ const MySongs = () => {
                 sx={{
                   width: "100%",
                   height: "150px",
-                  backgroundImage: `url(/avatars/music2.jpg)`,
+                  backgroundImage: `url(${song.pathPicture})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   borderRadius: "8px 8px 0 0",

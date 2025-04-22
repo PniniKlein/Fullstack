@@ -95,11 +95,6 @@ const userSlice = createSlice({
                     state.user = action.payload.user;
                     state.authState = true;
                     console.log(state.user);
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'התחברות הצליחה',
-                        text: '!התחברת בהצלחה',
-                    });
                 }
             )
             .addCase(loginUser.rejected,

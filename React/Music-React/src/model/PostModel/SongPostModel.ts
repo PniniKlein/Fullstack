@@ -3,5 +3,6 @@ export type SongPostModel ={
     gener:string,
     isPublic: boolean,
     pathSong: string,
+    pathPicture:string,
     userId: number,
 }

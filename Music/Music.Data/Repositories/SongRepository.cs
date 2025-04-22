@@ -36,8 +36,11 @@ namespace Music.Data.Repositories
 
         public async Task<Song?> GetByIdFullAsync(int id)
         {
-            return await _dataSet.Where(s => s.Id == id).Include(s => s.Comments)
-                    .ThenInclude(c => c.User).FirstOrDefaultAsync();
+            return await _dataSet
+                .Where(s => s.Id == id)
+                .Include(s => s.Comments.OrderByDescending(c => c.Create_at)) // מיון התגובות בסדר יורד לפי תאריך יצירה
+                .ThenInclude(c => c.User)
+                .FirstOrDefaultAsync();
         }
         //public override async Task<Song> UpdateAsync(int id, Song updatedEntity)
         //{

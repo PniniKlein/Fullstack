@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { Song } from "../model/Song";
 import { Dispatch } from "../store/store";
 import { updateSong } from "../store/songSlice";
+import '../css/ArtistSongs.css';
+
 const ArtistSongs = () => {
     const { id } = useParams();
     const [artist, setArtist] = useState<User | null>(null);
@@ -22,8 +24,7 @@ const ArtistSongs = () => {
     useEffect(() => {
         const fetchArtist = async () => {
             try {
-                const response = await getArtistByIdFull(id ? +id : 0)
-                // const data = await response.json();
+                const response = await getArtistByIdFull(id ? +id : 0);
                 setArtist(response);
             } catch (error) {
                 console.error('Error fetching artist:', error);
@@ -48,35 +49,32 @@ const ArtistSongs = () => {
     const handleMouseDown = (songId: number) => setActiveCardId(songId);
     const handleMouseUp = () => setActiveCardId(null);
 
-
     return (
         <div style={{ padding: '24px', marginTop: '80px' }}>
-      <Card sx={{ marginBottom: '24px', backgroundColor: '#181818', color: 'white', borderRadius: '20px', padding: '30px' }}>
-        <Stack direction="row" alignItems="center">
-          <Avatar src={artist.pathProfile} alt={artist.userName} sx={{ width: 170, height: 170, boxShadow: '0 8px 16px rgba(0,0,0,0.3)' }}>
-            {artist.userName[0]}
-          </Avatar>
-          <Box sx={{marginRight:'40px'}}>
-            <Typography variant="h3" sx={{ fontWeight: 'bold', color: '#FFA500' }}>{artist.userName}</Typography>
-            <Typography variant="subtitle1" color="#B0B0B0">{artist.email}</Typography>
-            <Typography variant="subtitle2" color="#888888">הצטרף בתאריך: {new Date(artist.create_at).toLocaleDateString()}</Typography>
-            <Button variant="contained" sx={{ backgroundColor: '#FFA500', color: '#181818', borderRadius: '20px', marginTop: '16px' }} >
-              הצטרף למנוי
-            </Button>
-          </Box>
-        </Stack>
-      </Card>
+            <Card sx={{ marginBottom: '24px', backgroundColor: '#181818', color: 'white', borderRadius: '20px', padding: '30px' }}>
+                <Stack direction="row" alignItems="center">
+                    <Avatar src={artist.pathProfile} alt={artist.userName} sx={{ width: 170, height: 170, boxShadow: '0 8px 16px rgba(0,0,0,0.3)' }}>
+                        {artist.userName[0]}
+                    </Avatar>
+                    <Box sx={{ marginRight: '40px' }}>
+                        <Typography variant="h3" className="artist-name">{artist.userName}</Typography>
+                        <Typography variant="subtitle1" color="#B0B0B0">{artist.email}</Typography>
+                        <Typography variant="subtitle2" color="#888888">הצטרף בתאריך: {new Date(artist.create_at).toLocaleDateString()}</Typography>
+                        <Button variant="outlined" className="join-button">
+                            הצטרף למנוי
+                        </Button>
+                    </Box>
+                </Stack>
+            </Card>
 
             {artist.songs.length > 0 ? (
-                <Box
-                    sx={{
-                        margin: "5%",
-                        display: "grid",
-                        gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                        gap: "40px",
-                        marginTop: "40px",
-                    }}
-                >
+                <Box sx={{
+                    margin: "5%",
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+                    gap: "40px",
+                    marginTop: "40px",
+                }}>
                     {artist.songs.map((song: Song) => (
                         <Paper
                             key={song.id}
@@ -104,7 +102,7 @@ const ArtistSongs = () => {
                                 sx={{
                                     width: "100%",
                                     height: "150px",
-                                    backgroundImage: `url(/avatars/music2.jpg)`,
+                                    backgroundImage: `url(${song.pathPicture})`,
                                     backgroundSize: "cover",
                                     backgroundPosition: "center",
                                     borderRadius: "8px 8px 0 0",

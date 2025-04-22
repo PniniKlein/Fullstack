@@ -1,101 +1,111 @@
 import React, { useState } from "react";
-import { Box, Button, Dialog, DialogTitle, DialogContent, Typography, LinearProgress } from "@mui/material";
+import {Box,Button,Dialog,DialogTitle,DialogContent,Typography,LinearProgress,} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { StoreType } from "../store/store";
 import { addSong } from "../services/SongsService";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import axios from "axios";
 import api from "../interceptor/axiosConfig";
 import { loadUser } from "../store/userSlice";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import * as mm from "music-metadata-browser";
 import { Buffer } from "buffer";
+import "../css/AddSong.css";
+
 declare global {
   interface Window {
     Buffer: typeof Buffer;
   }
 }
-
 window.Buffer = Buffer;
+
 const AddSong = () => {
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [dragOver, setDragOver] = useState(false);
   const dispatch = useDispatch();
   const userId = useSelector((state: StoreType) => state.user.user.id);
 
-  const uploadToS3 = async (file: File): Promise<string | null> => {
+  const uploadToS3 = async (
+    file: File,
+    isImage = false,
+    onProgress?: (percent: number) => void
+  ): Promise<string | null> => {
     try {
-      setLoading(true);
-      setProgress(0);
-
-      const res = await api.get("Song/upload-url", {
+      const res = await api.get(isImage ? "User/upload-url" : "Song/upload-url", {
         params: { fileName: file.name, contentType: file.type },
       });
 
       const presignedUrl = res.data.url;
+
       await axios.put(presignedUrl, file, {
         headers: { "Content-Type": file.type },
         onUploadProgress: (progressEvent) => {
-          const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1));
-          setProgress(percent);
+          const percent = Math.round(
+            (progressEvent.loaded * 100) / (progressEvent.total || 1)
+          );
+          if (onProgress) {
+            onProgress(percent);
+          } else {
+            setProgress(percent);
+          }
         },
       });
 
-      setLoading(false);
       return presignedUrl.split("?")[0];
     } catch (error) {
-      console.error("שגיאה בהעלאת הקובץ:", error);
-      setLoading(false);
+      console.error("שגיאה בהעלאת קובץ:", error);
       return null;
     }
   };
 
   const handleFileUpload = async (file: File) => {
     if (!file) return;
-
     try {
-      // קריאת מטא נתונים
-      const metadata = await mm.parseBlob(file);
-      console.log("Metadata:", metadata);
+      setLoading(true);
+      setProgress(0);
 
+      const metadata = await mm.parseBlob(file);
       const genre = metadata.common.genre?.[0] || "לא ידוע";
       const title = metadata.common.title || file.name.replace(/\.[^/.]+$/, "");
 
-      // let coverImageUrl = 'https://pninimusic.s3.us-east-1.amazonaws.com/images/music2.jpg';
-      // if (metadata.common.picture && metadata.common.picture.length > 0) {
-      //   const cover = metadata.common.picture[0];
-      //   const coverBlob = new Blob([cover.data], { type: cover.format });
+      let coverImageUrl =
+        "https://pninimusic.s3.us-east-1.amazonaws.com/images/music2.jpg";
 
-      //   // העלאה ל-S3
-      //   const imageRes = await api.get('User/upload-url', {
-      //     params: {
-      //       fileName: `${file.name}_cover.${cover.format.split('/')[1] || 'jpg'}`,
-      //       contentType: coverBlob.type
-      //     }
-      //   });
+      if (metadata.common.picture && metadata.common.picture.length > 0) {
+        const cover = metadata.common.picture[0];
+        const coverBlob = new Blob([cover.data], { type: cover.format });
+        const coverFile = new File(
+          [coverBlob],
+          `${file.name}_cover.${cover.format.split("/")[1] || "jpg"}`,
+          { type: coverBlob.type, lastModified: Date.now() }
+        );
 
-      //   const coverPresignedUrl = imageRes.data.url;
+        const uploadedCover = await uploadToS3(coverFile, true, (percent) =>
+          setProgress(Math.round(percent * 0.25))
+        );
 
-      //   await axios.put(coverPresignedUrl, coverBlob, {
-      //     headers: {
-      //       'Content-Type': coverBlob.type,
-      //     }
-      //   });
+        if (uploadedCover) {
+          coverImageUrl = uploadedCover;
+        }
+      } else {
+        setProgress(25);
+      }
 
-      //   console.log('תמונת הקאבר הועלתה בהצלחה');
-      //   coverImageUrl = coverPresignedUrl.split("?")[0];
-      // }
-      // console.log(coverImageUrl);
-      const uploadedUrl = await uploadToS3(file);
-      if (!uploadedUrl) return;
+      const uploadedSongUrl = await uploadToS3(file, false, (percent) =>
+        setProgress(Math.round(25 + percent * 0.75))
+      );
+
+      if (!uploadedSongUrl) return;
 
       const newSong = {
         title,
         gener: genre,
         isPublic: false,
-        pathSong: uploadedUrl,
-        userId
+        pathSong: uploadedSongUrl,
+        pathPicture: coverImageUrl,
+        userId,
       };
 
       await addSong(newSong);
@@ -103,70 +113,75 @@ const AddSong = () => {
       setOpen(false);
     } catch (error) {
       console.error("שגיאה בקריאת מטא נתונים:", error);
+    } finally {
+      setLoading(false);
+      setProgress(0);
     }
   };
+
   return (
     <Box>
       <Button
         variant="contained"
         endIcon={<FileUploadIcon />}
         onClick={() => setOpen(true)}
-        sx={{
-          backgroundColor: "#FFA726",
-          fontWeight: "bold",
-          borderRadius: "5px",
-          gap: "8px"
-        }}
+        className="add-song-button with-icon"
       >
         הוסף שיר
       </Button>
 
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth maxWidth="xs" PaperProps={{ sx: { borderRadius: "16px" } }} disableEnforceFocus disableRestoreFocus>
-        <DialogTitle align="center" sx={{ fontWeight: "bold", fontSize: "1.2rem", color: "#fff", backgroundColor: "#1E1E1E", borderTopLeftRadius: "16px", borderTopRightRadius: "16px" }}>
-          העלאת שיר חדש
-        </DialogTitle>
-        <DialogContent sx={{ backgroundColor: "#1E1E1E", textAlign: "center", color: "white", borderBottomLeftRadius: "16px", borderBottomRightRadius: "16px" }}>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        fullWidth
+        maxWidth="xs"
+        PaperProps={{ sx: { borderRadius: "16px" } }}
+        disableEnforceFocus
+        disableRestoreFocus
+      >
+        <DialogTitle className="dialog-title">העלאת שיר חדש</DialogTitle>
+        <DialogContent className="dialog-content">
           <Box
-            sx={{
-              border: "2px dashed gray",
-              borderRadius: "12px",
-              padding: 4,
-              textAlign: "center",
-              cursor: "pointer",
-              backgroundColor: "#252525",
-              "&:hover": { borderColor: "#FFA726", backgroundColor: "#2E2E2E" },
-              transition: "0.3s",
+            className={`upload-box ${dragOver ? "drag-over" : ""}`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+              const file = e.dataTransfer.files[0];
+              if (file) handleFileUpload(file);
             }}
           >
-            <CloudUploadIcon sx={{ fontSize: 50, color: "#FFA726" }} />
-            <Typography variant="body1" sx={{ mt: 1, fontSize: "0.9rem", color: "#ccc" }}>
+            <CloudUploadIcon className="upload-icon" />
+            <Typography className="upload-text">
               גרור ושחרר כאן קובץ או לחץ לבחירה
             </Typography>
-            <Button
-              variant="contained"
-              component="label"
-              sx={{ mt: 2, backgroundColor: "#FFA726", "&:hover": { backgroundColor: "#FF9800" } }}
-            >
+            <Button variant="contained" component="label" className="choose-file-button">
               בחר קובץ
-              <input type="file" hidden onChange={(e) => e.target.files && handleFileUpload(e.target.files[0])} />
+              <input
+                type="file"
+                hidden
+                onChange={(e) =>
+                  e.target.files && handleFileUpload(e.target.files[0])
+                }
+              />
             </Button>
           </Box>
 
           {loading && (
-            <Box sx={{ width: "100%", marginTop: "15px" }}>
+            <Box className="progress-container">
               <LinearProgress
                 variant="determinate"
                 value={progress}
-                sx={{
-                  height: "8px",
-                  borderRadius: "4px",
-                  backgroundColor: "#333",
-                  "& .MuiLinearProgress-bar": {
-                    backgroundColor: "#FFA500",
-                  },
-                }}
+                className="progress-bar"
               />
-              <Typography sx={{ marginTop: "5px", fontSize: "14px", color: "#FFA726" }}>{progress}%</Typography>
+              <Typography className="progress-text">{progress}%</Typography>
             </Box>
           )}
         </DialogContent>

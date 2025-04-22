@@ -5,6 +5,7 @@ export type Song ={
     gener?: string,
     isPublic: boolean,
     pathSong:string,
+    pathPicture:string,
     userId: number,
     comments?:[],
 } 

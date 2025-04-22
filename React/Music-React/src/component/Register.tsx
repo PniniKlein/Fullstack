@@ -11,6 +11,7 @@ import FormInput from "./FormInput";
 import axios from "axios";
 import api from "../interceptor/axiosConfig";
 import Swal from "sweetalert2";
+import "../css/Register.css"; // ייבוא עיצוב מותאם
 
 const Register = () => {
   const emptyUser: UserPostModel = { userName: "", email: "", password: "", pathProfile: "" };
@@ -24,10 +25,11 @@ const Register = () => {
 
   const isValidEmail = (email: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
   const isValidPassword = (password: string) => /[a-zA-Z]/.test(password) && /\d/.test(password) && password.length >= 6;
-  
+
   const handleChange = (id: string, value: string) => {
     setFormData({ ...formData, [id]: value });
   }
+
   const uploadToS3 = async (file: File): Promise<string | null> => {
     try {
       const res = await api.get("User/upload-url", {
@@ -74,21 +76,23 @@ const Register = () => {
   };
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
-      <Card sx={{ width: 400, padding: 3, boxShadow: 3 }}>
+    <div className="login-container">
+      <Card className="login-card">
         <CardContent>
-          <Typography variant="h6" align="center">הרשמה</Typography>
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 15 }}>
+          <Typography variant="h6" align="center" className="login-title">
+            הרשמה
+          </Typography>
 
+          <form onSubmit={handleSubmit} className="login-form">
             <FormInput label="שם משתמש" id="userName" value={formData.userName} error="" onChange={handleChange} />
             <FormInput label="אימייל" type="email" id="email" value={formData.email} error={errors.email} onChange={handleChange} />
             <FormInput label="סיסמה" type="password" id="password" value={formData.password} error={errors.password} onChange={handleChange} />
 
-            <Button variant="outlined" fullWidth onClick={() => setOpenDialog(true)} sx={{ mt: 1 }} startIcon={<CameraAltIcon />}>
+            <Button variant="outlined" className="picture" fullWidth onClick={() => setOpenDialog(true)} sx={{ mt: 1 }} startIcon={<CameraAltIcon sx={{ marginLeft: "8px" }}/>}>
               בחר תמונת פרופיל
             </Button>
 
-            <Button type="submit" variant="contained" fullWidth sx={{ backgroundColor: "black", color: "white", mt: 2 }}>
+            <Button type="submit" variant="contained" fullWidth className="login-button">
               הרשמה
             </Button>
           </form>

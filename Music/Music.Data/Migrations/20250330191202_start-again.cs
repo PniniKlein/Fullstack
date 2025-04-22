@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Music.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class test1 : Migration
+    public partial class startagain : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -110,10 +110,10 @@ namespace Music.Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Create_at = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Gener = table.Column<int>(type: "int", nullable: false),
+                    Gener = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsPublic = table.Column<bool>(type: "bit", nullable: false),
-                    PathPicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PathSong = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PathPicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

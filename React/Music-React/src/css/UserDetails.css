@@ -1,0 +1,108 @@
+.avatar {
+    font-size: 20px;
+    width: 40px !important;
+    height: 40px !important;
+    margin-right: 20px;
+    margin-top: 10px !important;
+    background-color: transparent;
+    cursor: pointer;
+    border: 2px solid transparent;
+    background-image: linear-gradient(white, white), linear-gradient(90deg, #D59039, #F7C26B);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    transition: border 0.3s ease;
+}
+
+.popover-paper {
+    width: 250px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 4px;
+    padding: 3px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    min-width: 220px;
+    text-align: center;
+    background-color: #1e1e1e !important;
+    color: white;
+    margin-top: 15px;
+}
+
+.close-button {
+    position: absolute !important;
+    top: 5px !important;
+    left: 5px !important;
+    color: white !important;
+}
+
+.avatar-large {
+    font-size: 20px;
+    width: 60px !important;
+    height: 60px !important;
+    margin-top: 40px !important;
+    background-color: transparent;
+    border: 2px solid transparent;
+    background-image: linear-gradient(#1e1e1e, #1e1e1e), linear-gradient(90deg, #D59039, #F7C26B);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    box-shadow: 0 2px 5px rgba(213, 144, 57, 0.5);
+}
+
+.username {
+    margin-top: 20px !important;
+    font-weight: bold;
+    background: linear-gradient(90deg, #D59039, #F7C26B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+.email {
+    margin-top: 2px !important;
+    color: gray;
+}
+
+.buttons-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1px !important;
+    width: 95% !important;
+    margin-top: 15px !important;
+    margin-bottom: 10px;
+}
+
+.update-button {
+    /* height:100px !important; */
+    height: 35px !important;
+    width: 50%;
+    color: white;
+    background: linear-gradient(90deg, #D59039, #F7C26B);
+}
+
+.update-button:hover {
+    background: linear-gradient(90deg, #c67c28, #e3aa50);
+}
+
+.logout-button-container {
+    height: 33px !important;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(90deg, #D59039, #F7C26B);
+    border-radius: 5px;
+    padding: 1.5px ֱ!important;
+}
+
+.logout-button {
+    /* height: 29px !important; */
+    height: 95%;
+    width: 98%;
+    border: 0px solid transparent !important;
+    border-radius: 5px;
+    background: #1e1e1e !important;
+    background-clip: border-box;
+    padding: 6px 16px;
+    color: white !important;
+}

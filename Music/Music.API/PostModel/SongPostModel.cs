@@ -8,6 +8,7 @@ namespace Music.API.PostModel
         public string Gener { get; set; }
         public bool IsPublic { get; set; }
         public string PathSong { get; set; }
+        public string PathPicture { get; set; }
         public int UserId { get; set; }
     }
 }

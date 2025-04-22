@@ -1,0 +1,152 @@
+.comments-title {
+  font-weight: bold !important;
+  font-size: 30px;
+  background: linear-gradient(90deg, #D59039, #F7C26B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  margin-bottom: 20px;
+  margin-right: 20px;
+}
+
+.comment-card {
+  background-color: #1E1E1E !important;
+  color: #E0E0E0;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.comment-card:hover .comment-actions {
+  opacity: 1;
+}
+
+.comment-header {
+  display: flex;
+}
+
+.comment-avatar {
+  width: 55px !important;
+  height: 55px !important;
+  margin-top: 6px;
+  margin-right: 15px;
+}
+
+.comment-user-box {
+  width: 92%;
+  margin-right: 15px;
+}
+
+.comment-username {
+  margin-bottom: 3px;
+  background: linear-gradient(90deg, #D59039, #F7C26B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.comment-rating {
+  color:#B0B0B0 !important;
+  margin-bottom: 10px;
+  font-size: 18px !important;
+}
+
+.comment-rating .MuiRating-iconFilled {
+  color: #B0B0B0;
+}
+
+.comment-rating .MuiRating-iconEmpty {
+  color: #B0B0B0;
+  opacity: 0.4;
+}
+
+.comment-content {
+  margin-top: 15px !important;
+  margin-bottom: 10px;
+  font-size: 18px !important;
+  color: #ebe2e2;
+}
+
+.comment-date {
+  margin-top: 15px;
+  text-align: right;
+  font-size: 13px;
+  color: #767676;
+}
+
+.comment-actions {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.comment-actions button {
+  color: #D59039;
+  transition: all 0.3s ease;
+}
+
+.comment-actions button:hover {
+  background-color: #1A1A1A;
+}
+
+.MuiTextField-root {
+  width: 100%;
+  background-color: #333;
+}
+
+.MuiInputBase-root {
+  color: #fff;
+}
+
+.MuiButton-root {
+  margin-top: 10px;
+}
+.comment-edit-field {
+  margin-top: 16px !important;
+  background-color: transparent;
+}
+
+.comment-edit-field .MuiInputBase-input {
+  color: #fff !important;
+  font-size: 18px !important;
+}
+
+.comment-edit-field .MuiInput-underline:before {
+  border-bottom: 1px solid #F7C26B;
+}
+
+.comment-edit-field .MuiInput-underline:hover:before {
+  border-bottom: 2px solid #F7C26B;
+}
+
+.comment-edit-field .MuiInput-underline:after {
+  border-bottom: 2px solid #F7C26B;
+}
+
+.comment-edit-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.update-button {
+  margin-left: 8px !important;
+  background: linear-gradient(90deg, #D59039, #F7C26B) !important;
+  height: 30px !important;
+}
+
+.cancel-button {
+  color: #ccc !important;
+  border-color: #F7C26B !important;
+  height: 30px !important;
+}
+
+.comment-buttons{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

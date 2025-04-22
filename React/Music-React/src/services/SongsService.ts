@@ -1,6 +1,7 @@
 import axios from "axios";
 import api from "../interceptor/axiosConfig";
 import { SongPostModel } from "../model/PostModel/SongPostModel";
+import { Song } from "../model/Song";
 
 export const getSongsByUserId = async (userId: number) => {
     try {
@@ -101,3 +102,21 @@ export const deleteSong = async(id:number) =>{
         console.log(e);
     }
 }
+
+export const handleDownload = async (song:Song) => {
+    if (song?.pathSong) {
+      try {
+        const response = await fetch(song.pathSong);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = song.title + ".mp3"; // או פורמט אחר
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (error) {
+        console.error("שגיאה בהורדת השיר:", error);
+      }
+    }
+  };

@@ -6,6 +6,8 @@ import { updateSong } from "../services/SongsService";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "../store/store";
 import { loadUser } from "../store/userSlice";
+import SnackbarGreen from "../component/SnackbarGreen";
+import "../css/UpdateSong.css";
 
 const UpdateSong = () => {
   const { state } = useLocation();
@@ -16,6 +18,8 @@ const UpdateSong = () => {
 
   const [formData, setFormData] = useState(song);
   const [errors, setErrors] = useState<{ title: string }>({ title: "" });
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleChange = (id: string, value: string) => {
     setFormData({ ...formData, [id]: value });
@@ -25,7 +29,7 @@ const UpdateSong = () => {
     e.preventDefault();
 
     const newErrors = {
-      title: formData.title.trim() ? "" : "כותרת השיר לא יכולה להיות ריקה",
+      title: formData.title.trim() ? "" : "\u05db\u05d5\u05ea\u05e8\u05ea \u05d4\u05e9\u05d9\u05e8 \u05dc\u05d0 \u05d9\u05db\u05d5\u05dc\u05d4 \u05dc\u05d4\u05d9\u05d5\u05ea \u05e8\u05d9\u05e7\u05d4",
     };
 
     setErrors(newErrors);
@@ -36,21 +40,24 @@ const UpdateSong = () => {
         gener: formData.gener || "",
         isPublic: formData.isPublic,
         pathSong: formData.pathSong,
+        pathPicture: formData.pathPicture,
         userId: formData.userId,
       };
       try {
         const updatedSong = await updateSong(song.id, songToUpdate);
-        console.log(songToUpdate);
         dispatch(loadUser(song.userId));
         if (updatedSong) {
-          alert("השיר עודכן בהצלחה");
-          navigate(-1);
+          setSnackbarMessage("\u05d4\u05e9\u05d9\u05e8 \u05e2\u05d5\u05d3\u05db\u05df \u05d1\u05d4\u05e6\u05dc\u05d7\u05d4");
+          setSnackbarOpen(true);
+          setTimeout(() => {
+            navigate(-1);
+          }, 300);
         } else {
-          alert("שגיאה בעדכון השיר");
+          alert("\u05e9\u05d2\u05d9\u05d0\u05d4 \u05d1\u05e2\u05d3\u05db\u05d5\u05df \u05d4\u05e9\u05d9\u05e8");
         }
       } catch (error) {
         console.error(error);
-        alert("שגיאה בעדכון השיר");
+        alert("\u05e9\u05d2\u05d9\u05d0\u05d4 \u05d1\u05e2\u05d3\u05db\u05d5\u05df \u05d4\u05e9\u05d9\u05e8");
       }
     }
   };
@@ -62,14 +69,14 @@ const UpdateSong = () => {
   if (!formData) return <div>טעינת נתונים...</div>;
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
-      <Card sx={{ width: 520, padding: 2.5, boxShadow: 3, backgroundColor: "#1E1E1E" }}>
+    <div className="update-song-container">
+      <Card className="update-song-card">
         <CardContent>
-          <Typography variant="h6" align="center" sx={{ color: "white", fontWeight: "bold", marginBottom: 1 }}>
+          <Typography variant="h6" align="center" className="update-song-title">
             עדכון שיר
           </Typography>
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {/* שם השיר */}
+
+          <form onSubmit={handleSubmit} className="update-song-form">
             <TextField
               label="שם השיר"
               id="title"
@@ -79,21 +86,9 @@ const UpdateSong = () => {
               helperText={errors.title}
               variant="outlined"
               fullWidth
-              sx={{
-                backgroundColor: "#333",
-                borderRadius: "8px",
-                input: { color: "white" },
-                "& .MuiInputLabel-root": { color: "#ddd" }, // צבע הכותרת בהיר
-                "& .MuiInputLabel-root.Mui-focused": { color: "#FF9800" },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#666" },
-                  "&:hover fieldset": { borderColor: "#FF9800" },
-                  "&.Mui-focused fieldset": { borderColor: "#FF9800" },
-                },
-              }}
+              className="update-song-textfield"
             />
 
-            {/* ז'אנר */}
             <TextField
               label="ז'אנר"
               id="gener"
@@ -101,19 +96,7 @@ const UpdateSong = () => {
               onChange={(e) => handleChange(e.target.id, e.target.value)}
               variant="outlined"
               fullWidth
-              sx={{
-                marginTop: 1,
-                backgroundColor: "#333",
-                borderRadius: "8px",
-                input: { color: "white" },
-                "& .MuiInputLabel-root": { color: "#ddd" }, // צבע הכותרת בהיר
-                "& .MuiInputLabel-root.Mui-focused": { color: "#FF9800" },
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "#666" },
-                  "&:hover fieldset": { borderColor: "#FF9800" },
-                  "&.Mui-focused fieldset": { borderColor: "#FF9800" },
-                },
-              }}
+              className="update-song-textfield"
             />
 
             {/* פרטיות - אפשר להפוך לפרטי וגם לציבורי */}
@@ -122,12 +105,24 @@ const UpdateSong = () => {
                 <Switch
                   checked={formData.isPublic}
                   onChange={(e) => {
-                    if (!song.isPublic) { // ניתן לשנות רק אם השיר פרטי
+                    if (!song.isPublic) {
                       setFormData({ ...formData, isPublic: e.target.checked });
                     }
                   }}
-                  color="warning"
-                // disabled={formData.isPublic} // נועל את הסוויץ' כשהשיר כבר ציבורי
+                  sx={{
+                    "& .MuiSwitch-switchBase": {
+                      color: "#777", // צבע העיגול כשהוא כבוי
+                    },
+                    "& .MuiSwitch-switchBase + .MuiSwitch-track": {
+                      backgroundColor: "#888", // צבע הפס כשהוא כבוי
+                    },
+                    "& .MuiSwitch-switchBase.Mui-checked": {
+                      color: "#c67c28", // צבע העיגול כשהוא דלוק
+                    },
+                    "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+                      background: "linear-gradient(90deg, #c67c28, #e3aa50)", // גרדיאנט לפס כשהדלוק
+                    },
+                  }}
                 />
               }
               label={
@@ -138,24 +133,29 @@ const UpdateSong = () => {
               labelPlacement="start"
             />
 
-
             {/* הצגת הנתיב הנוכחי (רק לקריאה) */}
-            <Box sx={{ padding: 1.5, backgroundColor: "#333", borderRadius: "8px", textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "#FF9800", fontWeight: "bold" }}> 🔗 קישור לשיר:</Typography>
-              <Typography variant="body1" sx={{ color: "white", wordBreak: "break-word" }}>
+            <Box className="link-box">
+              <Box className="flex-row">
+                <Typography variant="body2" sx={{ color: "white" }}>
+                  🔗
+                </Typography>
+                <Typography variant="body2" className="link-text">
+                  קישור לשיר:
+                </Typography>
+              </Box>
+
+              <Typography variant="body1" className="link-path">
                 {formData.pathSong}
               </Typography>
             </Box>
 
-            <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-              
-
+            <div className="buttons-container">
               {/* כפתור עדכון */}
               <Button
                 type="submit"
                 variant="contained"
                 fullWidth
-                sx={{ backgroundColor: "#FF9800", color: "white" }}
+                className="button"
               >
                 עדכן שיר
               </Button>
@@ -164,7 +164,7 @@ const UpdateSong = () => {
                 variant="outlined"
                 fullWidth
                 onClick={handleCancel}
-                sx={{ color: "white", borderColor: "#FF9800" }}
+                className="button-cancel"
               >
                 ביטול
               </Button>
@@ -172,6 +172,11 @@ const UpdateSong = () => {
           </form>
         </CardContent>
       </Card>
+      <SnackbarGreen
+        snackbarMessage={snackbarMessage}
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+      />
     </div>
   );
 };

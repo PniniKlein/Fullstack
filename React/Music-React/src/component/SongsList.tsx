@@ -8,6 +8,8 @@ import { Dispatch } from "../store/store";
 import { getAllPublic } from "../services/SongsService";
 import { updateSong } from "../store/songSlice";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import Search from "./Search";
+import SongFilters from "./SongFilter";
 const SongsList = () => {
   const dispatch = useDispatch<Dispatch>();
   const [songs, setSongs] = useState<Song[]>([]);
@@ -31,7 +33,7 @@ const SongsList = () => {
   }, []);
 
   useEffect(() => {
-    let filtered = songs;
+    let filtered = [...songs];
     console.log(sortOption)
 
     if (searchTerm) {
@@ -62,7 +64,9 @@ const SongsList = () => {
 
   }, [searchTerm, sortOption, genreFilter, songs]);
 
-  const genres = Array.from(new Set(songs.map(song => song.gener)));
+  const genres = Array.from(
+    new Set(songs.map(song => song.gener).filter((g): g is string => typeof g === "string"))
+  );
 
   const handleCardClick = (event: React.MouseEvent, songId: number) => {
     const target = event.target as HTMLElement;
@@ -77,153 +81,17 @@ const SongsList = () => {
   const handleMouseUp = () => setActiveCardId(null);
 
   return (
-    <Box sx={{ padding: "20px", color: "white" }}>
+    <Box sx={{  color: "white" }}>
 
-      <Box sx={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        marginBottom: '20px',
-        gap: '10px',
-        position: 'sticky',
-        top: '80px',
-        zIndex: 1000
-      }}>
-        {/* מיון לפי */}
-        <Select
-          ref={selectRef}
-          value={sortOption}
-          onChange={(e) => { setSortOption(e.target.value) }}
-          size="small"
-          dir="ltr"
-          IconComponent={(props) => (
-            <ExpandMoreIcon {...props} sx={{
-              color: '#FFA500',
-              transform: props.open ? 'rotate(0deg)' : 'rotate(180deg)',
-              transition: 'transform 0.3s ease'
-            }} />
-          )}
-          sx={{
-            backgroundColor: '#222',
-            borderRadius: '8px',
-            color: 'white',
-            width: '180px',
-            textAlign: 'right',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-            '& .MuiSelect-select': { color: 'white', paddingRight: '12px' },
-            '&:hover': { backgroundColor: '#333' },
-            input: { color: "white" },
-            "& .MuiInputLabel-root": { color: "#ddd" }, // צבע הכותרת בהיר
-            "& .MuiInputLabel-root.Mui-focused": { color: "#FF9800" },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#666" },
-              "&:hover fieldset": { borderColor: "#FF9800" },
-              "&.Mui-focused fieldset": { borderColor: "#FF9800" },
-            },
-            "&:before": { borderBottom: "none" },
-            "&:after": { borderBottom: "none" },
-            "&:hover:before": { borderBottom: "none !important" }
-          }}
-          MenuProps={{
-            PaperProps: {
-              sx: {
-                backgroundColor: '#333',
-                color: 'white',
-                borderRadius: '8px',
-                '& .MuiMenuItem-root': {
-                  '&.Mui-selected': {
-                    backgroundColor: '#FFA500',
-                    color: 'black',
-                  },
-                  '&:hover': {
-                    backgroundColor: '#444',
-                  },
-                },
-              },
-            },
-          }}
-        >
-          <MenuItem value="title">מיין לפי שם</MenuItem>
-          <MenuItem value="date">מיין לפי תאריך</MenuItem>
-        </Select>
-
-        {/* לפי ז'אנר */}
-        <Select
-          value={genreFilter}
-          onChange={(e) => setGenreFilter(e.target.value)}
-          size="small"
-          dir="ltr"
-          IconComponent={(props) => (
-            <ExpandMoreIcon {...props} sx={{
-              color: '#FFA500',
-              transform: props.open ? 'rotate(0deg)' : 'rotate(180deg)',
-              transition: 'transform 0.3s ease'
-            }} />
-          )}
-          sx={{
-            backgroundColor: '#222',
-            borderRadius: '8px',
-            color: 'white',
-            width: '180px',
-            textAlign: 'right',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-            '& .MuiSelect-select': { color: 'white', paddingRight: '12px' },
-            '&:hover': { backgroundColor: '#333' },
-          }}
-          MenuProps={{
-            PaperProps: {
-              sx: {
-                backgroundColor: '#333',
-                color: 'white',
-                borderRadius: '8px',
-                '& .MuiMenuItem-root': {
-                  '&.Mui-selected': {
-                    backgroundColor: '#FFA500',
-                    color: 'black',
-                  },
-                  '&:hover': {
-                    backgroundColor: '#444',
-                  },
-                },
-              },
-            },
-          }}
-        >
-          <MenuItem value="all">כל הז'אנרים</MenuItem>
-          {genres.map((genre, index) => (
-            <MenuItem key={index} value={genre}>{genre}</MenuItem>
-          ))}
-        </Select>
-
-        {/* חיפוש */}
-        <TextField
-          label="חיפוש"
-          variant="outlined"
-          size="small"
-          sx={{
-            backgroundColor: '#222',
-            borderRadius: '8px',
-            color: 'white',
-            width: '150px',
-            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
-            '& .MuiInputBase-input': { color: 'white' },
-            '& label': { color: 'gray' },
-            '&:hover': { backgroundColor: '#333' },
-            input: { color: "white" },
-            "& .MuiInputLabel-root": { color: "#ddd" }, // צבע הכותרת בהיר
-            "& .MuiInputLabel-root.Mui-focused": { color: "#FF9800" },
-            "& .MuiOutlinedInput-root": {
-              "&.Mui-focused fieldset": { borderColor: "#666" }
-            }
-          }}
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </Box>
-
-
-
-
-
+      <SongFilters
+        sortOption={sortOption}
+        setSortOption={setSortOption}
+        genreFilter={genreFilter}
+        setGenreFilter={setGenreFilter}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        genres={genres}
+      />
 
       {filteredSongs.length === 0 ? (
         <Typography textAlign="center" sx={{ marginTop: "20px" }}>
@@ -237,6 +105,8 @@ const SongsList = () => {
             gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
             gap: "40px",
             marginTop: "40px",
+            padding:"20px",
+            paddingTop:"0px",
           }}
         >
           {filteredSongs.map((song: Song) => (
@@ -266,7 +136,7 @@ const SongsList = () => {
                 sx={{
                   width: "100%",
                   height: "150px",
-                  backgroundImage: `url(/avatars/music2.jpg)`,
+                  backgroundImage: `url(${song.pathPicture})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   borderRadius: "8px 8px 0 0",

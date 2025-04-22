@@ -7,11 +7,23 @@ const MusicLibrary = () => {
   return (
     <Box sx={{ minHeight: "100vh", color: "white", padding: 3, marginTop: "60px" }}>
       {/* כותרת */}
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "right", marginRight: "5%" ,position: "sticky",
-          top: 62,  // דואג שהאלמנט יישאר למעלה
-          backgroundColor: "#212121", // אם רוצים צבע רקע כדי שהאלמנט יהיה תמיד בולט
-          zIndex: 1,paddingBottom:"5px"}}>
-      <Typography variant="h3" fontWeight="bold" fontSize="60px">
+      <Box sx={{
+        display: "flex", alignItems: "center", justifyContent: "right", marginRight: "5%", position: "sticky",
+        top: 62,  // דואג שהאלמנט יישאר למעלה
+        backgroundColor: "#1A1A1A", // אם רוצים צבע רקע כדי שהאלמנט יהיה תמיד בולט
+        zIndex: 100, paddingBottom: "5px"
+      }}>
+        <Typography
+          variant="h3"
+          fontWeight="bold"
+          fontSize="60px"
+          sx={{
+            background: "linear-gradient(90deg, #D59039, #F7C26B)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            marginLeft: "20px", // ריווח מהניווט אם צריך
+          }}
+        >
           מוזיקה
         </Typography>
         {/* ניווט בין שירים ואמנים */}
@@ -23,7 +35,7 @@ const MusicLibrary = () => {
             אמנים
           </NavLink>
         </Box>
-        
+
       </Box>
 
       <Outlet />
@@ -32,7 +44,7 @@ const MusicLibrary = () => {
 };
 
 
-const NavLink = ({ to, active, children }:{to:string, active:boolean, children:React.ReactNode}) => (
+const NavLink = ({ to, active, children }: { to: string, active: boolean, children: React.ReactNode }) => (
   <Typography
     component={Link}
     to={to}
@@ -47,14 +59,15 @@ const NavLink = ({ to, active, children }:{to:string, active:boolean, children:R
       "&::after": {
         content: '""',
         display: "block",
-        width: active ? "60%" : "0%", // הפס רק בלשונית הפעילה
+        width: active ? "60%" : "0%",
         height: "3px",
-        backgroundColor: "#FFA726",
-        borderRadius: "2px", // קצוות מעוגלים
+        background: "linear-gradient(90deg, #D59039, #F7C26B)",
+        borderRadius: "2px",
         position: "absolute",
         bottom: "0",
         left: "50%",
         transform: "translateX(-50%)",
+        transition: "width 0.3s ease", // אנימציה חלקה
       },
     }}
   >

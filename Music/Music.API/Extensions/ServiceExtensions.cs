@@ -30,6 +30,7 @@ namespace Music.Api.Extensions
             services.AddScoped<IUserFollowerService, UserFollowerService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IS3Service, S3Service>();
+            services.AddScoped<IEmailService, EmailService>();
         }
 
 

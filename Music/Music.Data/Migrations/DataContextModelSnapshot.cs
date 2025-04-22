@@ -107,6 +107,10 @@ namespace Music.Data.Migrations
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
 
+                    b.Property<string>("PathPicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PathSong")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

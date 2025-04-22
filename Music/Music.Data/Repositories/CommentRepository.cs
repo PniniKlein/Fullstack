@@ -22,7 +22,7 @@ namespace Music.Data.Repositories
         }
         public async Task<IEnumerable<Comment>> GetBySongIdFullAsync(int songId)
         {
-            return await _dataSet.Where(x=>x.SongId==songId).Include(x => x.User).ToListAsync();
+            return await _dataSet.Where(x=>x.SongId==songId).Include(x => x.User).OrderByDescending(x => x.Create_at).ToListAsync();
         }
         public async Task<IEnumerable<Comment>> GetByUserIdAsync(int userId)
         {

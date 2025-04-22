@@ -9,7 +9,6 @@ namespace Music.Core.DTOs
 {
     public class LoginResponseDto
     {
-        public int Id { get; set; }
         public User User { get; set; }
         public string Token { get; set; }
     }

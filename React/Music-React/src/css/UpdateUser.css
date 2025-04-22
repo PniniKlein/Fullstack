@@ -1,0 +1,89 @@
+.update-user-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* min-height: 100vh; */
+  }
+  
+  .update-user-card {
+    border-radius: 15px !important;
+    overflow: hidden !important;
+    width: 520px;
+    padding: 20px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    background-color: #1E1E1E !important;
+  }
+  
+  .update-user-title {
+    font-size: 25px !important;
+    font-weight: bold !important;
+    margin-bottom: 16px !important;
+    background: linear-gradient(90deg, #c67c28, #e3aa50);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .update-user-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .update-user-textfield {
+    background-color: #333;
+    border-radius: 8px;
+  }
+  
+  .update-user-textfield input {
+    color: white;
+  }
+  
+  .update-user-textfield label {
+    color: #ddd;
+  }
+  
+  .update-user-textfield label.Mui-focused {
+    color: #d5933c;
+  }
+  
+  .update-user-textfield .MuiOutlinedInput-root fieldset {
+    border-color: #666;
+  }
+  
+  .update-user-textfield .MuiOutlinedInput-root:hover fieldset {
+    border-color: #d5933c;
+  }
+  
+  .update-user-textfield .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #d5933c;
+  }
+  
+  .buttons-container {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .button {
+    background: linear-gradient(90deg, #c67c28, #e3aa50);
+    color: white;
+  }
+  
+  .button-cancel {
+    color: white !important;
+    border-color: #d5933c !important;
+  }
+  
+  .avatar-large {
+    /* font-size: 20px; */
+    width: 100px !important;
+    height: 100px !important;
+    margin-top:10px !important;
+    background-color: transparent;
+    border: 3px solid transparent;
+    background-image: linear-gradient(#1e1e1e, #1e1e1e), linear-gradient(90deg, #D59039, #F7C26B);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
+    box-shadow: 0 0px 0px rgba(213, 144, 57, 0.5) !important;
+}

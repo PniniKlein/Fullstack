@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from "react";
-import { PlayArrow, Pause, VolumeUp, VolumeOff, SkipPrevious, SkipNext, FastForward, FastRewind } from "@mui/icons-material";
+import { VolumeUp, VolumeOff } from "@mui/icons-material";
 import { Box, IconButton, Slider, Typography, CardMedia } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, StoreType } from "../store/store";
 import { useNavigate } from "react-router";
 import { SkipPreviousRounded, Replay10Rounded, PlayArrowRounded, PauseRounded, Forward30Rounded, SkipNextRounded } from '@mui/icons-material';
 import { resetRestartSong } from "../store/songSlice";
+import SongOptionsMenu from "./SongOptionMenu";
+
 
 const formatTime = (time: number) => {
     const hours = Math.floor(time / 3600).toString().padStart(2, '0');
@@ -25,6 +27,8 @@ const SongPlayer = () => {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const navigate = useNavigate();
     const dispatch = useDispatch<Dispatch>();
+    const [playbackRate, setPlaybackRate] = useState(1);
+
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.volume = muted ? 0 : volume;
@@ -81,23 +85,23 @@ const SongPlayer = () => {
 
     return (
         <>{songPlayer.id !== 0 && (
-            <Box sx={{ position: "fixed", bottom: 0, width: "99%", backgroundColor: "#212121", color: "white", direction: "rtl", paddingTop: '5px', borderTop: "1px solid rgba(0, 0, 0, 0.64)", }}>
+            <Box sx={{ position: "fixed", bottom: 0, width: "99%", backgroundColor: "#1A1A1A", color: "white", direction: "rtl", paddingTop: '5px' }}>
                 <audio ref={audioRef} src={songPlayer.pathSong} onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleTimeUpdate} onEnded={handleSongEnd} />
 
                 {/* פס התקדמות */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: -1 }}>
-                    <Typography sx={{ mx: 2 }}>{formatTime(duration - currentTime)}</Typography>
+                    <Typography sx={{ mx: 1.5, fontSize: '15px' }}>{formatTime(duration - currentTime)}</Typography>
                     <Slider
                         value={currentTime}
                         max={duration}
                         onChange={handleSeek}
                         sx={{
-                            color: '#f57c00',
-                            height: 5,
+                            color: '#D59039',
+                            height: 4,
                             '& .MuiSlider-thumb': {
-                                width: 20,
-                                height: 20,
-                                backgroundColor: '#f57c00',
+                                width: 18,
+                                height: 18,
+                                backgroundColor: '#D59039',
                                 border: '4px solid rgba(60, 60, 60, 0.8)',
                                 '&:focus, &:hover, &:active': {
                                     boxShadow: '0 0 0 8px rgba(0, 0, 0, 0.2)', // עיגול שחור שקוף במעבר עכבר
@@ -105,7 +109,7 @@ const SongPlayer = () => {
 
                             },
                             '& .MuiSlider-track': {
-                                backgroundColor: '#f57c00',
+                                backgroundColor: 'linear-gradient(90deg, #D59039, #F7C26B);',
                             },
                             '& .MuiSlider-rail': {
                                 backgroundColor: 'rgba(240, 240, 240, 0.88)',
@@ -115,20 +119,31 @@ const SongPlayer = () => {
                             },
                         }}
                     />
-                    <Typography sx={{ mx: 2 }}>{formatTime(currentTime)}</Typography>
+                    <Typography sx={{ mx: 1.5, fontSize: '15px' }}>{formatTime(currentTime)}</Typography>
                 </Box>
 
                 {/* נגן */}
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", p: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", p: '8px' }}>
 
-                    <Box sx={{ display: "flex", alignItems: "center", marginRight: "40px" }}>
-                        <Slider value={muted ? 0 : volume} min={0} max={1} step={0.01} onChange={(e, newValue) => setVolume(newValue as number)} sx={{
-                            color: '#f57c00',
-                            height: 4,
+                    <Box sx={{ display: "flex", alignItems: "center", marginRight: "10px" }}>
+                        <SongOptionsMenu
+                            song={songPlayer}
+                            playbackRate={playbackRate}
+                            onRateChange={(rate) => {
+                                setPlaybackRate(rate);
+                                if (audioRef.current) {
+                                    audioRef.current.playbackRate = rate;
+                                }
+                            }}
+                        />
+
+                        <Slider value={muted ? 0 : volume} min={0} max={1} step={0.01} onChange={(_, newValue) => setVolume(newValue as number)} sx={{
+                            color: '#D59039',
+                            height: 3,
                             '& .MuiSlider-thumb': {
                                 width: 20,
                                 height: 20,
-                                backgroundColor: '#f57c00',
+                                backgroundColor: '#D59039',
                                 border: '4px solid rgba(60, 60, 60, 0.8)',
                                 '&:focus, &:hover, &:active': {
                                     boxShadow: '0 0 0 8px rgba(0, 0, 0, 0.2)', // עיגול שחור שקוף במעבר עכבר
@@ -136,7 +151,7 @@ const SongPlayer = () => {
 
                             },
                             '& .MuiSlider-track': {
-                                backgroundColor: '#f57c00',
+                                backgroundColor: 'linear-gradient(90deg, #D59039, #F7C26B);',
                             },
                             '& .MuiSlider-rail': {
                                 backgroundColor: 'rgba(240, 240, 240, 0.89)',
@@ -174,7 +189,7 @@ const SongPlayer = () => {
                                 width: 60,
                                 height: 60,
                                 borderRadius: "50%",
-                                background: "linear-gradient(135deg, #f57c00, #ff3d00, #8e24aa)",
+                                background: "linear-gradient(90deg, #D59039, #F7C26B);",
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
@@ -218,10 +233,10 @@ const SongPlayer = () => {
                             '&::before': songPlayer.isPublic ? {
                                 content: '""',
                                 position: 'absolute',
-                                top: '-10px',
-                                left: '-10px',
-                                right: '-10px',
-                                bottom: '-10px',
+                                top: '-7px',
+                                left: '-7px',
+                                right: '-7px',
+                                bottom: '-7px',
                                 borderRadius: 1,
                                 backgroundColor: 'rgba(200, 200, 200, 0.1)',
                                 transition: 'transform 0.05s, opacity 0.2s',
@@ -238,9 +253,9 @@ const SongPlayer = () => {
                         <Typography variant="h6">{songPlayer.title}</Typography>
                         <CardMedia
                             component="img"
-                            image={'/avatars/music2.jpg'}
+                            image={songPlayer.pathPicture}
                             alt={songPlayer.title}
-                            sx={{ width: 80, height: 80, borderRadius: 1, mr: 2 }}
+                            sx={{ width: 65, height: 65, borderRadius: 1, mr: 2 }}
                         />
                     </Box>
                 </Box>

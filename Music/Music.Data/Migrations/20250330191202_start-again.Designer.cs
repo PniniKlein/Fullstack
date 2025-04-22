@@ -12,8 +12,8 @@ using Music.Data;
 namespace Music.Data.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250318185708_change_enum_to_string")]
-    partial class change_enum_to_string
+    [Migration("20250330191202_start-again")]
+    partial class startagain
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -109,6 +109,10 @@ namespace Music.Data.Migrations
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PathPicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PathSong")
                         .IsRequired()

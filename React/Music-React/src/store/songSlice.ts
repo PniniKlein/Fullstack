@@ -9,7 +9,8 @@ const emptySong: Song = {
     gener: '',
     comments: [],
     create_at: '',
-    isPublic: false
+    isPublic: false,
+    pathPicture: '',
 };
 
 const songSlice = createSlice({

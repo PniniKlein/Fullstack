@@ -1,91 +1,62 @@
-import { Link } from "react-router-dom";
-import {  useSelector } from "react-redux";
-import {  StoreType } from "../store/store";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-// import { logOut } from "../store/userSlice";
+import { Link, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { StoreType } from "../store/store";
+import { AppBar, Toolbar, Typography, Button, Box, IconButton } from "@mui/material";
 import UserDetails from "./UserDetails";
+import { useEffect, useState } from "react";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import LoginIcon from '@mui/icons-material/Login';
+import "../css/Header.css";
 
 const Header = () => {
   const authState = useSelector((store: StoreType) => store.user.authState);
-  // const dispatch = useDispatch<Dispatch>();
+  const location = useLocation();
 
+  const [activeButton, setActiveButton] = useState("/");
+
+  useEffect(() => {
+    setActiveButton(location.pathname);
+  }, [location]);
+
+
+  const menuItems = [
+    { label: "בית", to: "/" },
+    { label: "מוזיקה", to: "/musicLibrary/songList" },
+  ];
+
+  if (authState) {
+    menuItems.push({ label: "אזור אישי", to: "/mySongs" });
+  }
   return (
     <AppBar
       position="fixed"
       sx={{
-        backgroundColor: "#2C2C2C", // צבע כהה שמתואם לכרטיסים
-        boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.4)", // צל חזק שמתואם לכרטיסים
+        backgroundColor: "#1A1A1A",
+        boxShadow: "0px 0px 0px rgba(0, 0, 0, 0.4)",
       }}
     >
       <Toolbar sx={{ display: "flex", justifyContent: "space-between", padding: "0 20px" }}>
-        {/* כפתורי התחברות/הרשמה - בצד שמאל */}
-        {authState&&<Button
-          component={Link}
-          to="mySongs"
-          variant="outlined"
-          sx={{
-            marginLeft:"10px",
-            borderColor: "rgba(255, 255, 255, 0.5)", // מסגרת עדינה
-            color: "rgba(255, 255, 255, 0.8)", // צבע טקסט בהיר
-            "&:hover": {
-              borderColor: "white",
-              backgroundColor: "rgba(255, 255, 255, 0.1)", // רקע בהובר
-            },
-          }}
-        >
-          השירים שלי
-        </Button>}
-        <Button
-          component={Link}
-          to="musicLibrary/songList"
-          variant="outlined"
-          sx={{
-            marginLeft:"10px",
-            borderColor: "rgba(255, 255, 255, 0.5)", // מסגרת עדינה
-            color: "rgba(255, 255, 255, 0.8)", // צבע טקסט בהיר
-            "&:hover": {
-              borderColor: "white",
-              backgroundColor: "rgba(255, 255, 255, 0.1)", // רקע בהובר
-            },
-          }}
-        >
-          מוזיקה
-        </Button>
-        <Button
-          component={Link}
-          to="/about"
-          variant="outlined"
-          sx={{
-            marginLeft:"10px",
-            borderColor: "rgba(255, 255, 255, 0.5)", // מסגרת עדינה
-            color: "rgba(255, 255, 255, 0.8)", // צבע טקסט בהיר
-            "&:hover": {
-              borderColor: "white",
-              backgroundColor: "rgba(255, 255, 255, 0.1)", // רקע בהובר
-            },
-          }}
-        >
-          אודות
-        </Button>
-        <Button
-          component={Link}
-          to="/"
-          variant="outlined"
-          sx={{
-            marginLeft:"10px",
-            borderColor: "rgba(255, 255, 255, 0.5)", // מסגרת עדינה
-            color: "rgba(255, 255, 255, 0.8)", // צבע טקסט בהיר
-            "&:hover": {
-              borderColor: "white",
-              backgroundColor: "rgba(255, 255, 255, 0.1)", // רקע בהובר
-            },
-          }}
-        >
-          בית
-        </Button>
-        
+        {/* כפתורים */}
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          {menuItems.map((item) => (
+            <Box
+              key={item.to}
+              className={`header-button-wrapper ${activeButton === item.to ? "active" : ""}`}
+              sx={{ marginLeft: "10px" }}
+            >
+              <Button
+                component={Link}
+                to={item.to}
+                onClick={() => setActiveButton(item.to)}
+                className="header-button"
+              >
+                {item.label}
+              </Button>
+            </Box>
+          ))}
+        </Box>
 
-        {/* כותרת האפליקציה */}
+        {/* כותרת */}
         <Typography
           variant="h6"
           sx={{
@@ -96,44 +67,42 @@ const Header = () => {
             color: "white",
           }}
         >
-          Music App 🎵
+          {/* SingSong */}
         </Typography>
-        {!authState?  (
+
+        {/* התחברות / משתמש */}
+        {!authState ? (
           <Box sx={{ display: "flex", gap: 2 }}>
-            <Button
-              component={Link}
-              to="/login"
-              variant="outlined"
-              sx={{
-                borderColor: "rgba(255, 255, 255, 0.5)", // מסגרת עדינה
-                color: "rgba(255, 255, 255, 0.8)", // צבע טקסט בהיר
-                "&:hover": {
-                  borderColor: "white",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)", // רקע בהובר
-                },
-              }}
-            >
+            <Box className="login-button-container">
+            <Button variant="outlined"  component={Link} to="/login" className="header-button-login">
+            <IconButton
+            component={Link}
+            to="/login"
+            sx={{ color: 'white' }}
+          >
+            <LoginIcon />
+          </IconButton>
               להתחברות
             </Button>
-            <Button
-              component={Link}
-              to="/register"
-              variant="outlined"
-              sx={{
-                borderColor: "rgba(255, 255, 255, 0.5)", // מסגרת עדינה
-                color: "rgba(255, 255, 255, 0.8)", // צבע טקסט בהיר
-                "&:hover": {
-                  borderColor: "white",
-                  backgroundColor: "rgba(255, 255, 255, 0.1)", // רקע בהובר
-                },
-              }}
-            >
+            </Box>
+            <Button variant="contained" component={Link} to="/register" endIcon={<PersonAddIcon />} className="header-button-register">
               להרשמה
             </Button>
           </Box>
-        ):( <>
-          <UserDetails/>
-          </>)}
+        ) : (
+          <UserDetails />
+        )}
+        {/* {!authState ? (
+          <IconButton
+            component={Link}
+            to="/login"
+            sx={{ color: 'white' }}
+          >
+            <LoginIcon />
+          </IconButton>
+        ) : (
+          <UserDetails />
+        )} */}
       </Toolbar>
     </AppBar>
   );

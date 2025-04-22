@@ -1,0 +1,58 @@
+.comment-input {
+    width: 700px;
+    background-color: #2b2b2b;
+    border-radius: 10px;
+    color: #f1f1f1;
+    font-size: 18px;
+    padding-right: 8px;
+    min-height: 46px;
+  }
+  
+  .comment-input .MuiOutlinedInput-root {
+    color: #f1f1f1;
+    font-size: 18px;
+  }
+  
+  .comment-input input {
+    color: #f1f1f1;
+    /* padding: 10px 0; */
+  }
+  
+  .comment-input .MuiOutlinedInput-root .Mui-focused fieldset {
+    border-color: #666;
+  }
+  
+  .comment-input fieldset {
+    border-color: #444;
+  }
+  
+  .comment-input:hover fieldset {
+    border-color: #666;
+  }
+  
+  .star {
+    cursor: pointer;
+    font-size: 24px;
+    transition: all 0.3s ease;
+    color: #aaa;
+  }
+  
+  .star.hovered {
+    background: linear-gradient(90deg, #d59039, #f7c26b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .send-icon {
+    color: transparent;
+    background: transparent;
+  }
+  
+  .send-icon:hover {
+    opacity: 0.8;
+  }
+  
+  .send-icon .MuiSvgIcon-root {
+    fill: url(#gradient);
+  }
+  

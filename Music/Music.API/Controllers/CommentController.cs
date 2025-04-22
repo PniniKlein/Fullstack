@@ -73,7 +73,7 @@ namespace Music.API.Controllers
                 return BadRequest("Comment data is required.");
             var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
             var tokenId = int.Parse(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
-            if (tokenId != id)
+            if (tokenId != commentPostModel.UserId)
                 return Forbid();
             CommentDto commentDto = _mapper.Map<CommentDto>(commentPostModel);
             commentDto = await _iService.UpdateAsync(id, commentDto);

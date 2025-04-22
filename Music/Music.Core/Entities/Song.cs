@@ -16,6 +16,7 @@ namespace Music.Core.Entities
         public string Gener { get; set; }
         public bool IsPublic { get; set; }
         public string PathSong { get; set; }
+        public string PathPicture { get; set; }
         public int UserId { get; set; }
         public List<Comment> Comments { get; set; }
 

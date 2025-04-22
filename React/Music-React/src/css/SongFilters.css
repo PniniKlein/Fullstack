@@ -1,0 +1,62 @@
+.filters-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    gap: 10px;
+    position: sticky;
+    top: 80px;
+    z-index: 1000;
+  }
+  
+  .custom-select {
+    background-color: #222;
+    border-radius: 8px;
+    color: white;
+    width: 180px;
+    text-align: right;
+    padding-left: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .custom-select .MuiSelect-select {
+    color: white;
+    padding-right: 12px;
+  }
+  
+  .custom-select:hover {
+    background-color: #333;
+  }
+  
+  .custom-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    transition: transform 0.3s ease;
+    color: white;
+    pointer-events: none;
+  }
+  
+  .custom-icon.open {
+    transform: translateY(-50%) rotate(180deg);
+  }
+  
+  .menu-paper {
+    background-color: #333 !important;
+    color: white;
+    border-radius: 8px;
+  }
+  
+  .menu-paper .MuiMenuItem-root {
+    color: white;
+  }
+  
+  .menu-paper .MuiMenuItem-root.Mui-selected {
+    background-color: #FFA500;
+    color: black;
+  }
+  
+  .menu-paper .MuiMenuItem-root:hover {
+    background-color: #444;
+  }
+  

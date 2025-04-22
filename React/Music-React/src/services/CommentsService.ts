@@ -5,6 +5,7 @@ export const getCommentsBySongId = async (songId: number) => {
     try {
        const res = await api.get('/Comment/Song/'+songId,
        )
+       console.log(res.data)
        return res.data;
     } catch (e) {
         console.log(e);

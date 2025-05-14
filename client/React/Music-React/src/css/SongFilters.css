@@ -1,0 +1,190 @@
+.song-filters {
+  width: 50%;
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  position: sticky;
+  top: 80px;
+  margin-top: 0px;
+  margin-left: 0px;
+  right: 70%;
+  padding: 0px;
+  left: 0px;
+  z-index: 1000;
+}
+
+.select-input {
+  background-color: #222 !important;
+  border-radius: 5px;
+  color: white;
+  width: 180px;
+  text-align: right;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.select-input .MuiSelect-select {
+  color: white;
+  padding-right: 12px;
+}
+
+.select-input.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #111;
+}
+
+.menu-item {
+  color: white !important;
+  border-radius: "5px" !important;
+  position: relative;
+  margin: 5px 5px !important;
+  margin-bottom: 5px;
+}
+
+.menu-item.selected {
+  background-color: #444 !important;
+  border-radius: 5px !important;
+}
+
+.menu-item.selected:before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 20px;
+  background: linear-gradient(90deg, #D59039, #F7C26B);
+  border-radius: 5px !important;
+  transition: width 0.3s;
+  margin-right: 0px;
+}
+
+.menu-item:hover {
+  background-color: #333 !important;
+  border-radius: 5px;
+}
+
+.MuiSelect-icon.Mui-expanded {
+  transform: rotate(180deg);
+}
+
+.MuiPaper-root {
+  background-color: #222 !important;
+  margin-top: 5px;
+  color: white;
+  border-radius: 8px;
+}
+
+/* .song-filters-container {
+  position: sticky;
+  top: 140px;
+  z-index: 90;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 5%;
+  background: linear-gradient(to bottom, rgba(26, 26, 26, 0.95), rgba(26, 26, 26, 0.8));
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.song-filters-wrapper {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 700px;
+}
+
+.filter-select {
+  background-color: rgba(40, 40, 40, 0.8) !important;
+  border-radius: 8px;
+  color: white;
+  width: 180px;
+  text-align: right;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.filter-select:hover {
+  background-color: rgba(50, 50, 50, 0.8) !important;
+  border-color: rgba(213, 144, 57, 0.3);
+}
+
+.filter-select .MuiSelect-select {
+  color: white;
+  padding: 10px 12px;
+  font-weight: 500;
+}
+
+.filter-select .MuiOutlinedInput-notchedOutline {
+  border-color: transparent;
+}
+
+.filter-select.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(247, 194, 107, 0.5);
+}
+
+.select-icon {
+  color: white;
+  transition: transform 0.3s ease;
+}
+
+.select-icon.open {
+  transform: rotate(180deg);
+  color: #f7c26b;
+}
+
+.filter-menu-item {
+  color: white !important;
+  border-radius: 6px !important;
+  position: relative;
+  margin: 5px !important;
+  padding: 10px 15px !important;
+  transition: all 0.2s ease;
+}
+
+.filter-menu-item.selected {
+  background-color: rgba(68, 68, 68, 0.8) !important;
+  border-radius: 6px !important;
+}
+
+.filter-menu-item.selected:before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 70%;
+  background: linear-gradient(90deg, #d59039, #f7c26b);
+  border-radius: 2px !important;
+}
+
+.filter-menu-item:hover {
+  background-color: rgba(51, 51, 51, 0.8) !important;
+}
+
+.MuiPaper-root {
+  background-color: rgba(34, 34, 34, 0.95) !important;
+  margin-top: 5px;
+  color: white;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .song-filters-wrapper {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .filter-select {
+    width: 45%;
+  }
+} */

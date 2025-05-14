@@ -1,0 +1,217 @@
+.comment-input {
+    width: 700px;
+    background-color: #2b2b2b;
+    border-radius: 10px;
+    color: #f1f1f1;
+    font-size: 18px;
+    padding-right: 8px;
+    min-height: 46px;
+  }
+  
+  .comment-input .MuiOutlinedInput-root {
+    color: #f1f1f1;
+    font-size: 18px;
+  }
+  
+  .comment-input input {
+    color: #f1f1f1;
+  }
+  
+  .comment-input .MuiOutlinedInput-root .Mui-focused fieldset {
+    border-color: #666;
+  }
+  
+  .comment-input fieldset {
+    border-color: #444;
+  }
+  
+  .comment-input:hover fieldset {
+    border-color: #666;
+  }
+  
+  .star {
+    cursor: pointer;
+    font-size: 24px;
+    transition: all 0.3s ease;
+    color: #aaa;
+  }
+  
+  .star.hovered {
+    background: linear-gradient(90deg, #d59039, #f7c26b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .send-icon {
+    color: transparent;
+    background: transparent;
+  }
+  
+  .send-icon:hover {
+    opacity: 0.8;
+  }
+  
+  .send-icon .MuiSvgIcon-root {
+    fill: url(#gradient);
+  }
+  
+/* 
+   .add-comment-wrapper {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(30, 30, 30, 0.7);
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    animation: slideDown 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .comment-input {
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+  
+  .comment-input.expanded {
+    margin-bottom: 10px;
+  }
+  
+  .comment-input .MuiOutlinedInput-root {
+    background-color: rgba(40, 40, 40, 0.8);
+    border-radius: 12px;
+    color: #f1f1f1;
+    font-size: 16px;
+    padding-right: 8px;
+    min-height: 56px;
+    transition: all 0.3s ease;
+  }
+  
+  .comment-input .MuiOutlinedInput-root:hover {
+    background-color: rgba(50, 50, 50, 0.8);
+  }
+  
+  .comment-input .MuiOutlinedInput-root.Mui-focused {
+    background-color: rgba(50, 50, 50, 0.9);
+  }
+  
+  .comment-input .MuiOutlinedInput-root fieldset {
+    border-color: rgba(213, 144, 57, 0.3);
+    transition: border-color 0.3s ease;
+  }
+  
+  .comment-input .MuiOutlinedInput-root:hover fieldset {
+    border-color: rgba(247, 194, 107, 0.5);
+  }
+  
+  .comment-input .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #f7c26b;
+    border-width: 2px;
+  }
+  
+  .comment-input .MuiInputBase-input {
+    color: #fff;
+    padding: 12px 0;
+  }
+  
+  /* Rating Stars */
+  /* .rating-stars-container {
+    display: flex;
+    gap: 5px;
+    padding-right: 5px;
+  }
+  
+  .rating-star {
+    font-size: 22px;
+    color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  
+  .rating-star:hover,
+  .rating-star.active {
+    color: #f7c26b;
+    transform: scale(1.1);
+    text-shadow: 0 0 10px rgba(247, 194, 107, 0.5);
+  }
+  
+  .divider {
+    height: 24px;
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 0 10px;
+  }
+  
+  /* Action Buttons */
+  /* .input-actions {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .emoji-button,
+  .send-button {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .emoji-button:hover {
+    color: rgba(255, 255, 255, 0.9) !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+  
+  .send-button:not(.Mui-disabled):hover {
+    color: #f7c26b !important;
+    background-color: rgba(247, 194, 107, 0.1) !important;
+    transform: translateX(-2px);
+  }
+  
+  .send-button.Mui-disabled {
+    color: rgba(255, 255, 255, 0.3) !important;
+  }
+  
+  /* Tips */
+  /* .comment-tips {
+    text-align: left;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    padding: 0 10px;
+    animation: fadeIn 0.5s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Responsive */
+  /* @media (max-width: 768px) {
+    .add-comment-wrapper {
+      padding: 15px;
+    }
+  
+    .rating-star {
+      font-size: 20px;
+    }
+  
+    .divider {
+      margin: 0 5px;
+    }
+  }  */
+     

@@ -1,0 +1,391 @@
+/* .songCard {
+  margin-top: 0px;
+  position: relative;
+  width: 300px;
+  height: 200px;
+  border-radius: 10px !important;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.songCard:hover .playButton {
+  opacity: 1 !important;
+}
+
+.songCard-playButton {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border: 2px solid white !important;
+  border-radius: 50% !important;
+  color: white !important;
+  background-color: transparent !important;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.78) !important;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.2s ease !important;
+}
+
+.playButton:hover {
+  transform: translate(-50%, -50%) scale(1.1) !important;
+  border-color: #F7C26B !important;
+}
+
+.songCard-songFooter {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.72);
+  padding: 12px 15px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.song-title {
+  width: 90%;
+  font-weight: bold;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: linear-gradient(90deg, #D59039, #F7C26B);
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+}
+
+.moreButton {
+  position: absolute !important;
+  bottom: 2px !important;
+  left: 3px !important;
+  color: #D59039 !important;
+  z-index: 1000;
+  padding:5px 8px !important;
+}
+
+.optionsOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.76);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.optionsMenu {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+  justify-items: center;
+  align-items: center;
+  background-color: transparent;
+}
+
+.optionButton {
+  margin-left: 10px !important;
+  margin-right: 10px !important;
+  grid-column: span 1;
+  transform: scale(1.3);
+  background-color: transparent;
+}
+
+.largeOption {
+  transform: scale(1.7);
+} */
+:root {
+  /* צבעים ראשיים - גרדיאנט כתום/זהב */
+  --color-primary-main: #D59039;
+  --color-primary-light: #F7C26B;
+  --color-primary-dark: #B47020;
+  
+  /* צבעי רקע - אפור כהה מאוד */
+  --color-background-default: #0A0A0C;
+  --color-background-paper: #111114;
+  --color-background-card: #141418;
+  
+  /* צבעי טקסט */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #9A9AA4;
+  --color-text-tertiary: #6A6A78;
+  
+  /* צבעים נוספים */
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-star: #FFD700;
+  
+  /* גרדיאנטים */
+  --gradient-primary: linear-gradient(90deg, var(--color-primary-main), var(--color-primary-light));
+  
+  /* אפקטים */
+  --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.3);
+  --border-radius: 12px;
+}
+
+.songCard {
+  position: relative;
+  width: 260px;
+  border-radius: var(--border-radius) !important;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background-color: var(--color-background-card) !important;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.songCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+}
+
+.imageContainer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.songCard:hover .imageContainer img {
+  transform: scale(1.05);
+}
+
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(0deg, rgba(20, 20, 24, 0.5) 0%, rgba(20, 20, 24, 0.2) 50%, rgba(20, 20, 24, 0.5) 100%);
+  z-index: 1;
+}
+
+.optionsMenu {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 2px;
+  z-index: 10;
+  background-color: rgba(10, 10, 12, 0.6);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  padding: 4px;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+
+.songCard:hover .optionsMenu {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.optionDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--color-text-secondary);
+  margin: 0 2px;
+}
+
+.playButton {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) scale(0.9) !important;
+  border: 2px solid var(--color-primary-light) !important;
+  border-radius: 50% !important;
+  color: var(--color-white) !important;
+  background-color: rgba(10, 10, 12, 0.6) !important;
+  backdrop-filter: blur(4px) !important;
+  box-shadow: 0px 0px 20px rgba(213, 144, 57, 0.4) !important;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  z-index: 10;
+  width: 50px !important;
+  height: 50px !important;
+}
+
+.songCard:hover .playButton {
+  opacity: 1 !important;
+  transform: translate(-50%, -50%) scale(1) !important;
+}
+
+.playButton:hover {
+  transform: translate(-50%, -50%) scale(1.1) !important;
+  background-color: rgba(213, 144, 57, 0.3) !important;
+  border-color: var(--color-primary-main) !important;
+}
+
+.songContent {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.songTitle {
+  font-weight: 700 !important;
+  font-size: 16px !important;
+  line-height: 1.3 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: var(--gradient-primary) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  letter-spacing: -0.3px !important;
+}
+
+.statsContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.statItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.statIcon {
+  color: var(--color-text-tertiary) !important;
+}
+
+.statValue {
+  color: var(--color-text-secondary) !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.03), 
+    rgba(213, 144, 57, 0.15), 
+    rgba(255, 255, 255, 0.03));
+  margin: 2px 0;
+}
+
+.actionsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px !important;
+  border-radius: 8px !important;
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  transition: all 0.2s ease !important;
+  color: var(--color-text-secondary) !important;
+}
+
+.actionButton:hover {
+  background-color: rgba(213, 144, 57, 0.1) !important;
+  color: var(--color-primary-light) !important;
+  transform: translateY(-2px);
+}
+
+.actionIcon {
+  color: inherit !important;
+}
+
+.actionText {
+  color: inherit !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+}
+
+.optionsOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background-color: rgba(10, 10, 12, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.optionsPanel {
+  background-color: var(--color-background-paper);
+  border-radius: var(--border-radius);
+  padding: 16px;
+  width: 260px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.optionItem {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.optionItem:hover {
+  background-color: rgba(213, 144, 57, 0.1);
+}
+
+.optionIcon {
+  color: var(--color-text-secondary) !important;
+  margin-right: 12px !important;
+}
+
+.optionText {
+  color: var(--color-text-primary) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+.ratingBadge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: rgba(10, 10, 12, 0.7);
+  backdrop-filter: blur(4px);
+  border-radius: 8px;
+  padding: 4px 8px;
+  z-index: 10;
+}
+
+.ratingIcon {
+  color: var(--color-star) !important;
+}
+
+.ratingValue {
+  color: var(--color-text-primary) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}

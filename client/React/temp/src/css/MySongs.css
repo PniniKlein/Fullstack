@@ -1,0 +1,78 @@
+.mySongsContainer {
+    padding: 20px;
+    color: white;
+    margin-top: 40px;
+  }
+  
+  .mySongsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 62px;
+    background-color: #1A1A1A;
+    z-index: 1;
+    padding: 20px;
+  }
+  
+  .mySongsTitleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    margin-right: 5%;
+  }
+  
+  .mySongsTitle {
+    width: 310px;
+    white-space: nowrap;
+    font-weight: bold !important;
+    font-size: 50px !important;
+    background: linear-gradient(90deg, #D59039, #F7C26B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-left: 20px;
+  }
+  
+  .mySongsFilter {
+    display: flex;
+    gap: 40px;
+    margin-right: 15%;
+  }
+  
+  .filterOption {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 5px;
+    cursor: pointer;
+  }
+  
+  .filterOption::after {
+    content: "";
+    display: block;
+    width: 0%;
+    height: 3px !important;
+    background: linear-gradient(90deg, #D59039, #F7C26B);
+    border-radius: 2px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+  }
+  
+  .filterOption.active::after {
+    width: 60%;
+  }
+  
+  .songsGrid {
+    margin: 5%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    margin-top: 60px;
+    padding-top: 0px;
+  }
+  

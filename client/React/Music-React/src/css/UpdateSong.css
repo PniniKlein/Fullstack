@@ -1,0 +1,117 @@
+.update-song-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .update-song-card {
+    width: 520px;
+    padding: 20px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+    background-color: #1E1E1E !important;
+  }
+  
+  .update-song-title {
+    font-size: 25px !important;
+    font-weight: bold !important;
+    margin-bottom: 16px !important;
+    background: linear-gradient(90deg, #c67c28, #e3aa50);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .update-song-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .update-song-textfield {
+    background-color: #333;
+    border-radius: 8px;
+  }
+  
+  .update-song-textfield input {
+    color: white;
+  }
+  
+  .update-song-textfield label {
+    color: #ddd;
+  }
+  
+  .update-song-textfield label.Mui-focused {
+    color: #d5933c;
+  }
+  
+  .update-song-textfield .MuiOutlinedInput-root fieldset {
+    border-color: #666;
+  }
+  
+  .update-song-textfield .MuiOutlinedInput-root:hover fieldset {
+    border-color: #d5933c;
+  }
+  
+  .update-song-textfield .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #d5933c;
+  }
+  
+  .switch {
+    color: #777;
+  }
+  
+  .switch-track {
+    background-color: #888;
+  }
+  
+  .switch-checked {
+    color: #c67c28;
+  }
+  
+  .switch-checked + .MuiSwitch-track {
+    background: linear-gradient(90deg, #c67c28, #e3aa50);
+  }
+  
+  .link-box {
+    padding: 1rem;
+    background-color: #333;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .link-box .flex-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .link-box .link-text {
+    margin-bottom:4px ;
+    font-weight: bold;
+    background: linear-gradient(90deg, #c67c28, #e3aa50);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .link-box .link-path {
+    color: white;
+    word-break: break-word;
+  }
+  
+  .buttons-cont {
+    width: 100% !important;
+    display: flex;
+    gap: 10px !important;
+    margin-top: 10px;
+  }
+  
+  .button {
+    background: linear-gradient(90deg, #c67c28, #e3aa50);
+    color: white;
+  }
+  
+  .button-cancel {
+    color: white !important;
+    border-color: #d5933c !important;
+  }

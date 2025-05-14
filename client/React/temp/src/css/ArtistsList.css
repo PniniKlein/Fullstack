@@ -1,0 +1,167 @@
+ .artists-list-container {
+    background-color: #1a1a1a;
+    width: 100%;
+    min-height: 70vh;
+    position: relative;
+  }
+  
+  .artists-search-container {
+    display: flex;
+    justify-content: flex-end;
+    position: sticky;
+    top: 140px;
+    z-index: 90;
+    padding: 15px 5%;
+    background: linear-gradient(to bottom, rgba(26, 26, 26, 0.95), rgba(26, 26, 26, 0.8));
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+ .artists-grid-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding: 40px 5%;
+  }
+  
+.artists-grid {
+    max-width: 2000px !important;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .artist-card {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
+    padding: 15px;
+    border-radius: 16px;
+  }
+  
+  .artist-card:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    /* transform: translateY(-5px); */
+  }
+  
+    .artist-avatar-container {
+    position: relative;
+    margin-bottom: 15px;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+  
+  .artist-avatar {
+    width: 190px !important;
+    height: 190px !important;
+    background-color: #333;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    border: 3px solid transparent;
+  }
+  
+  .artist-hover-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(213, 144, 57, 0), rgba(247, 194, 107, 0));
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+  
+  .artist-card:hover .artist-avatar {
+    border-color: #d59039;
+    transform: scale(1.05);
+  }
+  
+  .artist-card:hover .artist-hover-effect {
+    opacity: 0.3;
+    background: linear-gradient(135deg, rgba(213, 144, 57, 0.3), rgba(247, 194, 107, 0.3));
+  }
+  
+  .artist-name {
+    background: linear-gradient(90deg, #D59039, #F7C26B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #e0e0e0 !important;
+    font-size:20px !important;
+    /* font-weight: 600 !important; */
+    transition: all 0.3s ease;
+    position: relative;
+    padding-bottom: 5px;
+  }
+  
+  .artist-card:hover .artist-name {
+    color: #f7c26b !important;
+  }
+  
+ .artist-name::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #d59039, #f7c26b);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+  }
+  
+  .artist-card:hover .artist-name::after {
+    width: 70%;
+  }
+  
+  .artists-loading,
+  .artists-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+    gap: 20px;
+  }
+  
+  .artists-loader {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top: 3px solid #f7c26b;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (max-width: 1200px) {
+    .artist-avatar {
+      width: 160px !important;
+      height: 160px !important;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .artist-avatar {
+      width: 140px !important;
+      height: 140px !important;
+    }
+  }

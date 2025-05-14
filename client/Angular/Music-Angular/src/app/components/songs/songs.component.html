@@ -1,0 +1,300 @@
+<div class="page-container">
+    <div class="header">
+      <div class="page-title">
+        <h1>Songs</h1>
+        <p>Manage your music collection</p>
+      </div>
+      
+      <div class="header-actions">
+        <div class="search-box">
+          <svg xmlns="http://www.w3.org/2000/svg" class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            [(ngModel)]="searchTerm" 
+            placeholder="Search songs..." 
+          />
+        </div>
+      </div>
+    </div>
+    
+    <div class="filters">
+      <!-- Update the filter options to include visibility filters -->
+      <div class="filter-group">
+        <span class="filter-label">Filter by:</span>
+        <div class="filter-options">
+          <button [class.active]="activeFilter === 'all'" (click)="setFilter('all')">All Songs</button>
+          <button [class.active]="activeFilter === 'popular'" (click)="setFilter('popular')">Popular (15)</button>
+          <button [class.active]="activeFilter === 'recent'" (click)="setFilter('recent')">Recently Added (15)</button>
+          <button [class.active]="activeFilter === 'public'" (click)="setFilter('public')">Public Only</button>
+          <button [class.active]="activeFilter === 'private'" (click)="setFilter('private')">Private Only</button>
+        </div>
+      </div>
+      
+      <div class="filter-group">
+        <span class="filter-label">Sort by:</span>
+        <div class="filter-options">
+          <button [class.active]="sortBy === 'name'" (click)="sortSongs('name')">
+            Name 
+            @if (sortBy === 'name') {
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sort-icon">
+                @if (sortDirection === 'asc') {
+                  <path d="M18 15l-6-6-6 6"></path>
+                } @else {
+                  <path d="M6 9l6 6 6-6"></path>
+                }
+              </svg>
+            }
+          </button>
+          <button [class.active]="sortBy === 'plays'" (click)="sortSongs('plays')">
+            Plays 
+            @if (sortBy === 'plays') {
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sort-icon">
+                @if (sortDirection === 'asc') {
+                  <path d="M18 15l-6-6-6 6"></path>
+                } @else {
+                  <path d="M6 9l6 6 6-6"></path>
+                }
+              </svg>
+            }
+          </button>
+          <button [class.active]="sortBy === 'date'" (click)="sortSongs('date')">
+            Date 
+            @if (sortBy === 'date') {
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sort-icon">
+                @if (sortDirection === 'asc') {
+                  <path d="M18 15l-6-6-6 6"></path>
+                } @else {
+                  <path d="M6 9l6 6 6-6"></path>
+                }
+              </svg>
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+    
+      <!-- אינדיקטור טעינה -->
+  @if (isLoading) {
+    <div class="loading-container">
+      <div class="loading-spinner"></div>
+      <p>Loading songs...</p>
+    </div>
+  }
+    <div class="songs-list">
+      @for (song of filteredSongs; track song.id) {
+        <div class="song-card">
+          <div class="song-cover">
+            <img [src]="song.pathPicture || 'https://ui-avatars.com/api/?name=' + song.title + '&background=D59039&color=fff'" alt="{{ song.title }}">
+            <div class="play-button" (click)="playSong(song)">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </div>
+          </div>
+          
+          <!-- Remove the star rating from song cards and replace with a simple numeric rating -->
+          <div class="song-info">
+            <h3>{{ song.title }}</h3>
+            <p class="song-artist">{{ getArtistName(song.userId) }}</p>
+            
+            <div class="song-meta">
+              <span class="song-genre">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83M16.62 12l-5.74 9.94"></path>
+                </svg>
+                {{ song.gener || 'Unknown' }}
+              </span>
+              <span class="song-visibility">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  @if (song.isPublic) {
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  } @else {
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                  }
+                </svg>
+                {{ getVisibilityLabel(song.isPublic) }}
+              </span>
+              <span class="song-date">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                {{ song.create_at | date:'MMM d, yyyy' }}
+              </span>
+              <span class="song-rating">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                {{ calculateStarRating(song).toFixed(1) }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="song-stats">
+            <div class="stat">
+              <div class="stat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 18v-6a9 9 0 0 1 18 0v6"></path>
+                  <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"></path>
+                </svg>
+              </div>
+              <div class="stat-value">{{ song.plays | number }}</div>
+              <div class="stat-label">Plays</div>
+            </div>
+            
+            <div class="stat">
+              <div class="stat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+              <div class="stat-value">{{ calculateStarRating(song).toFixed(1) }}</div>
+              <div class="stat-label">Rating</div>
+            </div>
+            
+            <div class="stat">
+              <div class="stat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+              </div>
+              <div class="stat-value">{{ getCommentCount(song) }}</div>
+              <div class="stat-label">Comments</div>
+            </div>
+          </div>
+          
+          <div class="song-actions">
+            <button class="delete-btn" (click)="deleteSong(song.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                <span>Delete</span>
+              </button>
+          </div>
+        </div>
+      } @empty {
+        <div class="no-songs">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+            <path d="M9 18V5l12-2v13"></path>
+            <circle cx="6" cy="18" r="3"></circle>
+            <circle cx="18" cy="16" r="3"></circle>
+          </svg>
+          <p>No songs found. Try adjusting your search.</p>
+        </div>
+      }
+    </div>
+    
+    <!-- Confirmation Dialog -->
+    @if (showConfirmDialog) {
+      <div class="dialog-overlay">
+        <div class="dialog confirm-dialog">
+          <div class="dialog-header">
+            <h2>Confirm Deletion</h2>
+          </div>
+          <div class="dialog-content">
+            <div class="confirm-message">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="warning-icon">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <p>Are you sure you want to delete this song? This action cannot be undone.</p>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="cancel-btn" (click)="cancelDelete()">Cancel</button>
+              <button type="button" class="delete-confirm-btn" (click)="confirmDelete()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                Delete Song
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+    
+    
+    <!-- Now Playing Bar -->
+    @if (currentlyPlaying) {
+      <div class="now-playing-bar">
+        <div class="now-playing-info">
+          <div class="now-playing-cover">
+            <img [src]="currentlyPlaying.pathPicture || 'https://ui-avatars.com/api/?name=' + currentlyPlaying.title + '&background=D59039&color=fff'" alt="{{ currentlyPlaying.title }}">
+          </div>
+          <div class="now-playing-details">
+            <h4>{{ currentlyPlaying.title }}</h4>
+            <p>{{ getArtistName(currentlyPlaying.userId) }}</p>
+          </div>
+        </div>
+        
+        <!-- Update the player controls to use the navigation methods -->
+        <div class="player-controls">
+          <button class="player-control-btn" (click)="navigateToPreviousSong()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="19 20 9 12 19 4 19 20"></polygon>
+              <line x1="5" y1="19" x2="5" y2="5"></line>
+            </svg>
+          </button>
+          <button class="player-control-btn play-btn" (click)="togglePlay()">
+            @if (isPlaying) {
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="6" y="4" width="4" height="16"></rect>
+                <rect x="14" y="4" width="4" height="16"></rect>
+              </svg>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            }
+          </button>
+          <button class="player-control-btn" (click)="navigateToNextSong()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 4 15 12 5 20 5 4"></polygon>
+              <line x1="19" y1="5" x2="19" y2="19"></line>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Update the player timeline div to make it interactive -->
+        <div class="player-timeline">
+          <span class="current-time">{{ currentTime }}</span>
+          <div class="timeline" (click)="seekToPosition($event)">
+            <div class="progress" [style.width]="progressPercent + '%'"></div>
+          </div>
+          <!-- <span class="total-time">{{ currentlyPlaying?.duration || (audioElement?.duration ? secondsToTime(audioElement.duration) : '0:00') }}</span> -->
+        </div>
+        
+        <!-- Update the volume slider to make it interactive -->
+        <div class="player-volume">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          <input type="range" min="0" max="100" value="80" class="volume-slider" (input)="setVolume($event)">
+        </div>
+        
+        <button class="close-player-btn" (click)="stopPlayback()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    }
+  </div>
+  

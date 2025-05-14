@@ -1,0 +1,243 @@
+<div class="page-container">
+    <!-- Loading spinner -->
+    @if (isLoading) {
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+      </div>
+    }
+  
+    <div class="header">
+      <div class="page-title">
+        <h1>Analytics</h1>
+        <p>Track performance and user engagement</p>
+      </div>
+      
+      <div class="header-actions">
+        <button class="export-button" (click)="exportData()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export Data
+        </button>
+      </div>
+    </div>
+    
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>User Growth</h3>
+        </div>
+        <div class="chart-container">
+          <canvas #userGrowthChart></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Song Uploads</h3>
+        </div>
+        <div class="chart-container">
+          <canvas #songUploadsChart></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>User Engagement</h3>
+          <div class="chart-info" title="Shows active user count by day of week">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          </div>
+        </div>
+        <div class="chart-container">
+          <canvas #userEngagementChart></canvas>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>Popular Genres</h3>
+        </div>
+        <div class="chart-container">
+          <canvas #genresChart></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="stats-cards">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-header">
+            <h4>Total Users</h4>
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value">{{ totalUsers.toLocaleString() }}</div>
+          <div class="stat-trend positive">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+              <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+            +12.5% from last period
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <h4>Total Songs</h4>
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value">{{ totalSongs.toLocaleString() }}</div>
+          <div class="stat-trend positive">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+              <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+            +24.8% from last period
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <h4>Active Users</h4>
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20V10"></path>
+                <path d="M18 20V4"></path>
+                <path d="M6 20v-6"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value">{{ activeUsers.toLocaleString() }}</div>
+          <div class="stat-trend" [ngClass]="activeUsers >= totalUsers/2 ? 'positive' : 'negative'">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+              <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+            {{ (activeUsers / totalUsers * 100).toFixed(1) }}% of users
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-header">
+            <h4>Total Comments</h4>
+            <div class="stat-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value">{{ totalComments.toLocaleString() }}</div>
+          <div class="stat-trend positive">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+              <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+            +5.2% from last period
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="data-tables">
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Top Performing Songs</h3>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Song Name</th>
+                <th>Artist</th>
+                <th>Plays</th>
+                <th>Rating</th>
+                <th>Conversion</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (song of topSongs; track $index) {
+                <tr>
+                  <td>
+                    <div class="song-cell">
+                      <div class="song-thumbnail">
+                        <img [src]="song.thumbnail" alt="{{ song.name }}">
+                      </div>
+                      <span>{{ song.name }}</span>
+                    </div>
+                  </td>
+                  <td>{{ song.artist }}</td>
+                  <td>{{ song.plays.toLocaleString() }}</td>
+                  <td>{{ song.rating.toFixed(1) }}</td>
+                  <td>
+                    <div class="conversion-rate" [style.--percent]="song.conversion + '%'">
+                      <span>{{ song.conversion }}%</span>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Most Active Users</h3>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Songs</th>
+                <th>Followers</th>
+                <th>Activity</th>
+                <th>Last Active</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (user of activeUsersList; track $index) {
+                <tr>
+                  <td>
+                    <div class="user-cell">
+                      <div class="user-avatar">
+                        <img [src]="user.avatar" alt="{{ user.name }}">
+                      </div>
+                      <span>{{ user.name }}</span>
+                    </div>
+                  </td>
+                  <td>{{ user.songs }}</td>
+                  <td>{{ user.followers.toLocaleString() }}</td>
+                  <td>
+                    <div class="activity-meter" [style.--percent]="user.activity + '%'">
+                      <span>{{ user.activity }}%</span>
+                    </div>
+                  </td>
+                  <td>{{ user.lastActive }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  

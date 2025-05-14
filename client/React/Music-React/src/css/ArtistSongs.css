@@ -1,0 +1,29 @@
+.artist-name-song {
+    font-weight: bold !important;
+    font-size: 3rem !important;
+    margin-bottom:10px !important; ;
+    background: linear-gradient(90deg, #D59039, #F7C26B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.join-button {
+    background: linear-gradient(90deg, #D59039, #F7C26B);
+    color: #181818 !important;
+    border-radius: 20px !important;
+    border: 1px solid transparent !important;
+    margin-top: 16px !important;
+    padding: 10px 20px !important;
+    transition: all 0.3s ease;
+  }
+  
+  .join-button:hover {
+    background: transparent;
+    border: 1px solid #f0a748 !important;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-image: linear-gradient(90deg, #D59039, #F7C26B);
+  }
+  

@@ -1,0 +1,55 @@
+/* בהנחה שאתה עובד בסביבת Vite */
+@import "slick-carousel/slick/slick.css";
+@import "slick-carousel/slick/slick-theme.css";
+ 
+ :root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #1A1A1A;
+  
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  /* צבעים ראשיים - גרדיאנט כתום/זהב */
+  --color-primary-main: #D59039;
+  --color-primary-light: #F7C26B;
+  --color-primary-dark: #B47020;
+  
+  /* צבעי רקע - אפור כהה מאוד */
+  --color-background-default: #121214;
+  --color-background-paper: #1A1A1C;
+  --color-background-overlay: rgba(18, 18, 20, 0.85);
+  
+  /* צבעי טקסט */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #AAAAAA;
+  
+  /* צבעים נוספים */
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  
+  /* גרדיאנטים */
+  --gradient-primary: linear-gradient(90deg, var(--color-primary-main), var(--color-primary-light));
+  --gradient-background-footer: linear-gradient(to top, rgba(18, 18, 20, 0.9), transparent);
+  
+  /* אפקטים */
+  --shadow-card: 0 8px 24px rgba(213, 144, 57, 0.4);
+  --blur-effect: blur(8px);
+}
+
+body {
+  direction: rtl;
+  text-align: right;
+}
+
+::-webkit-scrollbar {
+  display: none; /* מחבא את סמן הגלילה */
+}

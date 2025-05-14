@@ -1,0 +1,285 @@
+<div class="page-container">
+  <!-- Loading spinner -->
+  @if (isLoading) {
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+    </div>
+  }
+
+  <!-- Header -->
+  <div class="header">
+    <div class="page-title">
+      <h1>Dashboard</h1>
+      <p>Welcome to SingSong Music Platform</p>
+    </div>
+  </div>
+  
+  <!-- Stats Cards -->
+  <div class="dashboard-stats">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <h3>Total Users</h3>
+        <p class="stat-number">{{ formatNumber(totalUsers) }}</p>
+        <p class="stat-trend positive">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+          New users
+        </p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 18V5l12-2v13"></path>
+          <circle cx="6" cy="18" r="3"></circle>
+          <circle cx="18" cy="16" r="3"></circle>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <h3>Total Songs</h3>
+        <p class="stat-number">{{ formatNumber(totalSongs) }}</p>
+        <p class="stat-trend positive">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+          New songs
+        </p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <h3>Total Comments</h3>
+        <p class="stat-number">{{ formatNumber(totalComments) }}</p>
+        <p class="stat-trend positive">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+          New comments
+        </p>
+      </div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 20V10"></path>
+          <path d="M18 20V4"></path>
+          <path d="M6 20v-6"></path>
+        </svg>
+      </div>
+      <div class="stat-info">
+        <h3>Active Users</h3>
+        <p class="stat-number">{{ formatNumber(activeUsers) }}</p>
+        <p class="stat-trend" [ngClass]="activeUsers >= totalUsers/2 ? 'positive' : 'negative'">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+          {{ (activeUsers / totalUsers * 100).toFixed(1) }}% of users
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="dashboard-content">
+    <!-- Recent Activity -->
+    <div class="recent-activity">
+      <div class="section-header">
+        <h2>Recent Activity</h2>
+      </div>
+      
+      <div class="activity-list">
+        @for (activity of recentActivity; track $index) {
+          <div class="activity-item">
+            <div class="activity-icon" [ngClass]="activity.type">
+              <!-- User joined icon -->
+              @if (activity.type === 'user_joined') {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="8.5" cy="7" r="4"></circle>
+                  <line x1="20" y1="8" x2="20" y2="14"></line>
+                  <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+              }
+              
+              <!-- Song upload icon -->
+              @if (activity.type === 'song_upload') {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+              }
+              
+              <!-- Comment icon -->
+              @if (activity.type === 'comment') {
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+              }
+            </div>
+            
+            <div class="activity-content">
+              <p class="activity-text">
+                
+
+                @if (activity.type === 'user_joined') {
+                  <p>{{ activity.user.userName }}</p> 
+                  <span>הצטרף לפלטפורמה</span>
+                }
+                @if (activity.type === 'song_upload') {
+                  <p>{{ activity.user.userName }}</p> 
+                  <span> העלה שיר "{{ activity.song?.title }}</span>
+                  
+                }
+                @if (activity.type === 'comment') {
+                  <p>{{ activity.user.userName }}</p> 
+                  <span> הגיב על "{{ activity.song?.title }}</span>
+                }
+
+              </p>
+              <p class="activity-time">{{ activity.time }}</p>
+              
+              <!-- Show comment content if it's a comment activity -->
+              @if (activity.type === 'comment') {
+                <p class="activity-comment">
+                  "{{ activity.comment?.content }}"
+                </p>
+              }
+            </div>
+          </div>
+        }
+        
+        <!-- Empty state -->
+        @if (recentActivity.length === 0) {
+          <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <p>No recent activity</p>
+          </div>
+        }
+      </div>
+    </div>
+    
+    <!-- Popular Songs -->
+    <div class="popular-songs">
+      <div class="section-header">
+        <h2>Top Rated Songs</h2>
+      </div>
+      
+      <div class="songs-list">
+        @for (item of popularSongs; track $index) {
+          <div class="song-item">
+            <div class="song-cover">
+              <img [src]="getSongCover(item.song)" alt="{{ item.song.title }}">
+              <div class="play-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+              </div>
+            </div>
+            <div class="song-info">
+              <h4>{{ item.song.title }}</h4>
+              <p>{{ item.artist }}</p>
+              <div class="song-rating" [title]="item.averageRating.toFixed(1) + ' out of 5 stars'">
+                <span [innerHTML]="getStarRating(item.averageRating)"></span>
+                <span class="rating-count">({{ item.commentCount }})</span>
+              </div>
+            </div>
+            <div class="song-stats">
+              <span class="star-rating">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+                {{ item.averageRating.toFixed(1) }}
+              </span>
+            </div>
+          </div>
+        }
+        
+        <!-- Empty state -->
+        @if (popularSongs.length === 0) {
+          <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <p>No songs to display</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+  
+  <!-- Top Artists Section -->
+  <div class="top-artists-section">
+    <div class="section-header">
+      <h2>Top Artists</h2>
+    </div>
+    
+    <div class="artists-grid">
+      @for (artist of topArtists; track $index) {
+        <div class="artist-card">
+          <div class="artist-avatar">
+            <img [src]="getUserAvatar(artist.user)" alt="{{ artist.user.userName }}">
+          </div>
+          <div class="artist-info">
+            <h3>{{ artist.user.userName }}</h3>
+            <p class="artist-email">{{ artist.user.email }}</p>
+            <div class="artist-stats">
+              <div class="artist-stat" title="{{ artist.songCount }} public songs">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M9 18V5l12-2v13"></path>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+                <span>{{ artist.songCount }}</span>
+              </div>
+              <div class="artist-stat" title="{{ artist.commentCount }} comments">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span>{{ artist.commentCount }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+      
+      <!-- Empty state -->
+      @if (topArtists.length === 0) {
+        <div class="empty-state full-width">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <p>No artists to display</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

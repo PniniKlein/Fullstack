@@ -1,0 +1,107 @@
+.comment-input {
+    background-color: #222 !important;
+    border-radius: 10px;
+    color: #f1f1f1;
+    padding-right: 0px !important;
+    min-height: 46px;
+  }
+  
+  .comment-input .MuiOutlinedInput-root {
+    color: #f1f1f1;
+  }
+  
+  .comment-input input {
+    color: #f1f1f1;
+    padding: 0px 0 !important;
+  }
+  
+  .comment-input .MuiOutlinedInput-root .Mui-focused fieldset {
+    border-color: #666;
+  }
+  
+  .comment-input fieldset {
+    border-color: #444;
+  }
+  
+  .comment-input:hover fieldset {
+    border-color: #666;
+  }
+  
+  .send-icon {
+    color: transparent;
+    background: transparent;
+  }
+  
+  .send-icon:hover {
+    opacity: 0.8;
+  }
+  
+  .send-icon .MuiSvgIcon-root {
+    fill: url(#gradient);
+  }
+  
+
+   /* .search-container {
+    display: flex;
+    align-items: center;
+    background-color: rgba(40, 40, 40, 0.8);
+    border-radius: 8px;
+    padding: 5px 12px;
+    width: 220px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    direction: rtl;
+  }
+  
+  .search-container.focused {
+    background-color: rgba(50, 50, 50, 0.8);
+    border-color: rgba(213, 144, 57, 0.5);
+    box-shadow: 0 4px 15px rgba(213, 144, 57, 0.2);
+    width: 250px;
+  }
+  
+  .search-icon {
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 8px;
+    font-size: 20px;
+    transition: color 0.3s ease;
+  }
+  
+  .search-container.focused .search-icon {
+    color: #f7c26b;
+  }
+  
+  .search-input {
+    color: white;
+    flex: 1;
+    font-size: 14px;
+  }
+  
+  .search-input input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+  }
+  
+  .clear-button {
+    color: rgba(255, 255, 255, 0.5) !important;
+    padding: 2px !important;
+    margin-right: -5px !important;
+    transition: color 0.2s ease !important;
+  }
+  
+  .clear-button:hover {
+    color: #f7c26b !important;
+    background-color: transparent !important;
+  }
+  
+  @media (max-width: 768px) {
+    .search-container {
+      width: 180px;
+    }
+  
+    .search-container.focused {
+      width: 200px;
+    }
+  }
+   */

@@ -1,0 +1,113 @@
+.home-new-songs-container {
+  padding: 20px 20px !important;
+  margin-right: 170px !important;
+  margin-left: 170px !important;
+  margin-bottom: 100px !important;
+}
+
+.home-new-songs-title {
+  text-align: center !important;
+  color: #e3aa50 !important;
+  font-weight: bold !important;
+  margin-bottom: 20px !important;
+}
+
+.home-song-card-wrapper {
+  padding: 10px !important;
+}
+
+.home-song-card {
+  width: 250px !important;
+  background-color: #444 !important;
+  color: #E0E0E0 !important;
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.46) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  cursor: pointer !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+}
+
+.home-song-card-image-wrapper:hover .home-play-button {
+  opacity: 1 !important;
+}
+
+.home-song-card-image-wrapper {
+  position: relative !important;
+  padding: 1px !important;
+  border-radius: 3px !important;
+  background: linear-gradient(90deg, #c67c28, #e3aa50) !important;
+}
+
+.home-song-card-avatar {
+  width: 100% !important;
+  height: 250px !important;
+  object-fit: cover !important;
+  border-radius: 3px !important;
+  transition: transform 0.3s ease !important;
+}
+
+.home-play-button {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  border: 2px solid white !important;
+  border-radius: 50% !important;
+  color: white !important;
+  background-color: transparent !important;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.78) !important;
+  opacity: 0 !important;
+  transition: opacity 0.3s ease, transform 0.2s ease !important;
+}
+
+.home-play-button:hover {
+  transform: translate(-50%, -50%) scale(1.1) !important;
+  border-color: #F7C26B !important;
+}
+
+.home-song-card-footer {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.78) !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+  padding: 10px 16px !important;
+  box-sizing: border-box !important;
+}
+
+.home-song-card-title {
+  color: #e3aa50 !important;
+  font-weight: bold !important;
+  text-align: right !important;
+  direction: rtl !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* חיצי הסליידר */
+.home-arrow {
+  z-index: 1 !important;
+  background: none !important;
+  color: transparent !important;
+  font-size: 40px !important;
+  cursor: pointer !important;
+  top: 38% !important;
+  position: absolute !important;
+}
+
+.home-arrow span {
+  background: linear-gradient(90deg, #D59039, #F7C26B) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  font-size: 30px !important;
+}
+
+.home-next-arrow {
+  right: -30px !important;
+}
+
+.home-prev-arrow {
+  left: -30px !important;
+}

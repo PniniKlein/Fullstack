@@ -10,7 +10,7 @@ import {
 // import { FaMicrophone } from "react-icons/fa"; // אייקון מיקרופון מ-react-icons
 import axios from "axios";
 
-const TranscriptionButton = ({ songLyrics }: { songLyrics: string }) => {
+const TranscriptionButton = ({ songUrl }: { songUrl: string }) => {
   const [openDialog, setOpenDialog] = useState(false);
   // const [transcription, setTranscription] = useState("");
   // const [loading, setLoading] = useState(false);

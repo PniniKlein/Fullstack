@@ -1,5 +1,6 @@
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Music.Api.Extensions;
@@ -48,9 +49,15 @@ builder.Configuration["SMTP:PORT"] = Env.GetString("PORT");
 builder.Configuration["SMTP:GOOGLE_USER_EMAIL"] = Env.GetString("GOOGLE_USER_EMAIL");
 builder.Configuration["SMTP:PASSWORD"] = Env.GetString("PASSWORD");
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+string connectionString = Env.GetString("DATABASE_CONNECTION_STRING");
+builder.Services.AddDbContext<DataContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
+    options => options.CommandTimeout(60)));
+
 builder.Services.AddOpenApi();
 
-builder.Services.AddDbContext<DataContext>();
+//builder.Services.AddDbContext<DataContext>();
 
 builder.Services.AddDependencyInjectoions();
 

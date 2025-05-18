@@ -14,9 +14,18 @@ namespace Music.Data
         public DbSet<UserFollower> UserFollowers { get; set; }
         public DbSet<Song> Songs { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=music_db");
+        //}
+
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        {
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=music_db");
+            base.OnConfiguring(optionsBuilder);
+            //optionsBuilder.LogTo(mesege => Console.Write(mesege));
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

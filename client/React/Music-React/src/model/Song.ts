@@ -3,7 +3,7 @@ export type Song ={
     title:string,
     create_at:string,
     gener?: string,
-    lyrics:string,
+    // lyrics:string,
     isPublic: boolean,
     pathSong:string,
     pathPicture:string,

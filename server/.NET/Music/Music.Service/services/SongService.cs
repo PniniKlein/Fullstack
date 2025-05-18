@@ -78,19 +78,19 @@ namespace Music.Service.services
         public async Task<SongDto> AddAsync(SongDto songDto)
         {
             // שולחים לשרת Python לקבלת המלל
-            using var httpClient = new HttpClient();
-            var payload = new { url = songDto.PathSong };
-            var response = await httpClient.PostAsJsonAsync("http://localhost:5000/transcribe", payload);
+            //using var httpClient = new HttpClient();
+            //var payload = new { url = songDto.PathSong };
+            //var response = await httpClient.PostAsJsonAsync("http://localhost:5000/transcribe", payload);
 
-            if (response.IsSuccessStatusCode)
-            {
-                var result = await response.Content.ReadFromJsonAsync<TranscriptionResult>();
-                songDto.Lyrics = result?.corrected_lyrics ?? ""; // שומר רק אם הצליח
-            }
-            else
-            {
-                songDto.Lyrics = "לא הצלחנו לתמלל את השיר";
-            }
+            //if (response.IsSuccessStatusCode)
+            //{
+            //    var result = await response.Content.ReadFromJsonAsync<TranscriptionResult>();
+            //    songDto.Lyrics = result?.corrected_lyrics ?? ""; // שומר רק אם הצליח
+            //}
+            //else
+            //{
+            //    songDto.Lyrics = "לא הצלחנו לתמלל את השיר";
+            //}
 
             // ממפה את השיר וממשיך כרגיל
             Song song = _mapper.Map<Song>(songDto);

@@ -20,7 +20,7 @@ const Register = () => {
   const [formData, setFormData] = useState<UserPostModel>(emptyUser);
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [openDialog, setOpenDialog] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  // const [setSubmitted] = useState(false);
   const navigate = useNavigate();
 
   const isValidEmail = (email: string) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
@@ -48,7 +48,7 @@ const Register = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    // setSubmitted(true);
   debugger
     const newErrors = {
       email: isValidEmail(formData.email) ? "" : "כתובת אימייל לא תקינה",
@@ -103,7 +103,7 @@ const Register = () => {
               אנחנו כאן כדי ללוות אותך – אם תצטרך עזרה, הכוונה או סתם מקום לשתף, תמיד נשמח לשמוע ממך.
             </p>
             <div style="text-align: center; margin: 30px 0;">
-              <a href="http://localhost:5173/" style="display: inline-block; padding: 12px 24px; background: linear-gradient(90deg, #D59039, #F7C26B); color: white; text-decoration: none; border-radius: 30px; font-size: 16px;">
+              <a href="http://:5173/" style="display: inline-block; padding: 12px 24px; background: linear-gradient(90deg, #D59039, #F7C26B); color: white; text-decoration: none; border-radius: 30px; font-size: 16px;">
                 התחבר ל-singsong
               </a>
             </div>

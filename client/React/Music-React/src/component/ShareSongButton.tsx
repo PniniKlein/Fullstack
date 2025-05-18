@@ -7,8 +7,8 @@ import { getUserDataFromToken } from "./AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { StoreType, Dispatch } from "../store/store";
 import { sendEmail, loadUser } from "../store/userSlice";
-import { useState } from "react";
-import SnackbarGreen from "./SnackbarGreen";
+// import { useState } from "react";
+// import SnackbarGreen from "./SnackbarGreen";
 import GradientIconButton from "./GradientIconButton";
 import '../css/ShareSongButton.css'
 
@@ -17,8 +17,8 @@ const MySwal = withReactContent(Swal);
 const ShareSongButton = ({ song, className }: { song: Song; className?: string }) => {
   const user = useSelector((store: StoreType) => store.user.user);
   const dispatch = useDispatch<Dispatch>();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleShare = async () => {
     const { value: email } = await MySwal.fire({
@@ -54,7 +54,7 @@ const ShareSongButton = ({ song, className }: { song: Song; className?: string }
             <p style="font-size: 16px; color: #333;">השיר <strong>${song.title}</strong> מחכה לך!</p>
             <p style="font-size: 16px; color: #333;">לחץ/י על הכפתור למטה כדי להאזין:</p>
             <div style="text-align: center; margin: 25px 0;">
-              <a href="http://localhost:5173/songComments/${song.id}" style="display: inline-block; padding: 10px 20px; background: linear-gradient(90deg, #D59039, #F7C26B); color: white; text-decoration: none; border-radius: 30px; font-size: 15px;">
+              <a href="http://:5173/songComments/${song.id}" style="display: inline-block; padding: 10px 20px; background: linear-gradient(90deg, #D59039, #F7C26B); color: white; text-decoration: none; border-radius: 30px; font-size: 15px;">
                 🎧 האזן/י לשיר
               </a>
             </div>
@@ -66,14 +66,14 @@ const ShareSongButton = ({ song, className }: { song: Song; className?: string }
       try {
         const result = await dispatch(sendEmail({ to: [email], subject, body }));
         if (result.meta.requestStatus === "fulfilled") {
-          setSnackbarMessage("המייל נשלח בהצלחה!");
+          console.log("המייל נשלח בהצלחה!");
         } else {
-          setSnackbarMessage("שגיאה בשליחת המייל.");
+          console.log("שגיאה בשליחת המייל.");
         }
       } catch {
-        setSnackbarMessage("שגיאה בשליחת המייל.");
+          console.log("שגיאה בשליחת המייל.");
       } finally {
-        setSnackbarOpen(true);
+        // setSnackbarOpen(true);
         const token = localStorage.getItem("authToken");
         if (token) {
           const id = getUserDataFromToken(token);

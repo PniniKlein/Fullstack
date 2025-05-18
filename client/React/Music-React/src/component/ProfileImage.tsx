@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Dialog, DialogTitle, DialogContent, Grid, Box, Typography } from "@mui/material";
+import { Dialog, DialogContent, Grid, Box, Typography } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 

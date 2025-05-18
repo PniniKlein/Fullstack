@@ -30,7 +30,7 @@ const UpdateUser = () => {
     typeof formData.pathProfile === "string" ? formData.pathProfile : null
   );
 
-  const [errors, setErrors] = useState({ password: "" });
+  // const [errors, setErrors] = useState({ password: "" });
   const [openDialog, setOpenDialog] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -56,10 +56,10 @@ const UpdateUser = () => {
   const handleChange = (id: string, value: string) => {
     setFormData({ ...formData, [id]: value });
 
-    setErrors((prev) => ({
-      ...prev,
-      password: id === "password" ? (isValidPassword(value) ? "" : "הסיסמה חייבת להכיל לפחות 6 תווים, אות ומספר") : prev.password,
-    }));
+    // setErrors((prev) => ({
+    //   ...prev,
+    //   password: id === "password" ? (isValidPassword(value) ? "" : "הסיסמה חייבת להכיל לפחות 6 תווים, אות ומספר") : prev.password,
+    // }));
   };
 
   const uploadToS3 = async (file: File): Promise<string | null> => {
@@ -86,7 +86,7 @@ const UpdateUser = () => {
       password: isValidPassword(formData.password) ? "" : "הסיסמה חייבת להכיל לפחות 6 תווים, אות ומספר",
     };
 
-    setErrors(newErrors);
+    // setErrors(newErrors);
 
     if (!newErrors.password && formData.userName.trim()) {
       let imageUrl = formData.pathProfile;

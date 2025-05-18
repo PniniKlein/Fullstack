@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { StoreType } from '../store/store';
-import { useSelector } from 'react-redux';
+// import { StoreType } from '../store/store';
+// import { useSelector } from 'react-redux';
 import api from '../interceptor/axiosConfig';
 
 const FileUploader = () => {
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
-  const user = useSelector((state: StoreType) => state.user.user);
+  // const user = useSelector((state: StoreType) => state.user.user);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {

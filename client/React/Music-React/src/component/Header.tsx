@@ -1,10 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { StoreType } from "../store/store";
-import { AppBar, Toolbar, Typography, Button, Box, IconButton } from "@mui/material";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import UserDetails from "./UserDetails";
 import { useEffect, useState } from "react";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
+// import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import PersonIcon from '@mui/icons-material/Person';

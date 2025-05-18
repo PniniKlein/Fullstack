@@ -1,16 +1,16 @@
-import { useEffect, useRef, useState } from "react";
-import { Box, Typography, IconButton, Paper, Select, MenuItem, TextField } from "@mui/material";
-import { PlayArrow, Pause } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { Box, Typography } from "@mui/material";
+// import { PlayArrow, Pause } from "@mui/icons-material";
+// import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Song } from "../model/Song";
-import { Dispatch } from "../store/store";
+// import { Dispatch } from "../store/store";
 import { getAllPublic } from "../services/SongsService";
-import { updateSong } from "../store/songSlice";
+// import { updateSong } from "../store/songSlice";
 import SongFilters from "./SongFilter";
 import SongCard from "./SongCard";
 const SongsList = () => {
-  const dispatch = useDispatch<Dispatch>();
+  // const dispatch = useDispatch<Dispatch>();
   const [songs, setSongs] = useState<Song[]>([]);
   const [filteredSongs, setFilteredSongs] = useState<Song[]>([]);
   const navigate = useNavigate();

@@ -94,6 +94,15 @@ export const updateSongToPublic = async(id:number) =>{
     }
 }
 
+export const addPlay = async(id:number) =>{
+       try {
+        const res = await api.put('/Song/'+id+'/Play');
+        return res.data;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 export const deleteSong = async(id:number) =>{
     try {
         const res = await api.delete('/Song/' + id);

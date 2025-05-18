@@ -1,4 +1,4 @@
-/* .songCard {
+.songCard {
   margin-top: 0px;
   position: relative;
   width: 300px;
@@ -101,32 +101,27 @@
 
 .largeOption {
   transform: scale(1.7);
-} */
-:root {
-  /* צבעים ראשיים - גרדיאנט כתום/זהב */
+}
+/* :root {
   --color-primary-main: #D59039;
   --color-primary-light: #F7C26B;
   --color-primary-dark: #B47020;
   
-  /* צבעי רקע - אפור כהה מאוד */
+
   --color-background-default: #0A0A0C;
   --color-background-paper: #111114;
   --color-background-card: #141418;
-  
-  /* צבעי טקסט */
+
   --color-text-primary: #FFFFFF;
   --color-text-secondary: #9A9AA4;
   --color-text-tertiary: #6A6A78;
-  
-  /* צבעים נוספים */
+
   --color-black: #000000;
   --color-white: #FFFFFF;
   --color-star: #FFD700;
   
-  /* גרדיאנטים */
   --gradient-primary: linear-gradient(90deg, var(--color-primary-main), var(--color-primary-light));
-  
-  /* אפקטים */
+
   --shadow-card: 0 8px 20px rgba(0, 0, 0, 0.3);
   --border-radius: 12px;
 }
@@ -388,4 +383,4 @@
   color: var(--color-text-primary) !important;
   font-size: 12px !important;
   font-weight: 600 !important;
-}
+} */

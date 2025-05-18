@@ -1,6 +1,8 @@
 
 .header-logo {
+
   height: 45px;
+  margin-top: 15px;
   margin-left: 15px;
 }
 
@@ -58,6 +60,11 @@
 .home-icon{
   font-size: 27px !important;
 }
+
+
+
+
+
 
 /* Header Container */
 /* .app-header {

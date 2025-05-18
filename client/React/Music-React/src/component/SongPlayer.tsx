@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { SkipPreviousRounded, Replay10Rounded, PlayArrowRounded, PauseRounded, Forward30Rounded, SkipNextRounded } from '@mui/icons-material';
 import { resetRestartSong } from "../store/songSlice";
 import SongOptionsMenu from "./SongOptionMenu";
+import { addPlay } from "../services/SongsService";
 
 
 const formatTime = (time: number) => {
@@ -19,6 +20,7 @@ const formatTime = (time: number) => {
 const SongPlayer = () => {
     const songPlayer = useSelector((state: StoreType) => state.songPlayer.song);
     const restartSong = useSelector((state: StoreType) => state.songPlayer.restartSong);
+    const [hasCountedListen, setHasCountedListen] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(1);
     const [muted, setMuted] = useState(false);
@@ -38,12 +40,31 @@ const SongPlayer = () => {
     useEffect(() => {
         if (songPlayer.id !== 0 && audioRef.current && restartSong) {
             audioRef.current.currentTime = 0;
+            setHasCountedListen(false);
             audioRef.current.play();
             dispatch(resetRestartSong())
             setIsPlaying(true);
         }
         sessionStorage.setItem('songPlayer', JSON.stringify(songPlayer));
     }, [restartSong]);
+
+    useEffect(() => {
+  let listenTimeout: ReturnType<typeof setTimeout>;
+
+  if (isPlaying && !hasCountedListen) {
+    listenTimeout = setTimeout(() => {
+      if (!audioRef.current?.paused) {
+        setHasCountedListen(true);
+        addPlay(songPlayer.id);
+      }
+    }, 5000);
+  }
+
+  return () => {
+    clearTimeout(listenTimeout);
+  };
+}, [isPlaying]);
+
 
     const togglePlay = () => {
         if (audioRef.current) {
@@ -69,6 +90,7 @@ const SongPlayer = () => {
     const handleSongEnd = () => {
         if (audioRef.current) {
             audioRef.current.pause();
+            setHasCountedListen(false);
             audioRef.current.currentTime = 0;
             setIsPlaying(false);
             setCurrentTime(0);

@@ -17,6 +17,34 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root {
+  /* צבעים ראשיים - גרדיאנט כתום/זהב */
+  --color-primary-main: #D59039;
+  --color-primary-light: #F7C26B;
+  --color-primary-dark: #B47020;
+  
+  /* צבעי רקע - אפור כהה מאוד */
+  --color-background-default: #121214;
+  --color-background-paper: #1A1A1C;
+  --color-background-overlay: rgba(18, 18, 20, 0.85);
+  
+  /* צבעי טקסט */
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #AAAAAA;
+  
+  /* צבעים נוספים */
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  
+  /* גרדיאנטים */
+  --gradient-primary: linear-gradient(90deg, var(--color-primary-main), var(--color-primary-light));
+  --gradient-background-footer: linear-gradient(to top, rgba(18, 18, 20, 0.9), transparent);
+  
+  /* אפקטים */
+  --shadow-card: 0 8px 24px rgba(213, 144, 57, 0.4);
+  --blur-effect: blur(8px);
+}
+
 body {
   direction: rtl;
   text-align: right;
@@ -25,57 +53,3 @@ body {
 ::-webkit-scrollbar {
   display: none; /* מחבא את סמן הגלילה */
 }
-/*
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-} */

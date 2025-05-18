@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import { SkipPreviousRounded, Replay10Rounded, PlayArrowRounded, PauseRounded, Forward30Rounded, SkipNextRounded } from '@mui/icons-material';
 import { resetRestartSong } from "../store/songSlice";
 import SongOptionsMenu from "./SongOptionMenu";
+import { addPlay } from "../services/SongsService";
 
 
 const formatTime = (time: number) => {
@@ -19,6 +20,7 @@ const formatTime = (time: number) => {
 const SongPlayer = () => {
     const songPlayer = useSelector((state: StoreType) => state.songPlayer.song);
     const restartSong = useSelector((state: StoreType) => state.songPlayer.restartSong);
+    const [hasCountedListen, setHasCountedListen] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(1);
     const [muted, setMuted] = useState(false);
@@ -38,12 +40,31 @@ const SongPlayer = () => {
     useEffect(() => {
         if (songPlayer.id !== 0 && audioRef.current && restartSong) {
             audioRef.current.currentTime = 0;
+            setHasCountedListen(false);
             audioRef.current.play();
             dispatch(resetRestartSong())
             setIsPlaying(true);
         }
         sessionStorage.setItem('songPlayer', JSON.stringify(songPlayer));
     }, [restartSong]);
+
+    useEffect(() => {
+  let listenTimeout: ReturnType<typeof setTimeout>;
+
+  if (isPlaying && !hasCountedListen) {
+    listenTimeout = setTimeout(() => {
+      if (!audioRef.current?.paused) {
+        setHasCountedListen(true);
+        addPlay(songPlayer.id);
+      }
+    }, 5000);
+  }
+
+  return () => {
+    clearTimeout(listenTimeout);
+  };
+}, [isPlaying]);
+
 
     const togglePlay = () => {
         if (audioRef.current) {
@@ -69,6 +90,7 @@ const SongPlayer = () => {
     const handleSongEnd = () => {
         if (audioRef.current) {
             audioRef.current.pause();
+            setHasCountedListen(false);
             audioRef.current.currentTime = 0;
             setIsPlaying(false);
             setCurrentTime(0);
@@ -85,7 +107,7 @@ const SongPlayer = () => {
 
     return (
         <>{songPlayer.id !== 0 && (
-            <Box sx={{ position: "fixed", bottom: 0, left: 0, width: "100%", backgroundColor: "#1A1A1A", color: "white", direction: "rtl", paddingTop: '5px', boxShadow: "0 -10px 40px rgba(0, 0, 0, 0.63)" }}>
+            <Box sx={{ position: "fixed", bottom: 0, left: 0, width: "100%", background: "linear-gradient(0deg, rgb(0, 0, 0),rgba(11, 11, 10, 0.96),rgba(247, 193, 107, 0))", color: "white", direction: "rtl", paddingTop: '100px', boxShadow: "0 -10px 40px rgba(0, 0, 0, 0.0)" }}>
                 <audio ref={audioRef} src={songPlayer.pathSong} onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleTimeUpdate} onEnded={handleSongEnd} />
 
                 {/* פס התקדמות */}

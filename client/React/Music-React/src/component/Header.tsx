@@ -43,7 +43,7 @@ const Header = () => {
         {/* כפתורים */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <Link to="/">
-            <img src='/avatars/music3.jpg' alt="Logo" className="header-logo" />
+            <img src='/avatars/לוגו10.png' alt="Logo" className="header-logo" />
           </Link>
           {menuItems.map((item) => (
             <Box
@@ -95,6 +95,19 @@ const Header = () => {
 };
 
 export default Header;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // "use client"
 

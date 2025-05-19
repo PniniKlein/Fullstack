@@ -15,6 +15,7 @@ namespace Music.Core.IRepositories
         Task<IEnumerable<Song>> GetByUserIdAsync(int userId);
         Task<Song> UpdatePublicAsync(int id);
         Task<Song> AddPlayAsync(int id);
+        Task<Song> AddLyricsAsync(int id, string lyrics);
         Task<Song> GetByIdFullAsync(int id);
         //List<string> GetGenerTypes();
     }

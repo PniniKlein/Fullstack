@@ -14,7 +14,7 @@ namespace Music.Core.Entities
         public string Title { get; set; }
         public DateTime Create_at { get; set; } = DateTime.UtcNow;
         public string Gener { get; set; }
-        //public string Lyrics { get; set; }
+        public string Lyrics { get; set; }
         public bool IsPublic { get; set; }
         public string PathSong { get; set; }
         public string PathPicture { get; set; }

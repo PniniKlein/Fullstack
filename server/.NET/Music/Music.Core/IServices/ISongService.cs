@@ -21,6 +21,7 @@ namespace Music.Core.IServices
         Task<SongDto> UpdateAsync(int id, SongDto attractionDto);
         Task<SongDto> UpdatePublicAsync(int id);
         Task<SongDto> AddPlayAsync(int id);
+        Task<SongDto> AddLyricsAsync(int id,string lyrics);
         Task<bool> DeleteAsync(int id);
         //List<string> GetGenerTypes();
     }

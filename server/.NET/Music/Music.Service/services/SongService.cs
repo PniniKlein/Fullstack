@@ -169,6 +169,17 @@ namespace Music.Service.services
             return songDto;
         }
 
+        public async Task<SongDto> AddLyricsAsync(int id,string lyrics)
+        {
+            Song song = await _iManager._songRepository.AddLyricsAsync(id,lyrics);
+            if (song != null)
+            {
+                await _iManager.SaveAsync();
+            }
+            SongDto songDto = _mapper.Map<SongDto>(song);
+            return songDto;
+        }
+
         public async Task<bool> DeleteAsync(int id)
         {
             var comments = await _iManager._commentRepository.GetBySongIdFullAsync(id);

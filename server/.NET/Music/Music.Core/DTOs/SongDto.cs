@@ -12,7 +12,7 @@ namespace Music.Core.DTOs
         public int Id { get; set; }
         public string Title { get; set; }
         public string Gener { get; set; }
-        //public string Lyrics { get; set; }
+        public string Lyrics { get; set; }
         public bool IsPublic { get; set; }
         public string PathSong { get; set; }
         public string PathPicture { get; set; }

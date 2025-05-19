@@ -240,6 +240,9 @@ def transcribe_with_whisper(audio_url: str) -> str:
 
     return correct_lyrics(transcript.text)
 
+@app.route("/")
+def index():
+    return "השרת פועל! 🎵"
 
 @app.route('/transcribe', methods=['POST'])
 def handle_transcription():

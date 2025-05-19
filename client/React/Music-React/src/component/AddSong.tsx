@@ -105,6 +105,7 @@ const AddSong = () => {
       const newSong = {
         title,
         gener: genre,
+        lyrics: "",
         isPublic: false,
         pathSong: uploadedSongUrl,
         pathPicture: coverImageUrl,

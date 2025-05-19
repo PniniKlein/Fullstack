@@ -103,6 +103,15 @@ export const addPlay = async(id:number) =>{
     }
 }
 
+export const addLyrics = async(id:number,lyrics:string) =>{
+       try {
+        const res = await api.put('/Song/'+id+'/Lyrics', { lyrics });
+        return res.data;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 export const deleteSong = async(id:number) =>{
     try {
         const res = await api.delete('/Song/' + id);

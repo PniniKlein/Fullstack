@@ -85,8 +85,9 @@ import {
   Typography
 } from "@mui/material";
 import axios from "axios";
+import { Song } from "../model/Song";
 
-const TranscriptionButton = ({ songUrl }: { songUrl: string }) => {
+const TranscriptionButton = ({ song }: { song: Song }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [songLyrics, setSongLyrics] = useState("");
   const [loading, setLoading] = useState(false);
@@ -97,10 +98,14 @@ const TranscriptionButton = ({ songUrl }: { songUrl: string }) => {
     setLoading(true);
     setError("");
     try {
-      const response = await axios.post("http://localhost:5000/transcribe", {
-        url: songUrl,
-      });
-      setSongLyrics(response.data.corrected_lyrics);
+      if (song.lyrics == "") {
+        const response = await axios.post("http://localhost:5000/transcribe", {
+          url: song.pathSong,
+        });
+        setSongLyrics(response.data.corrected_lyrics);
+      } else {
+        setSongLyrics(song.lyrics);
+      }
     } catch (err: any) {
       setError("שגיאה בתמלול השיר. נסה שוב מאוחר יותר.");
       console.error(err);
@@ -146,8 +151,8 @@ const TranscriptionButton = ({ songUrl }: { songUrl: string }) => {
             {loading
               ? "טוען תמלול..."
               : error
-              ? error
-              : songLyrics || "אין תמלול זמין"}
+                ? error
+                : songLyrics || "אין תמלול זמין"}
           </Typography>
         </DialogContent>
         <DialogActions>

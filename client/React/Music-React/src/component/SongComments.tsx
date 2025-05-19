@@ -114,7 +114,7 @@ const SongComments = () => {
             )}
             <DownloadSong song={song} />
             <ShareSongButton song={song} />
-            <TranscriptionButton songUrl={song.pathSong} />
+            <TranscriptionButton song={song} />
           </Box>
 
           {user?.id !== 0 && (

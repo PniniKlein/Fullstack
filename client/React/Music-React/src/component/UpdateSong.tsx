@@ -38,6 +38,7 @@ const UpdateSong = () => {
       const songToUpdate: SongPostModel = {
         title: formData.title,
         gener: formData.gener || "",
+        lyrics: formData.lyrics || "",
         isPublic: formData.isPublic,
         pathSong: formData.pathSong,
         pathPicture: formData.pathPicture,

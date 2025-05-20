@@ -105,6 +105,7 @@ export const addPlay = async(id:number) =>{
 
 export const addLyrics = async(id:number,lyrics:string) =>{
        try {
+        console.log(lyrics);
         const res = await api.put('/Song/'+id+'/Lyrics', { lyrics });
         return res.data;
     } catch (e) {

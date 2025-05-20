@@ -1,4 +1,4 @@
-/* Register.css */
+
 
 .login-container {
     display: flex;
@@ -41,12 +41,10 @@
     color: white;
     font-weight: bold;
     border-radius: 5px;
-    /* padding: 12px 0; */
     font-size: 16px;
   }
   
   button[type="submit"]:hover {
-    /* background: linear-gradient(90deg, #e3aa50, #c67c28); */
     cursor: pointer;
   }
   

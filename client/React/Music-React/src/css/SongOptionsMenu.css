@@ -1,13 +1,10 @@
-/* SongOptionsMenu.css */
 
-/* Style for the IconButton */
 .menu-button {
   color: #f5f5f5;
   padding: 8px;
   margin-left: 16px;
 }
 
-/* Paper properties for the Menu */
 .menu-paper {
   background-color: #333;
   border-radius: 12px;
@@ -17,7 +14,6 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
-/* Style for MenuItem */
 .menu-item {
   color: #fff;
   background-color: #444;
@@ -37,12 +33,10 @@
   background-image: linear-gradient(90deg, #D59039, #F7C26B);
 }
 
-/* Divider */
 .divider {
   background-color: #555;
 }
 
-/* Typography for speed options */
 .speed-typography {
   padding-left: 16px;
   padding-right: 16px;

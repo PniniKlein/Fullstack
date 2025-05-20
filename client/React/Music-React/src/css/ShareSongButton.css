@@ -19,14 +19,13 @@
   }
 
   .singsong-input:focus {
-    border: 2px solid #F7C26B !important; /* צבע גבול כשממוקד */
-    outline: none; /* מונע את קו המתאר שמופיע לפעמים */
+    border: 2px solid #F7C26B !important; 
+    outline: none; 
   }
   
   .singsong-confirm {
     background-color: #D59039 !important;
     color: white !important;
-    /* border-radius: 30px !important; */
     padding: 10px 20px !important;
     margin-left: 20px !important;
   }
@@ -34,6 +33,5 @@
   .singsong-cancel {
     background-color: #F7C26B !important;
     color: white !important;
-    /* border-radius: 30px !important; */
     padding: 10px 20px !important;
   }

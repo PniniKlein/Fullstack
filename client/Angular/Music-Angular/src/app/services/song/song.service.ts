@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class SongService {
-  private baseUrl = 'https://localhost:7093/api/Song'
+  private baseUrl = 'https://singsong-api.onrender.com/api/Song'
 
   public songs: BehaviorSubject<Song[]> = new BehaviorSubject<Song[]>([]);
   constructor(private http: HttpClient) { }

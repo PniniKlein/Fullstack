@@ -8,7 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class DisplayUserService {
 
-  private baseUrl = 'https://localhost:7093/api/User'
+  private baseUrl = 'https://singsong-api.onrender.com/api/User'
 
   public users: BehaviorSubject<User[]> = new BehaviorSubject<User[]>([]);
   constructor(private http: HttpClient) { }

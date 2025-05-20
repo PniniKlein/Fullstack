@@ -2,7 +2,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    /* min-height: 100vh; */
   }
   
   .update-user-card {
@@ -76,10 +75,6 @@
   }
   
   .avatar-large {
-    /* font-size: 20px; */
-    /* width: 100px !important;
-    height: 100px !important; */
-    /* margin-top:10px !important; */
     background-color: transparent;
     border: 3px solid transparent;
     background-image: linear-gradient(#1e1e1e, #1e1e1e), linear-gradient(90deg, #D59039, #F7C26B);

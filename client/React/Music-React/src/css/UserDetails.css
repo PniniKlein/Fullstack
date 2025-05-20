@@ -36,9 +36,6 @@
 
 .avatar-large {
     font-size: 40px; 
-    /* width: 60px !important;
-    height: 60px !important;
-    margin-top: 40px !important; */
     background-color: transparent;
     border: 2px solid transparent;
     background-image: linear-gradient(#1e1e1e, #1e1e1e), linear-gradient(90deg, #D59039, #F7C26B);
@@ -72,7 +69,6 @@
 }
 
 .update-button { 
-    /* height:100px !important; */
     height: 35px !important;
     width: 50%;
     color: white;
@@ -95,7 +91,6 @@
 }
 
 .logout-button {
-    /* height: 29px !important; */
     height: 95%;
     width: 98%;
     border: 0px solid transparent !important;
@@ -105,7 +100,7 @@
     padding: 6px 16px;
     color: white !important;
 }
-/* Avatar in header */
+
 .user-avatar-container {
     position: relative;
     cursor: pointer;

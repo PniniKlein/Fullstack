@@ -8,7 +8,7 @@ import { jwtDecode } from 'jwt-decode';
   providedIn: 'root'
 })
 export class UserService {
-  private baseUrl = 'https://localhost:7093/api/User'
+  private baseUrl = 'https://singsong-api.onrender.com/api/User'
   public user: BehaviorSubject<User> = new BehaviorSubject<User>(new User(0, '', '', '', '',[], [],''));
 
   constructor(private http: HttpClient) { }

@@ -86,6 +86,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { Song } from "../model/Song";
+import { addLyrics } from "../services/SongsService";
 
 const TranscriptionButton = ({ song }: { song: Song }) => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -99,10 +100,11 @@ const TranscriptionButton = ({ song }: { song: Song }) => {
     setError("");
     try {
       if (song.lyrics == "") {
-        const response = await axios.post("http://localhost:5000/transcribe", {
+        const response = await axios.post("https://singsong-python.onrender.com/transcribe", {
           url: song.pathSong,
         });
         setSongLyrics(response.data.corrected_lyrics);
+        await addLyrics(song.id, response.data.corrected_lyrics);
       } else {
         setSongLyrics(song.lyrics);
       }

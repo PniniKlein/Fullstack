@@ -10,7 +10,7 @@ import { Router } from "@angular/router"
 })
 export class AuthService {
 
-  private baseUrl = 'https://localhost:7093/api/Auth';
+  private baseUrl = 'https://singsong-api.onrender.com/api/Auth';
   constructor(private http: HttpClient,private userService:UserService,private router: Router) { }
 
   logout(): void {

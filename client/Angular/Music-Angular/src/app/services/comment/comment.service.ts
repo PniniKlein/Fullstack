@@ -7,7 +7,7 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class CommentService {
- private baseUrl = 'https://localhost:7093/api/Comment'
+ private baseUrl = 'https://singsong-api.onrender.com/api/Comment'
 
   public comments: BehaviorSubject<Comment[]> = new BehaviorSubject<Comment[]>([]);
   constructor(private http: HttpClient) { }

@@ -3,6 +3,7 @@ import api from "../interceptor/axiosConfig";
 export const artistList = async () => {
     try {
         const res = await api.get('/User/PublicSong');
+        console.log(res.data);
         return res.data;
     } catch (e) {
         console.log(e);

@@ -104,121 +104,108 @@
 } */
 
 /* Artist Style Song Card */
-.artist-style-song-card {
-  position: relative;
-  background: rgba(25, 25, 35, 0.8);
-  backdrop-filter: blur(20px);
-  border-radius: 16px;
+/* Dark Song Card - Artist List Style */
+.dark-song-card {
+  background: rgba(31, 31, 31, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(55, 55, 55, 0.6);
+  border-radius: 12px;
   padding: 16px;
   display: flex;
   align-items: center;
   gap: 16px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
   overflow: hidden;
-  min-height: 100px;
+  min-height: 90px;
 }
 
-.artist-style-song-card:hover {
-  background: rgba(35, 35, 50, 0.9);
-  border-color: rgba(213, 144, 57, 0.3);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-/* Background Glow */
-.card-glow {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, rgba(213, 144, 57, 0.05) 0%, transparent 50%, rgba(247, 194, 107, 0.05) 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 0;
-}
-
-.artist-style-song-card:hover .card-glow {
-  opacity: 1;
+.dark-song-card:hover {
+  background: rgba(41, 41, 41, 0.9);
+  border-color: rgba(75, 75, 75, 0.8);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 /* Song Image */
-.song-image-container {
+.song-image-wrapper {
   position: relative;
   flex-shrink: 0;
-  z-index: 2;
 }
 
-.song-image-square {
-  width: 80px;
-  height: 80px;
+.song-image {
+  width: 70px;
+  height: 70px;
   background-size: cover;
   background-position: center;
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 12px;
+  background-color: rgba(55, 55, 55, 0.5);
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(75, 75, 75, 0.4);
 }
 
-.artist-style-song-card:hover .song-image-square {
+.dark-song-card:hover .song-image {
   transform: scale(1.05);
-  border-color: rgba(213, 144, 57, 0.3);
 }
 
 .image-placeholder {
-  color: rgba(213, 144, 57, 0.6);
+  color: rgba(156, 163, 175, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Play Button Overlay */
-.play-overlay-btn {
+/* Play Button */
+.play-button {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #d59039, #f7c26b);
-  border: none;
+  width: 28px;
+  height: 28px;
+  background: rgba(55, 55, 55, 0.9);
+  border: 1px solid rgba(75, 75, 75, 0.6);
   border-radius: 50%;
-  color: white;
+  color: #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(213, 144, 57, 0.4);
+  backdrop-filter: blur(5px);
   z-index: 3;
 }
 
-/* Song Info Section */
-.song-info-section {
+.play-button:hover {
+  background: rgba(75, 75, 75, 0.9);
+  border-color: rgba(107, 114, 128, 0.8);
+  color: #f9fafb;
+}
+
+/* Song Content */
+.song-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  z-index: 2;
   min-width: 0;
 }
 
-.song-main-info {
+.song-header {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
 
-.song-title-text {
-  font-size: 1.1rem !important;
-  font-weight: 600 !important;
-  color: #ffffff !important;
+.song-title {
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  color: #f9fafb !important;
   margin: 0 !important;
   white-space: nowrap !important;
   overflow: hidden !important;
@@ -227,83 +214,74 @@
   min-width: 0;
 }
 
-.song-genre-tag {
-  background: rgba(213, 144, 57, 0.15);
-  color: #d59039;
+.song-genre {
+  background: rgba(55, 55, 55, 0.6);
+  color: #d1d5db;
   font-size: 0.75rem;
   font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 12px;
-  border: 1px solid rgba(213, 144, 57, 0.3);
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(75, 75, 75, 0.4);
   white-space: nowrap;
 }
 
-.song-meta-info {
+.song-stats {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(156, 163, 175, 0.8);
   font-size: 0.8rem;
 }
 
-.meta-item {
+.stat-item {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.meta-item svg {
-  color: #d59039;
+.stat-item svg {
+  color: #9ca3af;
 }
 
-.meta-divider {
-  color: rgba(255, 255, 255, 0.3);
+.stat-separator {
+  color: rgba(156, 163, 175, 0.5);
   font-weight: bold;
 }
 
-/* Actions Section */
-.song-actions-section {
+/* Actions */
+.song-actions {
   display: flex;
   align-items: center;
   gap: 12px;
-  z-index: 2;
+  flex-shrink: 0;
 }
 
-.status-indicator {
-  display: flex;
-  align-items: center;
-}
-
-.status-public,
-.status-private {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
+.status-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(55, 55, 55, 0.6);
+  border: 1px solid rgba(75, 75, 75, 0.4);
 }
 
-.status-public {
-  background: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
-  border-color: rgba(76, 175, 80, 0.4);
+.status-icon.public {
+  color: #9ca3af;
 }
 
-.status-private {
-  background: rgba(255, 152, 0, 0.2);
-  color: #ff9800;
-  border-color: rgba(255, 152, 0, 0.4);
+.status-icon.private {
+  color: #6b7280;
 }
 
-.options-trigger {
-  width: 32px;
-  height: 32px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 8px;
-  color: rgba(255, 255, 255, 0.7);
+.options-button {
+  width: 28px;
+  height: 28px;
+  background: rgba(55, 55, 55, 0.6);
+  border: 1px solid rgba(75, 75, 75, 0.4);
+  border-radius: 6px;
+  color: #9ca3af;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -311,25 +289,27 @@
   transition: all 0.3s ease;
 }
 
-.options-trigger:hover {
-  background: rgba(213, 144, 57, 0.2);
-  color: #d59039;
+.options-button:hover {
+  background: rgba(75, 75, 75, 0.8);
+  border-color: rgba(107, 114, 128, 0.6);
+  color: #d1d5db;
 }
 
-/* Shimmer Effect */
-.shimmer-effect {
+/* Hover Effect */
+.hover-overlay {
   position: absolute;
   top: 0;
-  left: -100%;
+  left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-  transition: left 0.6s ease;
-  z-index: 1;
+  background: linear-gradient(90deg, transparent, rgba(75, 75, 75, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
 }
 
-.artist-style-song-card:hover .shimmer-effect {
-  left: 100%;
+.dark-song-card:hover .hover-overlay {
+  transform: translateX(100%);
 }
 
 /* Options Menu */
@@ -340,108 +320,109 @@
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(3px);
   z-index: 1000;
 }
 
-.options-panel {
+.options-menu {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(25, 25, 35, 0.95);
-  backdrop-filter: blur(30px);
-  border: 1px solid rgba(213, 144, 57, 0.3);
-  border-radius: 16px;
-  width: 300px;
-  max-height: 400px;
+  background: rgba(31, 31, 31, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(75, 75, 75, 0.6);
+  border-radius: 12px;
+  width: 280px;
+  max-height: 350px;
   overflow: hidden;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
   z-index: 1001;
 }
 
-.options-header {
+.menu-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-bottom: 1px solid rgba(213, 144, 57, 0.2);
-  background: linear-gradient(90deg, rgba(213, 144, 57, 0.1), transparent);
+  padding: 16px 18px;
+  border-bottom: 1px solid rgba(75, 75, 75, 0.4);
+  background: rgba(41, 41, 41, 0.6);
 }
 
-.options-header h4 {
-  color: #ffffff;
+.menu-header h4 {
+  color: #f9fafb;
   margin: 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 500;
 }
 
-.close-options {
-  width: 28px;
-  height: 28px;
+.close-button {
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
+  background: rgba(55, 55, 55, 0.6);
+  border: 1px solid rgba(75, 75, 75, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #9ca3af;
   cursor: pointer;
   transition: all 0.3s ease;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 }
 
-.close-options:hover {
-  background: rgba(255, 87, 87, 0.3);
-  color: #ff5757;
-  transform: rotate(90deg);
+.close-button:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #ef4444;
 }
 
-.options-list {
+.menu-options {
   padding: 8px 0;
 }
 
-.option-row {
+.menu-option {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 20px;
+  padding: 12px 18px;
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
-  border-left: 3px solid transparent;
+  border-left: 2px solid transparent;
 }
 
-.option-row:hover {
-  background: rgba(213, 144, 57, 0.1);
-  border-left-color: #d59039;
+.menu-option:hover {
+  background: rgba(55, 55, 55, 0.4);
+  border-left-color: #6b7280;
 }
 
 .option-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(55, 55, 55, 0.6);
+  border: 1px solid rgba(75, 75, 75, 0.4);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
 }
 
-.option-row:hover .option-icon {
-  transform: scale(1.1);
-  box-shadow: 0 0 16px currentColor;
+.menu-option:hover .option-icon {
+  transform: scale(1.05);
+  background: rgba(75, 75, 75, 0.8);
 }
 
-.option-text {
+.option-label {
   flex: 1;
-  color: #ffffff;
-  font-weight: 500;
+  color: #e5e7eb;
+  font-weight: 400;
   font-size: 0.9rem;
 }
 
-.component-container {
+.component-wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -454,75 +435,76 @@
   pointer-events: none;
 }
 
-.option-row:hover .component-container {
+.menu-option:hover .component-wrapper {
   opacity: 1;
   pointer-events: all;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .artist-style-song-card {
+  .dark-song-card {
     padding: 12px;
     gap: 12px;
     min-height: 80px;
   }
 
-  .song-image-square {
+  .song-image {
     width: 60px;
     height: 60px;
   }
 
-  .play-overlay-btn {
-    width: 28px;
-    height: 28px;
+  .play-button {
+    width: 24px;
+    height: 24px;
   }
 
-  .song-title-text {
-    font-size: 1rem !important;
+  .song-title {
+    font-size: 0.9rem !important;
   }
 
-  .options-panel {
-    width: 280px;
+  .options-menu {
+    width: 260px;
     margin: 0 20px;
   }
 }
 
 @media (max-width: 576px) {
-  .artist-style-song-card {
+  .dark-song-card {
     padding: 10px;
     gap: 10px;
   }
 
-  .song-image-square {
+  .song-image {
     width: 50px;
     height: 50px;
   }
 
-  .song-main-info {
+  .song-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
   }
 
-  .song-meta-info {
+  .song-stats {
     font-size: 0.75rem;
   }
 }
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .artist-style-song-card,
-  .song-image-square,
-  .shimmer-effect,
-  .play-overlay-btn {
+  .dark-song-card,
+  .song-image,
+  .hover-overlay,
+  .play-button {
     animation: none;
     transition: none;
   }
 
-  .artist-style-song-card:hover {
+  .dark-song-card:hover {
     transform: none;
   }
 }
+
 
 
 

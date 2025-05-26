@@ -242,24 +242,24 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
   const optionsData = [
     ...(showActions
       ? [
-          { icon: Edit, label: "עריכה", action: () => handleEdit(song), color: "#4CAF50" },
-          { icon: Trash2, label: "מחיקה", action: () => {}, color: "#f44336", isComponent: true },
+          { icon: Edit, label: "עריכה", action: () => handleEdit(song), color: "#9CA3AF" },
+          { icon: Trash2, label: "מחיקה", action: () => {}, color: "#EF4444", isComponent: true },
         ]
       : []),
     ...(!song.isPublic
-      ? [{ icon: Globe, label: "הפוך לציבורי", action: () => updateToPublic(song.id), color: "#2196F3" }]
+      ? [{ icon: Globe, label: "הפוך לציבורי", action: () => updateToPublic(song.id), color: "#6B7280" }]
       : []),
-    { icon: Download, label: "הורדה", action: () => {}, color: "#FF9800", isComponent: true },
-    ...(song.isPublic ? [{ icon: Share2, label: "שיתוף", action: () => {}, color: "#9C27B0", isComponent: true }] : []),
+    { icon: Download, label: "הורדה", action: () => {}, color: "#9CA3AF", isComponent: true },
+    ...(song.isPublic ? [{ icon: Share2, label: "שיתוף", action: () => {}, color: "#9CA3AF", isComponent: true }] : []),
   ]
 
   return (
     <>
       <motion.div
-        className="artist-style-song-card"
+        className="dark-song-card"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -5 }}
+        whileHover={{ y: -3 }}
         transition={{ duration: 0.3 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
@@ -283,18 +283,15 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
           transform: activeCardId === song.id ? "scale(0.98)" : "scale(1)",
         }}
       >
-        {/* Background Glow */}
-        <div className="card-glow"></div>
-
         {/* Song Image */}
-        <div className="song-image-container">
+        <div className="song-image-wrapper">
           <div
-            className="song-image-square"
+            className="song-image"
             style={{ backgroundImage: `url(${song.pathPicture || "/placeholder.svg?height=80&width=80"})` }}
           >
             {!song.pathPicture && (
               <div className="image-placeholder">
-                <Music size={24} />
+                <Music size={20} />
               </div>
             )}
 
@@ -302,7 +299,7 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
             <AnimatePresence>
               {isHovered && (
                 <motion.button
-                  className="play-overlay-btn"
+                  className="play-button"
                   onClick={handlePlayClick}
                   initial={{ scale: 0, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -310,51 +307,47 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Play size={16} fill="currentColor" />
+                  <Play size={14} fill="currentColor" />
                 </motion.button>
               )}
             </AnimatePresence>
           </div>
         </div>
 
-        {/* Song Info */}
-        <div className="song-info-section">
-          <div className="song-main-info">
-            <Typography className="song-title-text">{song.title}</Typography>
-            <div className="song-genre-tag">{song.gener || "כללי"}</div>
+        {/* Song Content */}
+        <div className="song-content">
+          <div className="song-header">
+            <Typography className="song-title">{song.title}</Typography>
+            <div className="song-genre">{song.gener || "כללי"}</div>
           </div>
 
-          <div className="song-meta-info">
-            <div className="meta-item">
+          <div className="song-stats">
+            <div className="stat-item">
               <Calendar size={12} />
               <span>{formatDate(song.create_at)}</span>
             </div>
-            <div className="meta-divider">•</div>
-            <div className="meta-item">
+            <div className="stat-separator">•</div>
+            <div className="stat-item">
               <Headphones size={12} />
               <span>{song.plays || Math.floor(Math.random() * 1000)}</span>
             </div>
           </div>
         </div>
 
-        {/* Status & Actions */}
-        <div className="song-actions-section">
-          {/* Status Badge */}
-          <div className="status-indicator">
+        {/* Actions */}
+        <div className="song-actions">
+          {/* Status */}
+          <div className="status-badge">
             {song.isPublic ? (
-              <div className="status-public">
-                <Eye size={10} />
-              </div>
+              <Eye size={12} className="status-icon public" />
             ) : (
-              <div className="status-private">
-                <EyeOff size={10} />
-              </div>
+              <EyeOff size={12} className="status-icon private" />
             )}
           </div>
 
-          {/* Options Button */}
+          {/* Options */}
           <motion.button
-            className="options-trigger"
+            className="options-button"
             onClick={(e) => {
               e.stopPropagation()
               setShowOptions(!showOptions)
@@ -366,8 +359,8 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
           </motion.button>
         </div>
 
-        {/* Shimmer Effect */}
-        <div className="shimmer-effect"></div>
+        {/* Hover Effect */}
+        <div className="hover-overlay"></div>
       </motion.div>
 
       {/* Options Menu */}
@@ -382,28 +375,28 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
               onClick={() => setShowOptions(false)}
             />
             <motion.div
-              className="options-panel"
+              className="options-menu"
               initial={{ opacity: 0, scale: 0.8, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: -20 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
             >
-              <div className="options-header">
-                <h4>אפשרויות שיר</h4>
-                <button className="close-options" onClick={() => setShowOptions(false)}>
+              <div className="menu-header">
+                <h4>אפשרויות</h4>
+                <button className="close-button" onClick={() => setShowOptions(false)}>
                   ×
                 </button>
               </div>
 
-              <div className="options-list">
+              <div className="menu-options">
                 {optionsData.map((option, index) => (
                   <motion.div
                     key={index}
-                    className="option-row"
+                    className="menu-option"
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    whileHover={{ x: 8 }}
+                    whileHover={{ x: 5 }}
                     onClick={() => {
                       if (!option.isComponent) {
                         option.action()
@@ -411,23 +404,23 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
                     }}
                   >
                     <div className="option-icon" style={{ color: option.color }}>
-                      <option.icon size={18} />
+                      <option.icon size={16} />
                     </div>
-                    <span className="option-text">{option.label}</span>
+                    <span className="option-label">{option.label}</span>
 
                     {/* Component handling */}
                     {option.isComponent && option.label === "מחיקה" && (
-                      <div className="component-container">
+                      <div className="component-wrapper">
                         <DeleteSong song={song} />
                       </div>
                     )}
                     {option.isComponent && option.label === "הורדה" && (
-                      <div className="component-container">
+                      <div className="component-wrapper">
                         <DownloadSong song={song} />
                       </div>
                     )}
                     {option.isComponent && option.label === "שיתוף" && (
-                      <div className="component-container">
+                      <div className="component-wrapper">
                         <ShareSongButton song={song} />
                       </div>
                     )}
@@ -445,6 +438,7 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
 }
 
 export default SongCard
+
 
 
 

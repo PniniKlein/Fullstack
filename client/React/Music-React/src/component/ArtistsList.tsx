@@ -422,10 +422,11 @@ import { artistList } from "../services/UserService"
 import type { User } from "../model/User"
 import { Search, Users, Star, Music2, Verified, Award, TrendingUp } from "lucide-react"
 import "../css/ArtistsList.css"
+import { UserWithCountList } from "../model/userWithCountList"
 
 const ArtistsList = () => {
-  const [artists, setArtists] = useState<User[]>([])
-  const [filteredArtists, setFilteredArtists] = useState<User[]>([])
+  const [artists, setArtists] = useState<UserWithCountList[]>([])
+  const [filteredArtists, setFilteredArtists] = useState<UserWithCountList[]>([])
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(true)
   const [hoveredArtist, setHoveredArtist] = useState<number | null>(null)
@@ -435,7 +436,7 @@ const ArtistsList = () => {
     setIsLoading(true)
     try {
       const res = await artistList()
-      const sortedArtists = res.sort((a: User, b: User) => a.userName?.localeCompare(b.userName || ""))
+      const sortedArtists = res.sort((a: UserWithCountList, b: UserWithCountList) => a.userName?.localeCompare(b.userName || ""))
       setArtists(sortedArtists)
       setFilteredArtists(sortedArtists)
     } catch (e) {
@@ -635,16 +636,16 @@ const ArtistsList = () => {
                     <div className="artist-stats-modern">
                       <div className="stat-item">
                         <Music2 size={14} />
-                        <span>{20} שירים</span>
+                        <span>{artist.countSongs || 0} שירים</span>
                       </div>
                       <div className="stat-item">
                         <Star size={14} />
-                        <span>{20} עוקבים</span>
+                        <span>{artist.countFollowees || 0} עוקבים</span>
                       </div>
                     </div>
 
                     {/* Trending Badge */}
-                    {index < 3 && (
+                    {artist.countSongs>5 && artist.countFollowees>0 && (
                       <motion.div
                         className="trending-badge"
                         initial={{ opacity: 0, x: 20 }}

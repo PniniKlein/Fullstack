@@ -45,8 +45,11 @@ namespace Music.Data.Repositories
 
         public async Task<User?> GetByIdFullPublicAsync(int id)
         {
-            return await _dataSet.Where(x => x.Id == id).Include(x => x.Songs.Where(s => s.IsPublic)).Include(x => x.Followees)
-            .ThenInclude(f => f.Followee).FirstOrDefaultAsync();
+            return await _dataSet.Where(x => x.Id == id)
+                .Include(x => x.Songs.Where(s => s.IsPublic))
+                .Include(x => x.Followees)
+            .ThenInclude(f => f.Followee)
+            .FirstOrDefaultAsync();
         }
 
         public User? GetUserWithRoles(string email)
@@ -61,10 +64,22 @@ namespace Music.Data.Repositories
              .Include(u => u.Followers)
              .FirstOrDefaultAsync(u => u.Id == id);
         }
-        public async Task<IEnumerable<User>> GetUsersWithPublicSongsAsync()
+        public async Task<IEnumerable<UserWithCountSong>> GetUsersWithPublicSongsAsync()
         {
             return await _dataSet
                 .Where(u => u.Songs.Any(s => s.IsPublic))
+                .Select(x => new UserWithCountSong
+                {
+                    Id = x.Id,
+                    UserName = x.UserName,
+                    Email = x.Email,
+                    Password = x.Password,
+                    PathProfile = x.PathProfile,
+                    Create_at = x.Create_at,
+                    CountSongs = x.Songs.Count,
+                    CountFollowees = x.Followees.Count,
+                    RoleList = x.RoleList
+                })
                 .ToListAsync();
         }
 

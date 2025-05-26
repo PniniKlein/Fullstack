@@ -29,11 +29,11 @@ namespace Music.Service.services
         {
             return await _iManager._userRepository.GetFullAsync();
         }
-        public async Task<IEnumerable<UserDto>> GetUsersWithPublicSongsAsync()
+        public async Task<IEnumerable<UserWithCountSong>> GetUsersWithPublicSongsAsync()
         {
             var users = await _iManager._userRepository.GetUsersWithPublicSongsAsync();
-            var userDtos = _mapper.Map<IEnumerable<UserDto>>(users);
-            return userDtos;
+            //var userDtos = _mapper.Map<IEnumerable<UserDto>>(users);
+            return users;
         }
         public async Task<UserDto?> GetByIdAsync(int id)
         {

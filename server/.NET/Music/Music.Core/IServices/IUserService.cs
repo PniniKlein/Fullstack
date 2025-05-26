@@ -12,7 +12,7 @@ namespace Music.Core.IServices
     {
         Task<IEnumerable<UserDto>> GetAsync();
         Task<IEnumerable<User>> GetFullAsync();
-        Task<IEnumerable<UserDto>> GetUsersWithPublicSongsAsync();
+        Task<IEnumerable<UserWithCountSong>> GetUsersWithPublicSongsAsync();
         Task<UserDto> GetByIdAsync(int id);
         Task<UserWithFollowees?> GetByIdFullAsync(int id);
         Task<User?> GetByIdFullPublicAsync(int id);

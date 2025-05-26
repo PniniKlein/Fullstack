@@ -16,7 +16,7 @@ namespace Music.Core.IRepositories
         User? GetUserWithRoles(string email);
         Task<(int Id, string PasswordHash)?> GetPasswordAndIdByEmailAsync(string email);
         Task<User?> GetUserWithFolowee(int id);
-        Task<IEnumerable<User>> GetUsersWithPublicSongsAsync();
+        Task<IEnumerable<UserWithCountSong>> GetUsersWithPublicSongsAsync();
         Task<bool> ExistsAsync(string email);
         Task<string> GetUserNameByIdAsync(int userId);
     }

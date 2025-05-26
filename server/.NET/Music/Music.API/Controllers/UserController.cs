@@ -37,7 +37,7 @@ namespace Music.API.Controllers
         }
         [HttpGet("PublicSong")]
         [AllowAnonymous]
-        public async Task<IEnumerable<UserDto>> GetUsersWithPublicSongs()
+        public async Task<IEnumerable<UserWithCountSong>> GetUsersWithPublicSongs()
         {
             return await _iService.GetUsersWithPublicSongsAsync();
         }

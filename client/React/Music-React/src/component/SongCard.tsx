@@ -156,290 +156,108 @@
 "use client"
 
 import type React from "react"
-import { Typography } from "@mui/material"
-import { motion, AnimatePresence } from "framer-motion"
-import { useDispatch, useSelector } from "react-redux"
-import type { Dispatch, StoreType } from "../store/store"
-import type { Song } from "../model/Song"
-import { loadSong, updateSong } from "../store/songSlice"
-import { useNavigate } from "react-router-dom"
+
 import { useState } from "react"
-import { updateSongToPublic } from "../services/SongsService"
-import { getUserDataFromToken } from "./AppLayout"
-import { loadUser } from "../store/userSlice"
-import SnackbarGreen from "./SnackbarGreen"
-import DownloadSong from "./DownloadSong"
-import ShareSongButton from "./ShareSongButton"
-import DeleteSong from "./DeleteSong"
-import {
-  Play,
-  Calendar,
-  Headphones,
-  Music,
-  MoreVertical,
-  Edit,
-  Globe,
-  Download,
-  Share2,
-  Trash2,
-  Eye,
-  EyeOff,
-} from "lucide-react"
+import { Typography, IconButton, Paper } from "@mui/material"
+import { Play, MoreVertical, Headphones, Clock } from "lucide-react"
+import { useDispatch } from "react-redux"
+import type { Dispatch } from "../store/store"
+import type { Song } from "../model/Song"
+import { updateSong } from "../store/songSlice"
+import { useNavigate } from "react-router-dom"
 import "../css/SongCard.css"
 
 interface SongCardProps {
   song: Song
-  activeCardId: number | null
-  onCardClick: (event: React.MouseEvent, songId: number) => void
-  setActiveCardId: Function
+  activeCardId?: number | null
+  onCardClick?: (event: React.MouseEvent, songId: number) => void
+  setActiveCardId?: Function
   showActions?: boolean
 }
 
-const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showActions = false }: SongCardProps) => {
-  const handleMouseDown = (songId: number) => setActiveCardId(songId)
-  const handleMouseUp = () => setActiveCardId(null)
-  const navigate = useNavigate()
-  const dispatch = useDispatch<Dispatch>()
-  const songPlayer = useSelector((state: StoreType) => state.songPlayer.song)
+const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showActions = true }: SongCardProps) => {
   const [showOptions, setShowOptions] = useState(false)
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [snackbarMessage, setSnackbarMessage] = useState("")
-  const [isHovered, setIsHovered] = useState(false)
-
-  const handleEdit = (song: Song) => {
-    navigate("/updateSong", { state: { song } })
-    setShowOptions(false)
-  }
-
-  const updateToPublic = async (songId: number) => {
-    await updateSongToPublic(songId)
-    if (songPlayer.id === songId) {
-      const updatedSong = { ...songPlayer, isPublic: true }
-      dispatch(loadSong(updatedSong))
-    }
-    const token = localStorage.getItem("authToken")
-    setSnackbarMessage("השיר הפך לציבורי!")
-    if (token) {
-      const id = getUserDataFromToken(token)
-      if (id) {
-        dispatch(loadUser(id))
-      }
-    }
-    setShowOptions(false)
-    setSnackbarOpen(true)
-  }
+  const dispatch = useDispatch<Dispatch>()
+  const navigate = useNavigate()
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return date.toLocaleDateString("he-IL", { day: "numeric", month: "short" })
+    return date.toLocaleDateString("he-IL", { year: "numeric", month: "numeric", day: "numeric" })
   }
 
-  const handlePlayClick = (e: React.MouseEvent) => {
+  const handlePlay = (e: React.MouseEvent) => {
     e.stopPropagation()
     dispatch(updateSong(song))
   }
 
-  const optionsData = [
-    ...(showActions
-      ? [
-          { icon: Edit, label: "עריכה", action: () => handleEdit(song), color: "#9CA3AF" },
-          { icon: Trash2, label: "מחיקה", action: () => {}, color: "#EF4444", isComponent: true },
-        ]
-      : []),
-    ...(!song.isPublic
-      ? [{ icon: Globe, label: "הפוך לציבורי", action: () => updateToPublic(song.id), color: "#6B7280" }]
-      : []),
-    { icon: Download, label: "הורדה", action: () => {}, color: "#9CA3AF", isComponent: true },
-    ...(song.isPublic ? [{ icon: Share2, label: "שיתוף", action: () => {}, color: "#9CA3AF", isComponent: true }] : []),
-  ]
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (onCardClick) {
+      onCardClick(e, song.id)
+    } else {
+      navigate(`/songComments/${song.id}`)
+    }
+  }
 
   return (
-    <>
-      <motion.div
-        className="dark-song-card"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -3 }}
-        transition={{ duration: 0.3 }}
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
-        onClick={(e) => {
-          if (!showOptions) {
-            onCardClick(e, song.id)
-          }
-        }}
-        onMouseDown={(e) => {
-          const target = e.target as HTMLElement
-          if (!target.closest("button, svg") && !showOptions) {
-            handleMouseDown(song.id)
-          }
-        }}
-        onMouseUp={() => {
-          if (!showOptions) {
-            handleMouseUp()
-          }
-        }}
-        style={{
-          transform: activeCardId === song.id ? "scale(0.98)" : "scale(1)",
-        }}
-      >
-        {/* Song Image */}
-        <div className="song-image-wrapper">
-          <div
-            className="song-image"
-            style={{ backgroundImage: `url(${song.pathPicture || "/placeholder.svg?height=80&width=80"})` }}
-          >
-            {!song.pathPicture && (
-              <div className="image-placeholder">
-                <Music size={20} />
-              </div>
-            )}
-
-            {/* Play Button Overlay */}
-            <AnimatePresence>
-              {isHovered && (
-                <motion.button
-                  className="play-button"
-                  onClick={handlePlayClick}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0, opacity: 0 }}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Play size={14} fill="currentColor" />
-                </motion.button>
-              )}
-            </AnimatePresence>
-          </div>
+    <Paper className="premium-song-card" elevation={0}>
+      <div className="card-top-section">
+        <div className="card-image-wrapper">
+          <div className="card-image" style={{ backgroundImage: `url(${song.pathPicture})` }}></div>
+          <div className="card-gradient-overlay"></div>
+          <IconButton className="play-button" onClick={handlePlay}>
+            <Play size={22} />
+          </IconButton>
         </div>
 
-        {/* Song Content */}
-        <div className="song-content">
-          <div className="song-header">
-            <Typography className="song-title">{song.title}</Typography>
-            <div className="song-genre">{song.gener || "כללי"}</div>
-          </div>
+        <div className="card-badge">{song.gener || "כללי"}</div>
 
-          <div className="song-stats">
-            <div className="stat-item">
-              <Calendar size={12} />
-              <span>{formatDate(song.create_at)}</span>
-            </div>
-            <div className="stat-separator">•</div>
-            <div className="stat-item">
-              <Headphones size={12} />
-              <span>{song.plays || Math.floor(Math.random() * 1000)}</span>
-            </div>
-          </div>
-        </div>
+        <IconButton
+          className="more-options-button"
+          onClick={(e) => {
+            e.stopPropagation()
+            setShowOptions(!showOptions)
+          }}
+        >
+          <MoreVertical size={18} />
+        </IconButton>
 
-        {/* Actions */}
-        <div className="song-actions">
-          {/* Status */}
-          <div className="status-badge">
-            {song.isPublic ? (
-              <Eye size={12} className="status-icon public" />
-            ) : (
-              <EyeOff size={12} className="status-icon private" />
-            )}
-          </div>
-
-          {/* Options */}
-          <motion.button
-            className="options-button"
-            onClick={(e) => {
-              e.stopPropagation()
-              setShowOptions(!showOptions)
-            }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <MoreVertical size={16} />
-          </motion.button>
-        </div>
-
-        {/* Hover Effect */}
-        <div className="hover-overlay"></div>
-      </motion.div>
-
-      {/* Options Menu */}
-      <AnimatePresence>
         {showOptions && (
-          <>
-            <motion.div
-              className="options-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowOptions(false)}
-            />
-            <motion.div
-              className="options-menu"
-              initial={{ opacity: 0, scale: 0.8, y: -20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: -20 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            >
-              <div className="menu-header">
-                <h4>אפשרויות</h4>
-                <button className="close-button" onClick={() => setShowOptions(false)}>
-                  ×
-                </button>
+          <div className="options-dropdown">
+            <div className="option-item" onClick={() => navigate(`/songComments/${song.id}`)}>
+              צפה בפרטים
+            </div>
+            {showActions && (
+              <div className="option-item" onClick={() => navigate(`/updateSong`, { state: { song } })}>
+                ערוך שיר
               </div>
-
-              <div className="menu-options">
-                {optionsData.map((option, index) => (
-                  <motion.div
-                    key={index}
-                    className="menu-option"
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    whileHover={{ x: 5 }}
-                    onClick={() => {
-                      if (!option.isComponent) {
-                        option.action()
-                      }
-                    }}
-                  >
-                    <div className="option-icon" style={{ color: option.color }}>
-                      <option.icon size={16} />
-                    </div>
-                    <span className="option-label">{option.label}</span>
-
-                    {/* Component handling */}
-                    {option.isComponent && option.label === "מחיקה" && (
-                      <div className="component-wrapper">
-                        <DeleteSong song={song} />
-                      </div>
-                    )}
-                    {option.isComponent && option.label === "הורדה" && (
-                      <div className="component-wrapper">
-                        <DownloadSong song={song} />
-                      </div>
-                    )}
-                    {option.isComponent && option.label === "שיתוף" && (
-                      <div className="component-wrapper">
-                        <ShareSongButton song={song} />
-                      </div>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </>
+            )}
+            <div className="option-item" onClick={handlePlay}>
+              נגן עכשיו
+            </div>
+          </div>
         )}
-      </AnimatePresence>
+      </div>
 
-      <SnackbarGreen snackbarMessage={snackbarMessage} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} />
-    </>
+      <div className="card-content" onClick={handleCardClick}>
+        <Typography className="song-title">{song.title}</Typography>
+
+        <div className="song-stats">
+          <div className="stat-item">
+            <Headphones size={14} />
+            <span>{song.plays || 0} השמעות</span>
+          </div>
+
+          <div className="stat-item">
+            <Clock size={14} />
+            <span>{formatDate(song.create_at)}</span>
+          </div>
+        </div>
+      </div>
+    </Paper>
   )
 }
 
 export default SongCard
-
-
 
 
 

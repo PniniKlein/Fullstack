@@ -1,113 +1,133 @@
-import { Box, TextField, IconButton, InputAdornment } from "@mui/material";
-import { Send } from "@mui/icons-material";
-import React, { useState } from "react";
-import "../css/AddComment.css"; // ייבוא קובץ CSS
+"use client"
 
-const AddComment = ({ handleAddComment }: { handleAddComment: (comment: string, rating: number) => void; }) => {
-  const [newComment, setNewComment] = useState<string>("");
-  const [newRating, setNewRating] = useState<number>(0);
-  const [hoveredValue, setHoveredValue] = useState<number | null>(null);
-  const maxStars = 5;
+import type React from "react"
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { Send, Star } from "lucide-react"
+import "../css/AddComment.css"
 
-  const handleMouseEnter = (index: number) => setHoveredValue(index + 1);
-  const handleMouseLeave = () => setHoveredValue(null);
-  const handleClick = (index: number) => setNewRating(index + 1);
+interface AddCommentProps {
+  handleAddComment: (comment: string, rating: number) => void
+}
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") add();
-  };
+const AddComment = ({ handleAddComment }: AddCommentProps) => {
+  const [newComment, setNewComment] = useState<string>("")
+  const [newRating, setNewRating] = useState<number>(0)
+  const [hoveredValue, setHoveredValue] = useState<number | null>(null)
+  const [isFocused, setIsFocused] = useState(false)
+  const maxStars = 5
+
+  const handleMouseEnter = (index: number) => setHoveredValue(index + 1)
+  const handleMouseLeave = () => setHoveredValue(null)
+  const handleClick = (index: number) => setNewRating(index + 1)
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault()
+      add()
+    }
+  }
 
   const add = () => {
-    handleAddComment(newComment, newRating);
-    setNewComment("");
-    setNewRating(0);
-  };
+    if (!newComment.trim() && newRating === 0) return
+    handleAddComment(newComment, newRating)
+    setNewComment("")
+    setNewRating(0)
+  }
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-      <TextField
-        multiline
-        placeholder="כתוב תגובה..."
-        rows={1}
-        value={newComment}
-        onChange={(e) => setNewComment(e.target.value)}
-        onKeyDown={handleKeyDown}
-        variant="outlined"
-        // className="comment-input" // הוספת מחלקת CSS
-        sx={{
-          width: "700px",
-          borderRadius: "10px",
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "#212121",
-            borderRadius: "10px",
-            color: "#f1f1f1",
-            fontSize: "18px",
-            paddingRight: "8px",
-            minHeight: "46px",
-            // "&.Mui-focused fieldset": { borderColor: "#333" },
-            '& fieldset': {
-              borderColor: '#F7C26B', // צבע גבול (כמו חום)
-            },
-            '&:hover fieldset': {
-              borderColor: '#F7C26B', // צבע גבול על hover (כמו זהב)
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#F7C26B', // צבע גבול כשיש focus
-            },
-          },
-          '& .MuiInputBase-input': {
-            color: '#fff', // צבע הטקסט (לבן)
-            padding: '10px', // ריווח פנימי
-          },
-          "& input": {
-            color: "#f1f1f1",
-            padding: "10px 0",
-          },
-          "& fieldset": {
-            borderColor: "#444",
-          },
-          "&:hover fieldset": {
-            borderColor: "#666",
-          },
-        }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Box sx={{ display: "flex", alignItems: "center", pr: 1 }}>
-                <Box sx={{ display: "flex", gap: "4px" }}>
-                  {[...Array(maxStars)].map((_, index) => (
-                    <Box
-                      key={index}
-                      onMouseEnter={() => handleMouseEnter(index)}
-                      onMouseLeave={handleMouseLeave}
-                      onClick={() => handleClick(index)}
-                      className={`star ${index < (hoveredValue || newRating) ? 'hovered' : ''}`} // הוספת מחלקת CSS
-                    >
-                      ★
-                    </Box>
-                  ))}
-                </Box>
-                <Box sx={{ height: "24px", width: "1px", backgroundColor: "#555", marginLeft: "8px", marginRight: "8px" }} />
-              </Box>
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={() => add()}
-                className="send-icon" // הוספת מחלקת CSS
-              >
-                <Send />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-      />
-    </Box>
-  );
-};
+    <div className="add-comment-modern">
+      {/* Background Effects */}
+      <div className="add-comment-background-effects">
+        <div className="add-comment-gradient-orb"></div>
+      </div>
 
-export default AddComment;
+      <motion.div
+        className="add-comment-container"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        {/* Rating Section */}
+        <div className="add-comment-rating-section">
+          <div className="rating-label">
+            <Star size={16} className="rating-icon" />
+            <span>דירוג השיר</span>
+          </div>
+          <div className="rating-stars-container">
+            {[...Array(maxStars)].map((_, index) => (
+              <motion.div
+                key={index}
+                className={`rating-star ${index < (hoveredValue || newRating) ? "active" : ""}`}
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => handleClick(index)}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Star size={20} fill={index < (hoveredValue || newRating) ? "currentColor" : "none"} />
+              </motion.div>
+            ))}
+          </div>
+          {newRating > 0 && (
+            <motion.div
+              className="rating-value"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {newRating}/5
+            </motion.div>
+          )}
+        </div>
+
+        {/* Comment Input Section */}
+        <div className="add-comment-input-section">
+          <div className={`comment-input-wrapper ${isFocused ? "focused" : ""}`}>
+            <div className="input-glow"></div>
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+              placeholder="שתף את המחשבות שלך על השיר..."
+              className="comment-textarea"
+              rows={3}
+            />
+
+            <motion.button
+              className="send-button"
+              onClick={add}
+              disabled={!newComment.trim() && newRating === 0}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Send size={18} />
+            </motion.button>
+          </div>
+        </div>
+
+        {/* Character Counter */}
+        {newComment.length > 0 && (
+          <motion.div
+            className="character-counter"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {newComment.length} תווים
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
+  )
+}
+
+export default AddComment
+
 
 // "use client"
 
@@ -217,3 +237,4 @@ export default AddComment;
 // }
 
 // export default AddComment
+

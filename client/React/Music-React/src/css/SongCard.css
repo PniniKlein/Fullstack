@@ -1,4 +1,4 @@
-.songCard {
+/* .songCard {
   margin-top: 0px;
   position: relative;
   width: 300px;
@@ -101,7 +101,432 @@
 
 .largeOption {
   transform: scale(1.7);
+} */
+
+/* Artist Style Song Card */
+.artist-style-song-card {
+  position: relative;
+  background: rgba(25, 25, 35, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  min-height: 100px;
 }
+
+.artist-style-song-card:hover {
+  background: rgba(35, 35, 50, 0.9);
+  border-color: rgba(213, 144, 57, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Background Glow */
+.card-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(213, 144, 57, 0.05) 0%, transparent 50%, rgba(247, 194, 107, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 0;
+}
+
+.artist-style-song-card:hover .card-glow {
+  opacity: 1;
+}
+
+/* Song Image */
+.song-image-container {
+  position: relative;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.song-image-square {
+  width: 80px;
+  height: 80px;
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.artist-style-song-card:hover .song-image-square {
+  transform: scale(1.05);
+  border-color: rgba(213, 144, 57, 0.3);
+}
+
+.image-placeholder {
+  color: rgba(213, 144, 57, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Play Button Overlay */
+.play-overlay-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #d59039, #f7c26b);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(213, 144, 57, 0.4);
+  z-index: 3;
+}
+
+/* Song Info Section */
+.song-info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+  min-width: 0;
+}
+
+.song-main-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.song-title-text {
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  flex: 1;
+  min-width: 0;
+}
+
+.song-genre-tag {
+  background: rgba(213, 144, 57, 0.15);
+  color: #d59039;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(213, 144, 57, 0.3);
+  white-space: nowrap;
+}
+
+.song-meta-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-item svg {
+  color: #d59039;
+}
+
+.meta-divider {
+  color: rgba(255, 255, 255, 0.3);
+  font-weight: bold;
+}
+
+/* Actions Section */
+.song-actions-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 2;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+}
+
+.status-public,
+.status-private {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+}
+
+.status-public {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.status-private {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+  border-color: rgba(255, 152, 0, 0.4);
+}
+
+.options-trigger {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.options-trigger:hover {
+  background: rgba(213, 144, 57, 0.2);
+  color: #d59039;
+}
+
+/* Shimmer Effect */
+.shimmer-effect {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+.artist-style-song-card:hover .shimmer-effect {
+  left: 100%;
+}
+
+/* Options Menu */
+.options-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+}
+
+.options-panel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(25, 25, 35, 0.95);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(213, 144, 57, 0.3);
+  border-radius: 16px;
+  width: 300px;
+  max-height: 400px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+}
+
+.options-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(213, 144, 57, 0.2);
+  background: linear-gradient(90deg, rgba(213, 144, 57, 0.1), transparent);
+}
+
+.options-header h4 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.close-options {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.close-options:hover {
+  background: rgba(255, 87, 87, 0.3);
+  color: #ff5757;
+  transform: rotate(90deg);
+}
+
+.options-list {
+  padding: 8px 0;
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  border-left: 3px solid transparent;
+}
+
+.option-row:hover {
+  background: rgba(213, 144, 57, 0.1);
+  border-left-color: #d59039;
+}
+
+.option-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.option-row:hover .option-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 16px currentColor;
+}
+
+.option-text {
+  flex: 1;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.component-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.option-row:hover .component-container {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .artist-style-song-card {
+    padding: 12px;
+    gap: 12px;
+    min-height: 80px;
+  }
+
+  .song-image-square {
+    width: 60px;
+    height: 60px;
+  }
+
+  .play-overlay-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .song-title-text {
+    font-size: 1rem !important;
+  }
+
+  .options-panel {
+    width: 280px;
+    margin: 0 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .artist-style-song-card {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .song-image-square {
+    width: 50px;
+    height: 50px;
+  }
+
+  .song-main-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .song-meta-info {
+    font-size: 0.75rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .artist-style-song-card,
+  .song-image-square,
+  .shimmer-effect,
+  .play-overlay-btn {
+    animation: none;
+    transition: none;
+  }
+
+  .artist-style-song-card:hover {
+    transform: none;
+  }
+}
+
+
+
+
 /* :root {
   --color-primary-main: #D59039;
   --color-primary-light: #F7C26B;

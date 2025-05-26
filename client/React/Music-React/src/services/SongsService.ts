@@ -103,15 +103,29 @@ export const addPlay = async(id:number) =>{
     }
 }
 
-export const addLyrics = async(id:number,lyrics:string) =>{
-       try {
+// export const addLyrics = async(id:number,lyrics:string) =>{
+//        try {
+//         console.log(lyrics);
+//         const res = await api.put('/Song/'+id+'/Lyrics', lyrics);
+//         return res.data;
+//     } catch (e) {
+//         console.log(e);
+//     }
+// }
+
+export const addLyrics = async (id: number, lyrics: string) => {
+    try {
         console.log(lyrics);
-        const res = await api.put('/Song/'+id+'/Lyrics', { lyrics });
+        const res = await api.put('/Song/' + id + '/Lyrics', JSON.stringify(lyrics), {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
         return res.data;
     } catch (e) {
         console.log(e);
     }
-}
+};
 
 export const deleteSong = async(id:number) =>{
     try {

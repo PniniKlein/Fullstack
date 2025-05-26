@@ -1,0 +1,403 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap");
+
+.add-song-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.add-song-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.logo-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.logo-glow {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(255, 152, 0, 0.3) 0%, rgba(255, 152, 0, 0) 70%);
+  border-radius: 50%;
+  animation: pulse 3s infinite alternate;
+  z-index: 0;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+.add-song-logo-icon {
+  width: 40px;
+  height: 40px;
+  stroke: #ff9500;
+  stroke-width: 2;
+  margin-left: 12px;
+  filter: drop-shadow(0 0 15px rgba(255, 152, 0, 0.7));
+  animation: float-icon 6s ease-in-out infinite;
+}
+
+@keyframes float-icon {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.add-song-title {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  font-family: "Poppins", sans-serif !important;
+  background: linear-gradient(to right, #ffffff, #ffb74d) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  margin: 0 !important;
+}
+
+.add-song-subtitle {
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  font-family: "Poppins", sans-serif !important;
+  background: linear-gradient(to right, #ffffff, #ffb74d) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  margin: 0 !important;
+}
+
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.divider-line {
+  height: 2px;
+  width: 80px;
+  background: linear-gradient(to right, transparent, #ff8c3f, transparent);
+}
+
+.divider-space {
+  width: 16px;
+}
+
+.stepper-container {
+  background: rgba(20, 20, 20, 0.5);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.add-song-stepper {
+  width: 100%;
+}
+
+.step-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.step-icon.active {
+  background: linear-gradient(135deg, #ff6b00, #ff9d45);
+  color: white;
+  box-shadow: 0 0 15px rgba(255, 107, 0, 0.5);
+}
+
+.step-label {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-family: "Poppins", sans-serif !important;
+  font-size: 0.9rem !important;
+  margin-top: 8px !important;
+}
+
+.add-song-content {
+  background: rgba(20, 20, 20, 0.5);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.step-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  font-family: "Poppins", sans-serif !important;
+  color: #ffffff !important;
+  margin-bottom: 8px !important;
+}
+
+.step-description {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-family: "Poppins", sans-serif !important;
+  margin-bottom: 24px !important;
+}
+
+.upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 2px dashed rgba(255, 107, 0, 0.3);
+  border-radius: 12px;
+  padding: 24px;
+  background: rgba(255, 107, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+  border-color: rgba(255, 107, 0, 0.5);
+  background: rgba(255, 107, 0, 0.1);
+}
+
+.file-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.file-icon {
+  color: #ff8c3f;
+  margin-bottom: 8px;
+}
+
+.file-name {
+  font-weight: 500 !important;
+  color: white !important;
+  text-align: center !important;
+  word-break: break-all !important;
+}
+
+.file-size {
+  color: rgba(255, 255, 255, 0.6) !important;
+  margin-top: 4px !important;
+}
+
+.extracting-metadata {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.extracting-spinner {
+  color: #ff8c3f !important;
+}
+
+.extracting-text {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.extraction-complete {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  color: #4caf50;
+}
+
+.complete-icon {
+  color: #4caf50;
+}
+
+.complete-text {
+  color: #4caf50 !important;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-field {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.form-field .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.form-field .MuiOutlinedInput-root {
+  color: white !important;
+}
+
+.form-field .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.form-field:hover .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 107, 0, 0.5) !important;
+}
+
+.form-field .Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: #ff8c3f !important;
+}
+
+.cover-preview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.cover-preview {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 107, 0, 0.3);
+}
+
+.change-cover-button {
+  color: #ff8c3f !important;
+  border-color: rgba(255, 107, 0, 0.5) !important;
+}
+
+.step-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+}
+
+.back-button {
+  color: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.next-button,
+.submit-button {
+  background: linear-gradient(90deg, #ff6b00, #ff9d45) !important;
+  color: white !important;
+  box-shadow: 0 4px 10px rgba(255, 107, 0, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.next-button:hover,
+.submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 107, 0, 0.4) !important;
+}
+
+.next-button:disabled {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+}
+
+.summary-container {
+  display: flex;
+  gap: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.summary-left {
+  flex: 0 0 150px;
+}
+
+.summary-cover {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 107, 0, 0.3);
+}
+
+.summary-cover-placeholder {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 107, 0, 0.1);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.summary-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-label {
+  color: rgba(255, 255, 255, 0.6) !important;
+  font-size: 0.9rem !important;
+  margin-bottom: 4px !important;
+}
+
+.summary-value {
+  color: white !important;
+  font-weight: 500 !important;
+}
+
+.summary-value.description {
+  max-height: 80px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+@media (max-width: 768px) {
+  .summary-container {
+    flex-direction: column;
+  }
+
+  .summary-left {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+}

@@ -1,0 +1,432 @@
+.profile-dialog-modern {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 95%;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* Backdrop */
+.profile-dialog-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+}
+
+/* Modal */
+.profile-dialog-modal {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.profile-dialog-modal::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 70%, rgba(213, 144, 57, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Header */
+.profile-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.header-icon {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 15px;
+  color: var(--primary);
+}
+
+.icon-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle, rgba(213, 144, 57, 0.3) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: iconPulse 3s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+.dialog-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #d59039, #f7c26b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 8px;
+  letter-spacing: -1px;
+}
+
+.dialog-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.close-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.close-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Upload Area */
+.upload-area {
+  width: 92%;
+  height: 200px;
+  border: 2px dashed rgba(213, 144, 57, 0.3);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 30px;
+  background: rgba(213, 144, 57, 0.02);
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.upload-area:hover {
+  border-color: rgba(213, 144, 57, 0.5);
+  background: rgba(213, 144, 57, 0.05);
+  transform: translateY(-2px);
+}
+
+.upload-area.drag-active {
+  border-color: #f7c26b;
+  background: rgba(213, 144, 57, 0.1);
+  transform: scale(1.02);
+}
+
+/* Upload Placeholder */
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.upload-icon-container {
+  position: relative;
+  margin-bottom: 20px;
+  color: var(--primary);
+}
+
+.upload-icon-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(213, 144, 57, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: uploadPulse 2s ease-in-out infinite;
+}
+
+@keyframes uploadPulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+    opacity: 0.6;
+  }
+}
+
+.upload-placeholder h3 {
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.upload-placeholder p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1rem;
+  margin: 0 0 15px;
+}
+
+.supported-formats {
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.supported-formats span {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+}
+
+/* Selected Image Preview */
+.selected-image-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  opacity: 0;
+  transition: all 0.3s ease;
+  color: white;
+  font-weight: 500;
+}
+
+.selected-image-preview:hover .image-overlay {
+  opacity: 1;
+}
+
+/* Divider */
+.divider-section {
+  display: flex;
+  align-items: center;
+  margin: 30px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.divider-text {
+  padding: 0 20px;
+  /* background: rgba(26, 26, 26, 0.8); */
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Preset Images */
+.preset-images-section {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 20px;
+}
+
+.preset-images-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  justify-items: center;
+}
+
+.preset-image-item {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+  background: linear-gradient(#1a1a1a, #1a1a1a) padding-box,
+    linear-gradient(135deg, rgba(213, 144, 57, 0.3), rgba(247, 194, 107, 0.3)) border-box;
+}
+
+.preset-image-item:hover {
+  transform: scale(1.1);
+  border: 3px solid transparent;
+  background: linear-gradient(#1a1a1a, #1a1a1a) padding-box,
+    linear-gradient(135deg, #d59039, #f7c26b) border-box;
+  box-shadow: 0 0 20px rgba(213, 144, 57, 0.4);
+}
+
+.preset-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preset-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(213, 144, 57, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.preset-image-item:hover .preset-overlay {
+  opacity: 1;
+}
+
+/* Confirm Section */
+.confirm-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.confirm-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #d59039, #f7c26b);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(213, 144, 57, 0.3);
+}
+
+.confirm-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(213, 144, 57, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-dialog-modal {
+    padding: 25px 20px;
+    margin: 10px;
+  }
+
+  .dialog-title {
+    font-size: 1.6rem;
+  }
+
+  .upload-area {
+    height: 160px;
+  }
+
+  .preset-images-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .preset-image-item {
+    width: 70px;
+    height: 70px;
+  }
+
+  .profile-dialog-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .close-button {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 576px) {
+  .dialog-title {
+    font-size: 1.4rem;
+  }
+
+  .upload-area {
+    height: 140px;
+  }
+
+  .preset-images-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .upload-placeholder h3 {
+    font-size: 1.1rem;
+  }
+
+  .upload-placeholder p {
+    font-size: 0.9rem;
+  }
+}

@@ -1,4 +1,91 @@
+@import "./Login.css";
 
+.profile-upload-enhanced {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+  cursor: pointer;
+  position: relative;
+}
+
+.profile-preview-enhanced {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 3px solid #d59039;
+  transition: all 0.3s ease;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile-preview-enhanced:hover .profile-overlay {
+  opacity: 1;
+}
+
+.camera-icon-overlay {
+  color: white;
+  font-size: 32px !important;
+}
+
+.profile-placeholder-enhanced {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #1e1e1e, #252525);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border: 2px dashed rgba(213, 144, 57, 0.5);
+  margin-bottom: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.profile-placeholder-enhanced:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  border-color: #d59039;
+}
+
+.camera-icon-enhanced {
+  color: #d59039;
+  font-size: 32px !important;
+  margin-bottom: 8px;
+}
+
+.profile-placeholder-enhanced span {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+}
+
+@media (max-width: 576px) {
+  .profile-preview-enhanced,
+  .profile-placeholder-enhanced {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* 
 
 .login-container {
     display: flex;
@@ -54,4 +141,4 @@
     margin-top: 0px !important;
     margin-bottom: 10px !important;
   }
-  
+  */

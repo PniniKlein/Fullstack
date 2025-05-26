@@ -107,7 +107,7 @@ const SongPlayer = () => {
 
     return (
         <>{songPlayer.id !== 0 && (
-            <Box sx={{ position: "fixed", bottom: 0, left: 0, width: "100%", background: "linear-gradient(0deg, rgb(0, 0, 0),rgba(11, 11, 10, 0.96),rgba(247, 193, 107, 0))", color: "white", direction: "rtl", paddingTop: '100px', boxShadow: "0 -10px 40px rgba(0, 0, 0, 0.0)" }}>
+            <Box sx={{ position: "fixed",zIndex:100, bottom: 0, left: 0, width: "100%", background: "linear-gradient(0deg, rgb(0, 0, 0),rgb(11, 11, 10),rgba(11, 11, 10, 0.96),rgba(11, 11, 10, 0.96),rgba(23, 21, 17, 0))", color: "white", direction: "rtl", paddingTop: '20px', boxShadow: "0 -10px 40px rgba(0, 0, 0, 0.0)" }}>
                 <audio ref={audioRef} src={songPlayer.pathSong} onTimeUpdate={handleTimeUpdate} onLoadedMetadata={handleTimeUpdate} onEnded={handleSongEnd} />
 
                 {/* פס התקדמות */}

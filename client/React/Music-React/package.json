@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^2.6.1",
     "axios": "^1.8.3",
     "buffer": "^6.0.3",
+    "framer-motion": "^12.12.1",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.482.0",
     "music-metadata-browser": "^2.5.11",
@@ -26,6 +27,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.3.0",
     "react-slick": "^0.30.3",
+    "recharts": "^2.15.3",
     "slick-carousel": "^1.8.1",
     "sweetalert2": "^11.17.2",
     "sweetalert2-react-content": "^5.1.0"

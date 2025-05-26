@@ -1,0 +1,183 @@
+.skeleton-wrapper {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.skeleton {
+  background-color: rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton-circle {
+  border-radius: 50%;
+}
+
+.skeleton-text {
+  width: 100%;
+  height: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 3px;
+}
+
+.skeleton-card {
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+}
+
+/* Song Card Skeleton */
+.skeleton-song-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 320px;
+  background-color: rgba(30, 30, 30, 0.7);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.skeleton-song-image {
+  width: 100%;
+  height: 180px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-song-image::after,
+.skeleton-song-title::after,
+.skeleton-song-artist::after,
+.skeleton-song-genre::after,
+.skeleton-song-action::after,
+.skeleton-artist-avatar::after,
+.skeleton-artist-name::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+}
+
+.skeleton-song-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.skeleton-song-title {
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  width: 80%;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-song-artist {
+  height: 18px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  width: 60%;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-song-genre {
+  height: 16px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  width: 40%;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-song-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.skeleton-song-action {
+  width: 32px;
+  height: 32px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Artist Card Skeleton */
+.skeleton-artist-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: rgba(30, 30, 30, 0.7);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  width: 100%;
+  height: 220px;
+}
+
+.skeleton-artist-avatar {
+  width: 120px;
+  height: 120px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-artist-name {
+  height: 20px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  width: 70%;
+  position: relative;
+  overflow: hidden;
+}

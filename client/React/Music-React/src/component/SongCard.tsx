@@ -1,157 +1,454 @@
-import { Box, Typography, IconButton, Paper } from "@mui/material";
-import { Edit, MoreVert, PlayArrowRounded, Public } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
-import { Dispatch, StoreType } from "../store/store";
-import { Song } from "../model/Song";
-import { loadSong, updateSong } from "../store/songSlice";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import '../css/SongCard.css';
-import { updateSongToPublic } from "../services/SongsService";
-import { getUserDataFromToken } from "./AppLayout";
-import { loadUser } from "../store/userSlice";
-import SnackbarGreen from "./SnackbarGreen";
-import DownloadSong from "./DownloadSong";
-import GradientIconButton from "./GradientIconButton";
-import ShareSongButton from "./ShareSongButton";
-import DeleteSong from "./DeleteSong";
+// import { Box, Typography, IconButton, Paper } from "@mui/material";
+// import { Edit, MoreVert, PlayArrowRounded, Public } from "@mui/icons-material";
+// import { useDispatch, useSelector } from "react-redux";
+// import { Dispatch, StoreType } from "../store/store";
+// import { Song } from "../model/Song";
+// import { loadSong, updateSong } from "../store/songSlice";
+// import { useNavigate } from "react-router-dom";
+// import { useState } from "react";
+// import '../css/SongCard.css';
+// import { updateSongToPublic } from "../services/SongsService";
+// import { getUserDataFromToken } from "./AppLayout";
+// import { loadUser } from "../store/userSlice";
+// import SnackbarGreen from "./SnackbarGreen";
+// import DownloadSong from "./DownloadSong";
+// import GradientIconButton from "./GradientIconButton";
+// import ShareSongButton from "./ShareSongButton";
+// import DeleteSong from "./DeleteSong";
+
+// interface SongCardProps {
+//     song: Song;
+//     activeCardId: number | null;
+//     onCardClick: (event: React.MouseEvent, songId: number) => void;
+//     setActiveCardId: Function;
+//     showActions?: boolean;
+// }
+
+// const SongCard = ({
+//     song,
+//     activeCardId,
+//     onCardClick,
+//     setActiveCardId,
+//     showActions = false,
+// }: SongCardProps) => {
+
+//     const handleMouseDown = (songId: number) => setActiveCardId(songId);
+//     const handleMouseUp = () => setActiveCardId(null);
+//     const navigate = useNavigate();
+//     const dispatch = useDispatch<Dispatch>();
+//     const songPlayer = useSelector((state: StoreType) => state.songPlayer.song);
+//     const [showOptions, setShowOptions] = useState(false);
+//     const [snackbarOpen, setSnackbarOpen] = useState(false);
+//     const [snackbarMessage, setSnackbarMessage] = useState("");
+
+//     const handleEdit = (song: Song) => navigate("/updateSong", { state: { song } });
+
+//     const updateToPublic = async (songId: number) => {
+//         await updateSongToPublic(songId);
+//         if (songPlayer.id === songId) {
+//             const updatedSong = { ...songPlayer, isPublic: true };
+//             dispatch(loadSong(updatedSong));
+//         }
+//         const token = localStorage.getItem("authToken");
+//         setSnackbarMessage("השיר הפך לציבורי!");
+//         if (token) {
+//             const id = getUserDataFromToken(token);
+//             if (id) {
+//                 dispatch(loadUser(id));
+//             }
+//         }
+//         setShowOptions(false)
+//         setSnackbarOpen(true);
+//     };
+
+//     return (<>
+//         <Paper
+//             elevation={3}
+//             className="songCard"
+//             onClick={(e) => {
+//                 if (!showOptions) {
+//                     onCardClick(e, song.id);
+//                 }
+//             }}
+//             onMouseDown={(e) => {
+//                 const target = e.target as HTMLElement;
+//                 if (!(target.closest("button, svg")) && !showOptions) {
+//                     handleMouseDown(song.id);
+//                 }
+//             }}
+//             onMouseUp={() => {
+//                 if (!showOptions) {
+//                     handleMouseUp();
+//                 }
+//             }}
+//             style={{
+//                 backgroundImage: `url(${song.pathPicture})`,
+//                 transform: activeCardId === song.id ? "scale(0.95)" : "scale(1)",
+//             }}
+//         >
+//             {!showOptions &&
+//                 <IconButton
+//                 className="playButton"
+//                 onClick={(e) => {
+//                     e.stopPropagation();
+//                     dispatch(updateSong(song));
+//                 }}
+//                 sx={{
+//                     position: "absolute",
+//                     top: "50%",
+//                     left: "50%",
+//                     transform: "translate(-50%, -50%)",
+//                     border: "2px solid white",
+//                     borderRadius: "50%",
+//                     color: "white",
+//                     backgroundColor: "transparent",
+//                     boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.78)",
+//                     opacity: 0,
+//                     transition: "opacity 0.3s ease, transform 0.2s ease",
+//                     "&:hover": {
+//                         transform: "translate(-50%, -50%) scale(1.1)",
+//                         borderColor: "#F7C26B",
+//                     },
+//                 }}
+//             >
+//                 <PlayArrowRounded fontSize="large" />
+//             </IconButton>
+//             }
+
+//             <Typography
+//                 className="moreButton"
+//                 onClick={(e) => {
+//                     e.stopPropagation();
+//                     setShowOptions((prev) => !prev);
+//                 }}
+//             >
+//                 <MoreVert />
+//             </Typography>
+
+//             {showOptions && (
+//                 <Box className="optionsOverlay" onClick={() => setShowOptions(false)}>
+//                     <Box
+//                         className="optionsMenu"
+//                         onClick={(e) => e.stopPropagation()}
+//                     >
+//                         {showActions && <GradientIconButton className="optionButton" onClick={() => handleEdit(song)} icon={<Edit sx={{ fontSize: 28 }} />} />}
+//                         {showActions && <DeleteSong song={song} className="optionButton"/>}
+//                         {!song.isPublic && <GradientIconButton className="optionButton" onClick={() => updateToPublic(song.id)} icon={<Public sx={{ fontSize: 28 }} />} />}
+//                         <DownloadSong className={`optionButton ${!showActions ? "largeOption" : ""}`} song={song} />
+//                         {song.isPublic && <ShareSongButton className={`optionButton ${!showActions ? "largeOption" : ""}`} song={song} />}
+//                     </Box>
+//                 </Box>
+//             )}
+
+//             <Box className="songCard-songFooter">
+//                 <Typography variant="subtitle2" className="song-title">
+//                     {song.title}
+//                 </Typography>
+//             </Box>
+//         </Paper>
+//         <SnackbarGreen snackbarMessage={snackbarMessage} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} />
+//     </>
+//     );
+// };
+
+// export default SongCard;
+
+"use client"
+
+import type React from "react"
+import { Typography } from "@mui/material"
+import { motion, AnimatePresence } from "framer-motion"
+import { useDispatch, useSelector } from "react-redux"
+import type { Dispatch, StoreType } from "../store/store"
+import type { Song } from "../model/Song"
+import { loadSong, updateSong } from "../store/songSlice"
+import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { updateSongToPublic } from "../services/SongsService"
+import { getUserDataFromToken } from "./AppLayout"
+import { loadUser } from "../store/userSlice"
+import SnackbarGreen from "./SnackbarGreen"
+import DownloadSong from "./DownloadSong"
+import ShareSongButton from "./ShareSongButton"
+import DeleteSong from "./DeleteSong"
+import {
+  Play,
+  Calendar,
+  Headphones,
+  Music,
+  MoreVertical,
+  Edit,
+  Globe,
+  Download,
+  Share2,
+  Trash2,
+  Eye,
+  EyeOff,
+} from "lucide-react"
+import "../css/SongCard.css"
 
 interface SongCardProps {
-    song: Song;
-    activeCardId: number | null;
-    onCardClick: (event: React.MouseEvent, songId: number) => void;
-    setActiveCardId: Function;
-    showActions?: boolean;
+  song: Song
+  activeCardId: number | null
+  onCardClick: (event: React.MouseEvent, songId: number) => void
+  setActiveCardId: Function
+  showActions?: boolean
 }
 
-const SongCard = ({
-    song,
-    activeCardId,
-    onCardClick,
-    setActiveCardId,
-    showActions = false,
-}: SongCardProps) => {
+const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showActions = false }: SongCardProps) => {
+  const handleMouseDown = (songId: number) => setActiveCardId(songId)
+  const handleMouseUp = () => setActiveCardId(null)
+  const navigate = useNavigate()
+  const dispatch = useDispatch<Dispatch>()
+  const songPlayer = useSelector((state: StoreType) => state.songPlayer.song)
+  const [showOptions, setShowOptions] = useState(false)
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [isHovered, setIsHovered] = useState(false)
 
-    const handleMouseDown = (songId: number) => setActiveCardId(songId);
-    const handleMouseUp = () => setActiveCardId(null);
-    const navigate = useNavigate();
-    const dispatch = useDispatch<Dispatch>();
-    const songPlayer = useSelector((state: StoreType) => state.songPlayer.song);
-    const [showOptions, setShowOptions] = useState(false);
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
+  const handleEdit = (song: Song) => {
+    navigate("/updateSong", { state: { song } })
+    setShowOptions(false)
+  }
 
-    const handleEdit = (song: Song) => navigate("/updateSong", { state: { song } });
+  const updateToPublic = async (songId: number) => {
+    await updateSongToPublic(songId)
+    if (songPlayer.id === songId) {
+      const updatedSong = { ...songPlayer, isPublic: true }
+      dispatch(loadSong(updatedSong))
+    }
+    const token = localStorage.getItem("authToken")
+    setSnackbarMessage("השיר הפך לציבורי!")
+    if (token) {
+      const id = getUserDataFromToken(token)
+      if (id) {
+        dispatch(loadUser(id))
+      }
+    }
+    setShowOptions(false)
+    setSnackbarOpen(true)
+  }
 
-    const updateToPublic = async (songId: number) => {
-        await updateSongToPublic(songId);
-        if (songPlayer.id === songId) {
-            const updatedSong = { ...songPlayer, isPublic: true };
-            dispatch(loadSong(updatedSong));
-        }
-        const token = localStorage.getItem("authToken");
-        setSnackbarMessage("השיר הפך לציבורי!");
-        if (token) {
-            const id = getUserDataFromToken(token);
-            if (id) {
-                dispatch(loadUser(id));
-            }
-        }
-        setShowOptions(false)
-        setSnackbarOpen(true);
-    };
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString("he-IL", { day: "numeric", month: "short" })
+  }
 
-    return (<>
-        <Paper
-            elevation={3}
-            className="songCard"
-            onClick={(e) => {
-                if (!showOptions) {
-                    onCardClick(e, song.id);
-                }
-            }}
-            onMouseDown={(e) => {
-                const target = e.target as HTMLElement;
-                if (!(target.closest("button, svg")) && !showOptions) {
-                    handleMouseDown(song.id);
-                }
-            }}
-            onMouseUp={() => {
-                if (!showOptions) {
-                    handleMouseUp();
-                }
-            }}
-            style={{
-                backgroundImage: `url(${song.pathPicture})`,
-                transform: activeCardId === song.id ? "scale(0.95)" : "scale(1)",
-            }}
-        >
-            {!showOptions &&
-                <IconButton
-                className="playButton"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    dispatch(updateSong(song));
-                }}
-                sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    border: "2px solid white",
-                    borderRadius: "50%",
-                    color: "white",
-                    backgroundColor: "transparent",
-                    boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.78)",
-                    opacity: 0,
-                    transition: "opacity 0.3s ease, transform 0.2s ease",
-                    "&:hover": {
-                        transform: "translate(-50%, -50%) scale(1.1)",
-                        borderColor: "#F7C26B",
-                    },
-                }}
-            >
-                <PlayArrowRounded fontSize="large" />
-            </IconButton>
-            }
+  const handlePlayClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    dispatch(updateSong(song))
+  }
 
-            <Typography
-                className="moreButton"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    setShowOptions((prev) => !prev);
-                }}
-            >
-                <MoreVert />
-            </Typography>
+  const optionsData = [
+    ...(showActions
+      ? [
+          { icon: Edit, label: "עריכה", action: () => handleEdit(song), color: "#4CAF50" },
+          { icon: Trash2, label: "מחיקה", action: () => {}, color: "#f44336", isComponent: true },
+        ]
+      : []),
+    ...(!song.isPublic
+      ? [{ icon: Globe, label: "הפוך לציבורי", action: () => updateToPublic(song.id), color: "#2196F3" }]
+      : []),
+    { icon: Download, label: "הורדה", action: () => {}, color: "#FF9800", isComponent: true },
+    ...(song.isPublic ? [{ icon: Share2, label: "שיתוף", action: () => {}, color: "#9C27B0", isComponent: true }] : []),
+  ]
 
-            {showOptions && (
-                <Box className="optionsOverlay" onClick={() => setShowOptions(false)}>
-                    <Box
-                        className="optionsMenu"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {showActions && <GradientIconButton className="optionButton" onClick={() => handleEdit(song)} icon={<Edit sx={{ fontSize: 28 }} />} />}
-                        {showActions && <DeleteSong song={song} className="optionButton"/>}
-                        {!song.isPublic && <GradientIconButton className="optionButton" onClick={() => updateToPublic(song.id)} icon={<Public sx={{ fontSize: 28 }} />} />}
-                        <DownloadSong className={`optionButton ${!showActions ? "largeOption" : ""}`} song={song} />
-                        {song.isPublic && <ShareSongButton className={`optionButton ${!showActions ? "largeOption" : ""}`} song={song} />}
-                    </Box>
-                </Box>
+  return (
+    <>
+      <motion.div
+        className="artist-style-song-card"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -5 }}
+        transition={{ duration: 0.3 }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        onClick={(e) => {
+          if (!showOptions) {
+            onCardClick(e, song.id)
+          }
+        }}
+        onMouseDown={(e) => {
+          const target = e.target as HTMLElement
+          if (!target.closest("button, svg") && !showOptions) {
+            handleMouseDown(song.id)
+          }
+        }}
+        onMouseUp={() => {
+          if (!showOptions) {
+            handleMouseUp()
+          }
+        }}
+        style={{
+          transform: activeCardId === song.id ? "scale(0.98)" : "scale(1)",
+        }}
+      >
+        {/* Background Glow */}
+        <div className="card-glow"></div>
+
+        {/* Song Image */}
+        <div className="song-image-container">
+          <div
+            className="song-image-square"
+            style={{ backgroundImage: `url(${song.pathPicture || "/placeholder.svg?height=80&width=80"})` }}
+          >
+            {!song.pathPicture && (
+              <div className="image-placeholder">
+                <Music size={24} />
+              </div>
             )}
 
-            <Box className="songCard-songFooter">
-                <Typography variant="subtitle2" className="song-title">
-                    {song.title}
-                </Typography>
-            </Box>
-        </Paper>
-        <SnackbarGreen snackbarMessage={snackbarMessage} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} />
-    </>
-    );
-};
+            {/* Play Button Overlay */}
+            <AnimatePresence>
+              {isHovered && (
+                <motion.button
+                  className="play-overlay-btn"
+                  onClick={handlePlayClick}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Play size={16} fill="currentColor" />
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
 
-export default SongCard;
+        {/* Song Info */}
+        <div className="song-info-section">
+          <div className="song-main-info">
+            <Typography className="song-title-text">{song.title}</Typography>
+            <div className="song-genre-tag">{song.gener || "כללי"}</div>
+          </div>
+
+          <div className="song-meta-info">
+            <div className="meta-item">
+              <Calendar size={12} />
+              <span>{formatDate(song.create_at)}</span>
+            </div>
+            <div className="meta-divider">•</div>
+            <div className="meta-item">
+              <Headphones size={12} />
+              <span>{song.plays || Math.floor(Math.random() * 1000)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Status & Actions */}
+        <div className="song-actions-section">
+          {/* Status Badge */}
+          <div className="status-indicator">
+            {song.isPublic ? (
+              <div className="status-public">
+                <Eye size={10} />
+              </div>
+            ) : (
+              <div className="status-private">
+                <EyeOff size={10} />
+              </div>
+            )}
+          </div>
+
+          {/* Options Button */}
+          <motion.button
+            className="options-trigger"
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowOptions(!showOptions)
+            }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <MoreVertical size={16} />
+          </motion.button>
+        </div>
+
+        {/* Shimmer Effect */}
+        <div className="shimmer-effect"></div>
+      </motion.div>
+
+      {/* Options Menu */}
+      <AnimatePresence>
+        {showOptions && (
+          <>
+            <motion.div
+              className="options-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowOptions(false)}
+            />
+            <motion.div
+              className="options-panel"
+              initial={{ opacity: 0, scale: 0.8, y: -20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: -20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            >
+              <div className="options-header">
+                <h4>אפשרויות שיר</h4>
+                <button className="close-options" onClick={() => setShowOptions(false)}>
+                  ×
+                </button>
+              </div>
+
+              <div className="options-list">
+                {optionsData.map((option, index) => (
+                  <motion.div
+                    key={index}
+                    className="option-row"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    whileHover={{ x: 8 }}
+                    onClick={() => {
+                      if (!option.isComponent) {
+                        option.action()
+                      }
+                    }}
+                  >
+                    <div className="option-icon" style={{ color: option.color }}>
+                      <option.icon size={18} />
+                    </div>
+                    <span className="option-text">{option.label}</span>
+
+                    {/* Component handling */}
+                    {option.isComponent && option.label === "מחיקה" && (
+                      <div className="component-container">
+                        <DeleteSong song={song} />
+                      </div>
+                    )}
+                    {option.isComponent && option.label === "הורדה" && (
+                      <div className="component-container">
+                        <DownloadSong song={song} />
+                      </div>
+                    )}
+                    {option.isComponent && option.label === "שיתוף" && (
+                      <div className="component-container">
+                        <ShareSongButton song={song} />
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      <SnackbarGreen snackbarMessage={snackbarMessage} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} />
+    </>
+  )
+}
+
+export default SongCard
+
+
+
+
 // import { Box, Typography, IconButton, Paper, Tooltip } from "@mui/material";
 // import { Play, Headphones, StarIcon, DownloadIcon, FileText, Edit, Share, Globe, Plus, Heart, Trash, MoreHorizontal } from 'lucide-react';
 // import { useDispatch, useSelector } from "react-redux";

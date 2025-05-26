@@ -1,4 +1,4 @@
-.song-comments-container {
+/* .song-comments-container {
     padding: 30px;
     min-height: 100vh;
     margin-top: 60px;
@@ -114,7 +114,677 @@
   
   .add-comment-button:hover {
     background: #1E1E1E !important;
+  } */
+
+.song-comments-refined {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  padding: clamp(30px, 4vw, 50px) clamp(20px, 3vw, 40px);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+}
+
+/* Background Effects */
+.song-comments-background-effects {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.song-comments-gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.08;
+}
+
+.song-comments-gradient-orb.orb-1 {
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(213, 144, 57, 0.4) 0%, rgba(247, 194, 107, 0.2) 50%, transparent 70%);
+  top: -200px;
+  right: -200px;
+  animation: float-song-comments-orb 30s ease-in-out infinite;
+}
+
+.song-comments-gradient-orb.orb-2 {
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(199, 124, 40, 0.3) 0%, rgba(213, 144, 57, 0.15) 50%, transparent 70%);
+  bottom: -150px;
+  left: -150px;
+  animation: float-song-comments-orb 35s ease-in-out infinite reverse;
+}
+
+.song-comments-gradient-orb.orb-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(247, 194, 107, 0.25) 0%, rgba(213, 144, 57, 0.1) 50%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: float-song-comments-orb 40s ease-in-out infinite;
+}
+
+/* Floating Musical Notes */
+.floating-song-comments-notes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.song-comments-note {
+  position: absolute;
+  color: rgba(213, 144, 57, 0.15);
+  font-size: clamp(18px, 2.5vw, 24px);
+  animation: float-song-comments-note 25s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(213, 144, 57, 0.3));
+  user-select: none;
+}
+
+.song-comments-note.note-1 {
+  top: 10%;
+  left: 8%;
+  animation-delay: 0s;
+}
+
+.song-comments-note.note-2 {
+  top: 25%;
+  right: 12%;
+  animation-delay: 4s;
+}
+
+.song-comments-note.note-3 {
+  top: 60%;
+  left: 15%;
+  animation-delay: 8s;
+}
+
+.song-comments-note.note-4 {
+  bottom: 30%;
+  right: 20%;
+  animation-delay: 12s;
+}
+
+.song-comments-note.note-5 {
+  bottom: 15%;
+  left: 25%;
+  animation-delay: 16s;
+}
+
+.song-comments-note.note-6 {
+  top: 45%;
+  right: 40%;
+  animation-delay: 20s;
+}
+
+/* Song Details Card */
+.song-details-card-refined {
+  position: relative;
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.9), rgba(18, 18, 18, 0.95));
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(213, 144, 57, 0.15);
+  border-radius: 24px;
+  padding: clamp(30px, 5vw, 40px);
+  margin-bottom: clamp(40px, 6vw, 60px);
+  overflow: hidden;
+  z-index: 2;
+  transition: all 0.4s ease;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.song-details-card-refined:hover {
+  border-color: rgba(213, 144, 57, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(213, 144, 57, 0.1);
+}
+
+.song-details-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.details-gradient-orb {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(213, 144, 57, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  animation: rotate-details-orb 25s linear infinite;
+}
+
+.song-details-card-refined:hover .details-gradient-orb {
+  opacity: 1;
+}
+
+.details-shimmer {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+  transform: translateX(-100%);
+  transition: transform 0.8s ease;
+}
+
+.song-details-card-refined:hover .details-shimmer {
+  transform: translateX(100%);
+}
+
+.song-details-content-refined {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(30px, 5vw, 50px);
+  position: relative;
+  z-index: 1;
+}
+
+/* Song Image Section */
+.song-image-section-details-refined {
+  flex-shrink: 0;
+}
+
+.image-container-details-refined {
+  position: relative;
+  display: inline-block;
+}
+
+.image-glow-details-refined {
+  position: absolute;
+  top: -15px;
+  left: -15px;
+  right: -15px;
+  bottom: -15px;
+  background: radial-gradient(circle, rgba(213, 144, 57, 0.3) 0%, transparent 70%);
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.song-details-card-refined:hover .image-glow-details-refined {
+  opacity: 1;
+  animation: pulse-image-glow-details 2s ease-in-out infinite;
+}
+
+.song-image-details-refined {
+  width: clamp(220px, 22vw, 280px);
+  height: clamp(220px, 22vw, 280px);
+  border-radius: 16px;
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(213, 144, 57, 0.2);
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.song-details-card-refined:hover .song-image-details-refined {
+  border-color: rgba(213, 144, 57, 0.4);
+  transform: scale(1.02);
+  box-shadow: 0 15px 40px rgba(213, 144, 57, 0.2);
+}
+
+.image-placeholder-details-refined {
+  color: rgba(255, 255, 255, 0.5);
+  filter: drop-shadow(0 0 15px rgba(213, 144, 57, 0.3));
+}
+
+.status-badge-details-refined {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.song-details-card-refined:hover .status-badge-details-refined {
+  background: rgba(213, 144, 57, 0.2);
+  border-color: rgba(213, 144, 57, 0.4);
+  color: #f7c26b;
+}
+
+/* Quick Actions on Image */
+.image-quick-actions {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.song-details-card-refined:hover .image-quick-actions {
+  opacity: 1;
+}
+
+.image-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.image-action-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: scale(0);
+  transition: transform 0.3s ease;
+}
+
+.image-action-btn:hover::before {
+  transform: scale(1);
+}
+
+.image-action-btn.like-btn {
+  background: rgba(255, 107, 107, 0.2);
+  color: #ff6b6b;
+  border-color: rgba(255, 107, 107, 0.3);
+}
+
+.image-action-btn.like-btn.liked {
+  background: rgba(255, 107, 107, 0.4);
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+}
+
+.image-action-btn.like-btn:hover {
+  background: rgba(255, 107, 107, 0.3);
+  border-color: #ff6b6b;
+  transform: scale(1.1);
+}
+
+/* Song Info */
+.song-info-details-refined {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.song-header-refined {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.song-title-details-refined {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 0%, #f7c26b 50%, #d59039 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: 1px;
+  line-height: 1.2;
+  flex: 1;
+}
+
+.song-genre-badge-refined {
+  background: linear-gradient(135deg, rgba(213, 144, 57, 0.2), rgba(247, 194, 107, 0.1));
+  color: #f7c26b;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(213, 144, 57, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+.artist-info-details-refined {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1.1rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.3s ease;
+}
+
+.artist-info-details-refined:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(213, 144, 57, 0.2);
+  transform: translateY(-1px);
+}
+
+.artist-info-details-refined svg {
+  color: #d59039;
+  filter: drop-shadow(0 0 6px rgba(213, 144, 57, 0.3));
+}
+
+.song-meta-details-refined {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.meta-item-details-refined {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.meta-item-details-refined:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+  border-color: rgba(213, 144, 57, 0.2);
+}
+
+.meta-item-details-refined svg {
+  color: #d59039;
+  filter: drop-shadow(0 0 4px rgba(213, 144, 57, 0.3));
+}
+
+/* Rating Section */
+.rating-section-details-refined {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  transition: all 0.3s ease;
+}
+
+.rating-section-details-refined:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+  border-color: rgba(213, 144, 57, 0.2);
+  transform: translateY(-1px);
+}
+
+.rating-stars-details-refined {
+  display: flex;
+  gap: 4px;
+}
+
+.rating-star-refined {
+  color: rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.1));
+}
+
+.rating-star-refined.filled {
+  color: #f7c26b;
+  filter: drop-shadow(0 0 8px rgba(247, 194, 107, 0.6));
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.rating-info-details-refined {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rating-value-refined {
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #f7c26b, #d59039);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.rating-count-refined {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 500;
+}
+
+/* Action Buttons */
+.action-buttons-details-refined {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.play-button-details-refined {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #d59039, #f7c26b);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(213, 144, 57, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.play-button-details-refined::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.play-button-details-refined:hover::before {
+  transform: translateX(100%);
+}
+
+.play-button-details-refined:hover {
+  box-shadow: 0 8px 25px rgba(213, 144, 57, 0.5);
+  transform: translateY(-2px);
+}
+
+.edit-button-details-refined {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.edit-button-details-refined:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.secondary-actions-details-refined {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Add Comment Section */
+.add-comment-section-refined {
+  position: relative;
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.9), rgba(18, 18, 18, 0.95));
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(213, 144, 57, 0.15);
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 25px;
+  z-index: 2;
+  transition: all 0.4s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.add-comment-section-refined:hover {
+  border-color: rgba(213, 144, 57, 0.25);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.add-comment-header-refined {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.comment-icon-refined {
+  color: #d59039;
+  filter: drop-shadow(0 0 8px rgba(213, 144, 57, 0.4));
+  animation: pulse-comment-icon 3s ease-in-out infinite;
+}
+
+.add-comment-header-refined h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ffffff 0%, #f7c26b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.toggle-comment-button-refined {
+  background: linear-gradient(135deg, #d59039, #f7c26b);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(213, 144, 57, 0.3);
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.toggle-comment-button-refined::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.toggle-comment-button-refined:hover::before {
+  transform: translateX(100%);
+}
+
+.toggle-comment-button-refined:hover {
+  box-shadow: 0 8px 25px rgba(213, 144, 57, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Comments Section */
+.comments-section-refined {
+  position: relative;
+  z-index: 2;
+}
+
+.no-comments-refined {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 20px;
+  text-align: center;
+  background: linear-gradient(145deg, rgba(26, 26, 26, 0.6), rgba(18, 18, 18, 0.8));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  gap: 15px;
+}
+
+.no-comments-icon-refined {
+  color: #d59039;
+  filter: drop-shadow(0 0 15px rgba(213, 144, 57, 0.4));
+  animation: float-no-comments-icon 3s ease-in-out infinite;
+}
+
+.no-comments-refined h4 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.no-comments-refined p {
+  font-size: 0.9rem;
+  /* color: rgba(255, 255, 255, 0 */
   }
+
+
   
 
   /* .song-comments-container {

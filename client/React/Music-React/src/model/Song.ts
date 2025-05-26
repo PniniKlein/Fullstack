@@ -8,6 +8,6 @@ export type Song ={
     pathSong:string,
     pathPicture:string,
     userId: number,
-    play:number,
+    plays:number,
     comments?:[],
 } 

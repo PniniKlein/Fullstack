@@ -50,13 +50,14 @@ import UpdateUser from "./component/UpdateUser"
 import ArtistsList from "./component/ArtistsList"
 import SongsList from "./component/SongsList"
 import MusicLibrary from "./component/MusicLibrary"
-import About from "./component/About"
+// import About from "./component/About"
 import MySongs from "./component/MySongs"
 import UpdateSong from "./component/UpdateSong"
 import MediaPlayer from "./component/SongPlayer"
 import SongComments from "./component/SongComments"
 import ArtistSongs from "./component/ArtistSongs"
 import Settings from "./component/Settings"
+import AddSong from "./component/AddSong"
 
 export const router = createBrowserRouter([
   {
@@ -68,9 +69,11 @@ export const router = createBrowserRouter([
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
       { path: "update", element: <UpdateUser /> },
-      { path: "about", element: <About /> },
+      // { path: "about", element: <About /> },
       { path: "mySongs", element: <MySongs /> },
       { path: "updateSong", element: <UpdateSong /> },
+      { path:"updateUser" ,element:<UpdateUser />},
+      { path:"addSong" ,element:<AddSong />},
       { path: "settings", element: <Settings /> },
       {
         path: "musicLibrary",

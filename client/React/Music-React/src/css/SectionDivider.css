@@ -1,0 +1,30 @@
+.section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 16px 0;
+}
+
+.divider-line {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(to right, transparent, #ff8c3f, transparent);
+}
+
+.divider-space {
+  width: 10px;
+}
+
+.divider-title {
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(to right, #ffffff, #ffb74d);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+  margin: 0;
+  white-space: nowrap;
+}

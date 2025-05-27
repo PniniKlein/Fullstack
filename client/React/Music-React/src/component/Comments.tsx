@@ -601,7 +601,7 @@ const Comments = ({ comments, currentUser, setComments }: CommentsProps) => {
                       <h4 className="comment-username">{comment.user.userName}</h4>
                       <div className="comment-date">
                         <Calendar size={12} />
-                        <span>{formatDate(comment.create_at)}</span>
+                        <span>{comment.create_at.toString()}</span>
                       </div>
                     </div>
 

@@ -84,7 +84,7 @@ const AppLayout = () => {
   const dispatch = useDispatch<Dispatch>()
   const songPlayer = useSelector((state: StoreType) => state.songPlayer.song)
   const authState = useSelector((state: StoreType) => state.user.authState)
-  const [sidebarExpanded, setSidebarExpanded] = useState(true)
+  const [sidebarExpanded, setSidebarExpanded] = useState(false)
   const [isLoading, setIsLoading] = useState<boolean>(true)
   useEffect(() => {
     const fetchData = async () => {

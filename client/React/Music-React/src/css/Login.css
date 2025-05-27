@@ -193,13 +193,13 @@
   z-index: 1;
 }
 
-.decorative-circle {
+.auth-decorative-circle {
   position: absolute;
   border-radius: 50%;
   border: 1px solid rgba(213, 144, 57, 0.3);
 }
 
-.circle-sm {
+.auth-circle-sm {
   width: 100px;
   height: 100px;
   top: 20%;
@@ -207,7 +207,7 @@
   animation: rotate 20s linear infinite;
 }
 
-.circle-md {
+.auth-circle-md {
   width: 150px;
   height: 150px;
   bottom: 30%;
@@ -215,7 +215,7 @@
   animation: rotate 25s linear infinite reverse;
 }
 
-.circle-lg {
+.auth-circle-lg {
   width: 200px;
   height: 200px;
   bottom: 10%;
@@ -387,7 +387,7 @@
   background: linear-gradient(90deg, #d59039, #f7c26b);
   border: none;
   border-radius: 8px;
-  padding: 16px;
+  height: 50px;
   color: white;
   font-size: 16px;
   font-weight: 600;
@@ -397,7 +397,7 @@
   position: relative;
   overflow: hidden;
 }
-
+/* 
 .submit-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
@@ -427,7 +427,7 @@
 
 .submit-button.loading {
   cursor: not-allowed;
-}
+} */
 
 .button-spinner {
   display: inline-block;

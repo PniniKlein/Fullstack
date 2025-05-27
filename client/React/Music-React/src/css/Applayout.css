@@ -90,3 +90,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary);
 }
+
+.load{
+  position: fixed;
+  top: 40%;
+  left:40%;
+}

@@ -176,7 +176,7 @@ const Login = () => {
       setIsLoading(true)
       try {
         await dispatch(loginUser(formData))
-        navigate(-1)
+        navigate("/")
       } catch (error) {
         console.error("Login failed:", error)
       } finally {
@@ -202,10 +202,10 @@ const Login = () => {
             <h1 className="brand-name">SingSong</h1>
             <p className="brand-tagline">המקום שלך למוזיקה</p>
 
-            <div className="decorative-circles">
-              <div className="decorative-circle circle-sm"></div>
-              <div className="decorative-circle circle-md"></div>
-              <div className="decorative-circle circle-lg"></div>
+            <div className="auth-decorative-circles">
+              <div className="auth-decorative-circle auth-circle-sm"></div>
+              <div className="auth-decorative-circle auth-circle-md"></div>
+              <div className="auth-decorative-circle auth-circle-lg"></div>
             </div>
 
             <div className="sound-waves">

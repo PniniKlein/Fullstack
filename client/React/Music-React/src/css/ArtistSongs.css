@@ -31,7 +31,7 @@
   position: relative;
 }
 
-.loading-container {
+.artist-songs-loading-container {
   margin-top: 250px;
   display: flex;
   flex-direction: column;
@@ -310,9 +310,9 @@
   box-shadow: 0 4px 15px rgba(213, 144, 57, 0.3);
 }
 
-.status-badge:hover {
+/* .status-badge:hover {
   transform: scale(1.1);
-}
+} */
 
 .floating-hearts-beautiful {
   position: absolute;

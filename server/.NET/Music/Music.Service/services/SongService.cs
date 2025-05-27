@@ -47,6 +47,10 @@ namespace Music.Service.services
         {
             return await _iManager._songRepository.GetByUserIdAsync(userId);
         }
+        public async Task<IEnumerable<Song>> GetByUserIdFullAsync(int userId)
+        {
+            return await _iManager._songRepository.GetByUserIdFullAsync(userId);
+        }
         public async Task<Song>? GetByIdFullAsync(int id)
         {
             Song song = await _iManager._songRepository.GetByIdFullAsync(id);

@@ -1,667 +1,583 @@
-import { useState } from "react";
-import {Box,Button,Dialog,DialogTitle,DialogContent,Typography,LinearProgress,} from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
-import { StoreType } from "../store/store";
-import { addSong } from "../services/SongsService";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import axios from "axios";
-import api from "../interceptor/axiosConfig";
-import { loadUser } from "../store/userSlice";
-import * as mm from "music-metadata-browser";
-import { Buffer } from "buffer";
-import "../css/AddSong.css";
+"use client"
+
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useDispatch, useSelector } from "react-redux"
+import type { StoreType } from "../store/store"
+import { addSong } from "../services/SongsService"
+import { loadUser } from "../store/userSlice"
+import axios from "axios"
+import api from "../interceptor/axiosConfig"
+import * as mm from "music-metadata-browser"
+import { Buffer } from "buffer"
+import {
+  Upload,
+  Music,
+  Edit3,
+  Save,
+  ArrowRight,
+  ArrowLeft,
+  FileAudio,
+  Disc3,
+  Sparkles,
+  CheckCircle,
+  AlertCircle,
+  Globe,
+  Lock,
+  Camera,
+} from "lucide-react"
+import "../css/AddSong.css"
 
 declare global {
   interface Window {
-    Buffer: typeof Buffer;
+    Buffer: typeof Buffer
   }
 }
-window.Buffer = Buffer;
+window.Buffer = Buffer
+
+interface SongData {
+  title: string
+  gener: string
+  lyrics: string
+  isPublic: boolean
+  pathSong: string
+  pathPicture: string
+  userId: number
+}
+
+interface SongMetadata {
+  title: string
+  genre: string
+  artist: string
+  album: string
+  coverImage: File | null
+  defaultCover: string
+}
 
 const AddSong = () => {
-  const [open, setOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
-  const dispatch = useDispatch();
-  const userId = useSelector((state: StoreType) => state.user.user.id);
+  const [currentStep, setCurrentStep] = useState<"upload" | "metadata" | "edit" | "saving">("upload")
+  const [progress, setProgress] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [dragOver, setDragOver] = useState(false)
+  const [songData, setSongData] = useState<Partial<SongData>>({})
+  const [songMetadata, setSongMetadata] = useState<SongMetadata | null>(null)
+  const [originalFile, setOriginalFile] = useState<File | null>(null)
+  const [customCoverImage, setCustomCoverImage] = useState<File | null>(null)
+  const [coverPreview, setCoverPreview] = useState<string>("")
+  const [error, setError] = useState<string>("")
+
+  const dispatch = useDispatch()
+  const userId = useSelector((state: StoreType) => state.user.user.id)
 
   const uploadToS3 = async (
     file: File,
     isImage = false,
-    onProgress?: (percent: number) => void
+    onProgress?: (percent: number) => void,
   ): Promise<string | null> => {
     try {
       const res = await api.get(isImage ? "User/upload-url" : "Song/upload-url", {
         params: { fileName: file.name, contentType: file.type },
-      });
+      })
 
-      const presignedUrl = res.data.url;
+      const presignedUrl = res.data.url
 
       await axios.put(presignedUrl, file, {
         headers: { "Content-Type": file.type },
         onUploadProgress: (progressEvent) => {
-          const percent = Math.round(
-            (progressEvent.loaded * 100) / (progressEvent.total || 1)
-          );
+          const percent = Math.round((progressEvent.loaded * 100) / (progressEvent.total || 1))
           if (onProgress) {
-            onProgress(percent);
-          } else {
-            setProgress(percent);
+            onProgress(percent)
           }
         },
-      });
+      })
 
-      const cleanUrl = presignedUrl.split("?")[0].replace("us-east-1.", "");
-
-    return cleanUrl;
-
+      const cleanUrl = presignedUrl.split("?")[0].replace("us-east-1.", "")
+      return cleanUrl
     } catch (error) {
-      console.error("שגיאה בהעלאת קובץ:", error);
-      return null;
+      console.error("שגיאה בהעלאת קובץ:", error)
+      return null
     }
-  };
+  }
 
   const handleFileUpload = async (file: File) => {
-    if (!file) return;
+    if (!file) return
+
+    setError("")
+    setLoading(true)
+    setProgress(0)
+    setOriginalFile(file)
+    setCurrentStep("metadata")
+
     try {
-      setLoading(true);
-      setProgress(0);
+      // Extract metadata only - no upload yet
+      const metadata = await mm.parseBlob(file)
+      const genre = metadata.common.genre?.[0] || "לא ידוע"
+      const title = metadata.common.title || file.name.replace(/\.[^/.]+$/, "")
+      const artist = metadata.common.artist || ""
+      const album = metadata.common.album || ""
 
-      const metadata = await mm.parseBlob(file);
-      const genre = metadata.common.genre?.[0] || "לא ידוע";
-      const title = metadata.common.title || file.name.replace(/\.[^/.]+$/, "");
+      let coverImageFile: File | null = null
+      let defaultCover = "https://pninimusic.s3.us-east-1.amazonaws.com/images/music2.jpg"
 
-      let coverImageUrl =
-        "https://pninimusic.s3.us-east-1.amazonaws.com/images/music2.jpg";
-
+      // Extract cover image if exists
       if (metadata.common.picture && metadata.common.picture.length > 0) {
-        const cover = metadata.common.picture[0];
-        const coverBlob = new Blob([cover.data], { type: cover.format });
-        const coverFile = new File(
-          [coverBlob],
-          `${file.name}_cover.${cover.format.split("/")[1] || "jpg"}`,
-          { type: coverBlob.type, lastModified: Date.now() }
-        );
-
-        const uploadedCover = await uploadToS3(coverFile, true, (percent) =>
-          setProgress(Math.round(percent * 0.25))
-        );
-
-        if (uploadedCover) {
-          coverImageUrl = uploadedCover;
-        }
-      } else {
-        setProgress(25);
+        const cover = metadata.common.picture[0]
+        const coverBlob = new Blob([cover.data], { type: cover.format })
+        coverImageFile = new File([coverBlob], `${file.name}_cover.${cover.format.split("/")[1] || "jpg"}`, {
+          type: coverBlob.type,
+          lastModified: Date.now(),
+        })
+        defaultCover = URL.createObjectURL(coverImageFile)
       }
 
-      const uploadedSongUrl = await uploadToS3(file, false, (percent) =>
-        setProgress(Math.round(25 + percent * 0.75))
-      );
+      const songMetadata: SongMetadata = {
+        title,
+        genre,
+        artist,
+        album,
+        coverImage: coverImageFile,
+        defaultCover,
+      }
 
-      if (!uploadedSongUrl) return;
+      setSongMetadata(songMetadata)
+      setCoverPreview(defaultCover)
 
-      const newSong = {
+      // Prepare song data for editing
+      setSongData({
         title,
         gener: genre,
-        lyrics: "",
+        lyrics: artist && album ? `אמן: ${artist}\nאלבום: ${album}` : "",
         isPublic: false,
+        userId,
+      })
+
+      // Simulate processing time with real progress
+      for (let i = 0; i <= 100; i += 10) {
+        setProgress(i)
+        await new Promise((resolve) => setTimeout(resolve, 50))
+      }
+
+      // Wait 2 seconds as requested
+      await new Promise((resolve) => setTimeout(resolve, 2000))
+
+      setCurrentStep("edit")
+      setLoading(false)
+      setProgress(0)
+    } catch (error) {
+      console.error("שגיאה בקריאת מטא נתונים:", error)
+      setError("שגיאה בעיבוד הקובץ")
+      setCurrentStep("upload")
+      setLoading(false)
+    }
+  }
+
+  const handleCoverImageChange = (file: File) => {
+    setCustomCoverImage(file)
+    setCoverPreview(URL.createObjectURL(file))
+  }
+
+  const handleSaveSong = async () => {
+    if (!songData.title || !originalFile) return
+
+    setCurrentStep("saving")
+    setLoading(true)
+    setProgress(0)
+
+    try {
+      let coverImageUrl = "https://pninimusic.s3.us-east-1.amazonaws.com/images/music2.jpg"
+
+      // Upload cover image first (30% of progress)
+      const imageToUpload = customCoverImage || songMetadata?.coverImage
+      if (imageToUpload) {
+        const uploadedCover = await uploadToS3(imageToUpload, true, (percent) => {
+          setProgress(Math.round(percent * 0.3))
+        })
+        if (uploadedCover) {
+          coverImageUrl = uploadedCover
+        }
+      } else {
+        setProgress(30)
+      }
+
+      // Upload song file (70% of progress)
+      const uploadedSongUrl = await uploadToS3(originalFile, false, (percent) => {
+        setProgress(Math.round(30 + percent * 0.7))
+      })
+
+      if (!uploadedSongUrl) {
+        setError("שגיאה בהעלאת הקובץ")
+        setCurrentStep("edit")
+        setLoading(false)
+        return
+      }
+
+      const finalSongData: SongData = {
+        ...songData,
         pathSong: uploadedSongUrl,
         pathPicture: coverImageUrl,
-        userId,
-      };
+      } as SongData
 
-      await addSong(newSong);
-      dispatch(loadUser(userId) as any);
-      setOpen(false);
+      await addSong(finalSongData)
+      dispatch(loadUser(userId) as any)
+
+      // Reset form
+      resetForm()
     } catch (error) {
-      console.error("שגיאה בקריאת מטא נתונים:", error);
-    } finally {
-      setLoading(false);
-      setProgress(0);
+      console.error("שגיאה בשמירת השיר:", error)
+      setError("שגיאה בשמירת השיר")
+      setCurrentStep("edit")
+      setLoading(false)
     }
-  };
+  }
+
+  const resetForm = () => {
+    setSongData({})
+    setSongMetadata(null)
+    setOriginalFile(null)
+    setCustomCoverImage(null)
+    setCoverPreview("")
+    setCurrentStep("upload")
+    setError("")
+    setProgress(0)
+    setLoading(false)
+  }
 
   return (
-    <Box>
-      <Button
-        variant="contained"
-        endIcon={<FileUploadIcon />}
-        onClick={() => setOpen(true)}
-        className="add-song-button with-icon"
-      >
-        הוסף שיר
-      </Button>
+    <div className="add-song-modern">
+      {/* Background Effects */}
+      <div className="add-song-background-effects">
+        <div className="add-song-gradient-orb orb-1"></div>
+        <div className="add-song-gradient-orb orb-2"></div>
+        <div className="add-song-gradient-orb orb-3"></div>
 
-      <Dialog
-        open={open}
-        onClose={() => setOpen(false)}
-        fullWidth
-        maxWidth="xs"
-        PaperProps={{ sx: { borderRadius: "16px" } }}
-        disableEnforceFocus
-        disableRestoreFocus
-      >
-        <DialogTitle className="dialog-title">העלאת שיר חדש</DialogTitle>
-        <DialogContent className="dialog-content">
-          <Box
-            className={`upload-box ${dragOver ? "drag-over" : ""}`}
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragOver(true);
-            }}
-            onDragLeave={(e) => {
-              e.preventDefault();
-              setDragOver(false);
-            }}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragOver(false);
-              const file = e.dataTransfer.files[0];
-              if (file) handleFileUpload(file);
-            }}
-          >
-            <CloudUploadIcon className="upload-icon" />
-            <Typography className="upload-text">
-              גרור ושחרר כאן קובץ או לחץ לבחירה
-            </Typography>
-            <Button variant="contained" component="label" className="choose-file-button">
-              בחר קובץ
-              <input
-                type="file"
-                hidden
-                onChange={(e) =>
-                  e.target.files && handleFileUpload(e.target.files[0])
-                }
-              />
-            </Button>
-          </Box>
+        <div className="floating-add-song-notes">
+          <div className="add-song-note note-1">♪</div>
+          <div className="add-song-note note-2">♫</div>
+          <div className="add-song-note note-3">♬</div>
+          <div className="add-song-note note-4">🎤</div>
+        </div>
+      </div>
 
-          {loading && (
-            <Box className="progress-container">
-              <LinearProgress
-                variant="determinate"
-                value={progress}
-                className="progress-bar"
-              />
-              <Typography className="progress-text">{progress}%</Typography>
-            </Box>
+      {/* Header */}
+      <motion.div
+        className="add-song-header"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="header-icon-container">
+          <Music size={36} className="header-icon" />
+        </div>
+        <h1 className="add-song-title">הוסף שיר חדש</h1>
+        <p className="add-song-subtitle">העלה ועצב את השיר שלך</p>
+      </motion.div>
+
+      {/* Steps Indicator */}
+      <motion.div
+        className="steps-indicator"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <div className={`step ${currentStep === "upload" ? "active" : ""}`}>
+          <div className="step-icon">
+            <Upload size={20} />
+          </div>
+          <span>העלאה</span>
+        </div>
+
+        <div className="step-connector"></div>
+
+        <div
+          className={`step ${currentStep === "metadata" ? "active" : currentStep === "edit" || currentStep === "saving" ? "completed" : ""}`}
+        >
+          <div className="step-icon">
+            <Disc3 size={20} />
+          </div>
+          <span>עיבוד</span>
+        </div>
+
+        <div className="step-connector"></div>
+
+        <div className={`step ${currentStep === "edit" ? "active" : currentStep === "saving" ? "completed" : ""}`}>
+          <div className="step-icon">
+            <Edit3 size={20} />
+          </div>
+          <span>עריכה</span>
+        </div>
+
+        <div className="step-connector"></div>
+
+        <div className={`step ${currentStep === "saving" ? "active" : ""}`}>
+          <div className="step-icon">
+            <Save size={20} />
+          </div>
+          <span>שמירה</span>
+        </div>
+      </motion.div>
+
+      {/* Content */}
+      <div className="add-song-content">
+        <AnimatePresence mode="wait">
+          {/* Upload Step */}
+          {currentStep === "upload" && (
+            <motion.div
+              key="upload"
+              className="step-content"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="upload-section">
+                <div
+                  className={`upload-zone ${dragOver ? "drag-over" : ""}`}
+                  onDragOver={(e) => {
+                    e.preventDefault()
+                    setDragOver(true)
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault()
+                    setDragOver(false)
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault()
+                    setDragOver(false)
+                    const file = e.dataTransfer.files[0]
+                    if (file && file.type.startsWith("audio/")) {
+                      handleFileUpload(file)
+                    }
+                  }}
+                >
+                  <div className="upload-icon-container">
+                    <FileAudio size={64} className="upload-icon" />
+                    <div className="upload-glow"></div>
+                  </div>
+
+                  <h3>גרור ושחרר קובץ שיר</h3>
+                  <p>או לחץ לבחירת קובץ מהמחשב</p>
+
+                  <label className="upload-button">
+                    <Upload size={20} />
+                    <span>בחר קובץ שיר</span>
+                    <input
+                      type="file"
+                      accept="audio/*"
+                      onChange={(e) => e.target.files && handleFileUpload(e.target.files[0])}
+                      style={{ display: "none" }}
+                    />
+                  </label>
+
+                  <div className="supported-formats">
+                    <span>פורמטים נתמכים: MP3, WAV, FLAC, M4A</span>
+                  </div>
+                </div>
+
+                {error && (
+                  <motion.div className="error-message" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+                    <AlertCircle size={20} />
+                    <span>{error}</span>
+                  </motion.div>
+                )}
+              </div>
+            </motion.div>
           )}
-        </DialogContent>
-      </Dialog>
-    </Box>
-  );
-};
 
- export default AddSong;
-// "use client"
+          {/* Metadata Processing Step */}
+          {currentStep === "metadata" && (
+            <motion.div
+              key="metadata"
+              className="step-content"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="processing-section">
+                <div className="processing-icon-container">
+                  <Disc3 size={64} className="processing-icon" />
+                  <div className="processing-glow"></div>
+                </div>
 
-// import type React from "react"
+                <h3>מעבד את השיר...</h3>
+                <p>שולף מידע מהקובץ</p>
 
-// import { useState, useRef } from "react"
-// import {
-//   Typography,
-//   Button,
-//   TextField,
-//   FormControlLabel,
-//   Switch,
-//   CircularProgress,
-//   Stepper,
-//   Step,
-//   StepLabel,
-//   StepContent,
-//   LinearProgress,
-// } from "@mui/material"
-// import { useDispatch, useSelector } from "react-redux"
-// import type { Dispatch, StoreType } from "../store/store"
-// import { addSong } from "../services/SongsService";
-// import { Upload, ImageIcon, Globe, Check, ChevronRight, ChevronLeft, Info } from "lucide-react"
-// import "../css/AddSong.css"
+                <div className="progress-container">
+                  <div className="progress-bar">
+                    <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                  </div>
+                  <span className="progress-text">{progress}%</span>
+                </div>
 
-// // Utility function to extract metadata from audio file
-// const extractMetadata = async (
-//   file: File,
-// ): Promise<{ title?: string; artist?: string; genre?: string; picture?: string }> => {
-//   return new Promise((resolve) => {
-//     // Create an audio element to read metadata
-//     const audio = document.createElement("audio")
-//     audio.preload = "metadata"
+                {originalFile && (
+                  <div className="file-info">
+                    <FileAudio size={20} />
+                    <span>{originalFile.name}</span>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          )}
 
-//     // Create object URL for the file
-//     const url = URL.createObjectURL(file)
-//     audio.src = url
+          {/* Edit Step */}
+          {currentStep === "edit" && (
+            <motion.div
+              key="edit"
+              className="step-content"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="edit-section">
+                <div className="song-preview">
+                  <div className="song-cover" style={{ backgroundImage: `url(${coverPreview})` }}>
+                    <div className="cover-overlay">
+                      <Music size={32} />
+                    </div>
+                  </div>
 
-//     // Set up event listener for when metadata is loaded
-//     audio.addEventListener("loadedmetadata", () => {
-//       // In a real implementation, we would use a library like jsmediatags
-//       // For this example, we'll simulate extracting metadata
+                  <div className="song-info">
+                    <h3>פרטי השיר</h3>
+                    <p>ערוך את הפרטים לפני השמירה</p>
 
-//       // Simulate metadata extraction with a timeout
-//       setTimeout(() => {
-//         // Revoke the object URL to free memory
-//         URL.revokeObjectURL(url)
+                    <label className="change-cover-button">
+                      <Camera size={16} />
+                      <span>החלף תמונה</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => e.target.files && handleCoverImageChange(e.target.files[0])}
+                        style={{ display: "none" }}
+                      />
+                    </label>
+                  </div>
+                </div>
 
-//         // Extract filename without extension as fallback title
-//         const fileName = file.name.replace(/\.[^/.]+$/, "")
+                <div className="edit-form">
+                  <div className="form-group">
+                    <label>שם השיר</label>
+                    <input
+                      type="text"
+                      value={songData.title || ""}
+                      onChange={(e) => setSongData({ ...songData, title: e.target.value })}
+                      placeholder="הזן שם השיר"
+                    />
+                  </div>
 
-//         // In a real implementation, we would extract actual metadata
-//         // For now, we'll simulate it based on the filename
-//         const metadata = {
-//           title: fileName,
-//           artist: fileName.includes("-") ? fileName.split("-")[0].trim() : "",
-//           genre: detectGenreFromFileName(fileName),
-//           // We don't have actual album art, so we'll return undefined
-//           picture: undefined,
-//         }
+                  <div className="form-group">
+                    <label>ז'אנר</label>
+                    <input
+                      type="text"
+                      value={songData.gener || ""}
+                      onChange={(e) => setSongData({ ...songData, gener: e.target.value })}
+                      placeholder="הזן ז'אנר"
+                    />
+                  </div>
 
-//         resolve(metadata)
-//       }, 1000)
-//     })
+                  <div className="form-group">
+                    <label>מידע נוסף</label>
+                    <textarea
+                      value={songData.lyrics || ""}
+                      onChange={(e) => setSongData({ ...songData, lyrics: e.target.value })}
+                      placeholder="הוסף מידע נוסף על השיר..."
+                      rows={4}
+                    />
+                  </div>
 
-//     // Handle errors
-//     audio.addEventListener("error", () => {
-//       URL.revokeObjectURL(url)
-//       resolve({})
-//     })
+                  <div className="form-group">
+                    <label>הגדרות פרטיות</label>
+                    <div className="privacy-options">
+                      <div
+                        className={`privacy-option ${!songData.isPublic ? "active" : ""}`}
+                        onClick={() => setSongData({ ...songData, isPublic: false })}
+                      >
+                        <Lock size={20} />
+                        <div>
+                          <span>פרטי</span>
+                          <small>רק אתה תוכל לראות</small>
+                        </div>
+                      </div>
 
-//     // Load the audio to trigger metadata loading
-//     audio.load()
-//   })
-// }
+                      <div
+                        className={`privacy-option ${songData.isPublic ? "active" : ""}`}
+                        onClick={() => setSongData({ ...songData, isPublic: true })}
+                      >
+                        <Globe size={20} />
+                        <div>
+                          <span>ציבורי</span>
+                          <small>כולם יוכלו לראות</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-// // Helper function to guess genre from filename
-// const detectGenreFromFileName = (fileName: string): string => {
-//   const lowerFileName = fileName.toLowerCase()
+                <div className="edit-actions">
+                  <button className="back-button" onClick={resetForm}>
+                    <ArrowLeft size={20} />
+                    <span>חזור</span>
+                  </button>
 
-//   if (lowerFileName.includes("rock")) return "רוק"
-//   if (lowerFileName.includes("pop")) return "פופ"
-//   if (lowerFileName.includes("hip") || lowerFileName.includes("hop") || lowerFileName.includes("rap")) return "היפ הופ"
-//   if (lowerFileName.includes("jazz")) return "ג'אז"
-//   if (lowerFileName.includes("blues")) return "בלוז"
-//   if (lowerFileName.includes("country")) return "קאנטרי"
-//   if (lowerFileName.includes("electronic") || lowerFileName.includes("techno") || lowerFileName.includes("house"))
-//     return "אלקטרוני"
+                  <button className="save-button" onClick={handleSaveSong} disabled={!songData.title}>
+                    <span>שמור שיר</span>
+                    <ArrowRight size={20} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
 
-//   return ""
-// }
+          {/* Saving Step */}
+          {currentStep === "saving" && (
+            <motion.div
+              key="saving"
+              className="step-content"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="saving-section">
+                {loading ? (
+                  <>
+                    <div className="saving-icon-container">
+                      <Save size={64} className="saving-icon spinning" />
+                      <div className="saving-glow"></div>
+                    </div>
 
-// const AddSong = () => {
-//   const dispatch = useDispatch<Dispatch>()
-//   const user = useSelector((state: StoreType) => state.user.user)
+                    <h3>מעלה ושומר...</h3>
+                    <p>מעלה את הקבצים לשרת</p>
 
-//   const [activeStep, setActiveStep] = useState(0)
-//   const [songName, setSongName] = useState("")
-//   const [artist, setArtist] = useState("")
-//   const [genre, setGenre] = useState("")
-//   const [isPublic, setIsPublic] = useState(true)
-//   const [songFile, setSongFile] = useState<File | null>(null)
-//   const [coverImage, setCoverImage] = useState<File | null>(null)
-//   const [coverPreview, setCoverPreview] = useState<string | null>(null)
-//   const [loading, setLoading] = useState(false)
-//   const [extractingMetadata, setExtractingMetadata] = useState(false)
-//   const [metadataExtracted, setMetadataExtracted] = useState(false)
+                    <div className="progress-container">
+                      <div className="progress-bar">
+                        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                      </div>
+                      <span className="progress-text">{progress}%</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="success-icon-container">
+                      <CheckCircle size={64} className="success-icon" />
+                      <div className="success-glow"></div>
+                    </div>
 
-//   const fileInputRef = useRef<HTMLInputElement>(null)
-//   const coverInputRef = useRef<HTMLInputElement>(null)
+                    <h3>השיר נשמר בהצלחה!</h3>
+                    <p>השיר שלך זמין עכשיו באזור האישי</p>
 
-//   const handleSongFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-//     if (e.target.files && e.target.files[0]) {
-//       const file = e.target.files[0]
-//       setSongFile(file)
-// debugger
-//       // Extract metadata from the audio file
-//       setExtractingMetadata(true)
-//       try {
-//         const metadata = await extractMetadata(file)
+                    <div className="success-animation">
+                      <Sparkles size={24} />
+                    </div>
+                  </>
+                )}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
 
-//         // Update form fields with extracted metadata
-//         if (metadata.title) setSongName(metadata.title)
-//         // if (metadata.artist) setArtist(metadata.artist)
-//         if (metadata.genre) setGenre(metadata.genre)
-
-//         // If we have album art, set it as cover image
-//         if (metadata.picture) {
-//           setCoverPreview(metadata.picture)
-//         }
-
-//         setMetadataExtracted(true)
-//       } catch (error) {
-//         console.error("Error extracting metadata:", error)
-//       } finally {
-//         setExtractingMetadata(false)
-//       }
-//     }
-//   }
-
-//   const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     if (e.target.files && e.target.files[0]) {
-//       const file = e.target.files[0]
-//       setCoverImage(file)
-
-//       // Create preview URL
-//       const reader = new FileReader()
-//       reader.onload = () => {
-//         setCoverPreview(reader.result as string)
-//       }
-//       reader.readAsDataURL(file)
-//     }
-//   }
-
-//   const handleNext = () => {
-//     setActiveStep((prevActiveStep) => prevActiveStep + 1)
-//   }
-
-//   const handleBack = () => {
-//     setActiveStep((prevActiveStep) => prevActiveStep - 1)
-//   }
-
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault()
-
-//     if (!songFile) {
-//       alert("אנא בחר קובץ שיר")
-//       return
-//     }
-
-//     setLoading(true)
-
-//     try {
-//       // Here you would normally upload the files and get URLs
-//       // For this example, we'll just simulate it
-//       const songData = {
-//         title: songName,
-//         lyrics: "",
-//         gener: genre,
-//         isPublic,
-//         userId: user.id,
-//         pathSong: URL.createObjectURL(songFile),
-//         pathPicture: coverPreview || "/placeholder.svg?height=300&width=300",
-//       }
-
-//       await addSong(songData)
-
-//       // Reset form
-//       setSongName("")
-//       setArtist("")
-//       setGenre("")
-//       setSongFile(null)
-//       setCoverImage(null)
-//       setCoverPreview(null)
-//       setActiveStep(0)
-//       setMetadataExtracted(false)
-
-//       alert("השיר נוסף בהצלחה!")
-//     } catch (error) {
-//       console.error("שגיאה בהוספת השיר:", error)
-//       alert("אירעה שגיאה בהוספת השיר")
-//     } finally {
-//       setLoading(false)
-//     }
-//   }
-
-//   const steps = [
-//     {
-//       label: "בחירת קובץ שמע",
-//       description: "העלה את קובץ השמע שלך",
-//       content: (
-//         <div className="step-content">
-//           <div className="upload-area" onClick={() => fileInputRef.current?.click()}>
-//             {!songFile ? (
-//               <>
-//                 <div className="upload-icon-container">
-//                   <Upload size={30} className="upload-icon" />
-//                 </div>
-//                 <Typography className="upload-title">העלה קובץ שמע</Typography>
-//                 <Typography className="upload-description">גרור ושחרר קובץ כאן או לחץ לבחירת קובץ</Typography>
-//                 <Button variant="contained" className="upload-button">
-//                   בחר קובץ
-//                 </Button>
-//               </>
-//             ) : (
-//               <>
-//                 <div className="upload-icon-container success">
-//                   <Check size={30} className="upload-icon" />
-//                 </div>
-//                 <Typography className="upload-title">הקובץ נבחר בהצלחה</Typography>
-//                 <Typography className="upload-description">{songFile.name}</Typography>
-
-//                 {extractingMetadata && (
-//                   <div className="metadata-loading">
-//                     <Typography className="metadata-text">מחלץ מידע מהקובץ...</Typography>
-//                     <LinearProgress className="metadata-progress" />
-//                   </div>
-//                 )}
-
-//                 {metadataExtracted && (
-//                   <div className="metadata-success">
-//                     <Info size={16} />
-//                     <Typography className="metadata-text">המידע חולץ בהצלחה ושדות הטופס עודכנו</Typography>
-//                   </div>
-//                 )}
-
-//                 <Button
-//                   variant="outlined"
-//                   className="change-button"
-//                   onClick={(e) => {
-//                     e.stopPropagation()
-//                     fileInputRef.current?.click()
-//                   }}
-//                 >
-//                   החלף קובץ
-//                 </Button>
-//               </>
-//             )}
-//             <input
-//               type="file"
-//               ref={fileInputRef}
-//               onChange={handleSongFileChange}
-//               accept="audio/*"
-//               style={{ display: "none" }}
-//             />
-//           </div>
-//         </div>
-//       ),
-//     },
-//     {
-//       label: "פרטי השיר",
-//       description: "הוסף מידע על השיר",
-//       content: (
-//         <div className="step-content">
-//           <div className="form-fields">
-//             <div className="form-field">
-//               <label htmlFor="songName">שם השיר</label>
-//               <TextField
-//                 id="songName"
-//                 value={songName}
-//                 onChange={(e) => setSongName(e.target.value)}
-//                 placeholder="הזן את שם השיר"
-//                 fullWidth
-//                 required
-//                 variant="outlined"
-//                 className="text-field"
-//               />
-//             </div>
-
-//             <div className="form-field">
-//               <label htmlFor="artist">אמן</label>
-//               <TextField
-//                 id="artist"
-//                 value={artist}
-//                 onChange={(e) => setArtist(e.target.value)}
-//                 placeholder={`ברירת מחדל: ${user.userName}`}
-//                 fullWidth
-//                 variant="outlined"
-//                 className="text-field"
-//               />
-//             </div>
-
-//             <div className="form-field">
-//               <label htmlFor="genre">ז'אנר</label>
-//               <TextField
-//                 id="genre"
-//                 value={genre}
-//                 onChange={(e) => setGenre(e.target.value)}
-//                 placeholder="לדוגמה: פופ, רוק, היפ הופ"
-//                 fullWidth
-//                 variant="outlined"
-//                 className="text-field"
-//               />
-//             </div>
-
-//             <div className="privacy-toggle">
-//               <Globe size={18} />
-//               <FormControlLabel
-//                 control={<Switch checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} color="primary" />}
-//                 label={<span className="privacy-label">פרסם את השיר באופן ציבורי</span>}
-//               />
-//             </div>
-//           </div>
-//         </div>
-//       ),
-//     },
-//     {
-//       label: "תמונת כריכה",
-//       description: "הוסף תמונת כריכה לשיר",
-//       content: (
-//         <div className="step-content">
-//           <div className="cover-upload-container">
-//             <div className="cover-preview-area" onClick={() => coverInputRef.current?.click()}>
-//               {coverPreview ? (
-//                 <img src={coverPreview || "/placeholder.svg"} alt="תמונת כריכה" className="cover-image" />
-//               ) : (
-//                 <div className="cover-placeholder">
-//                   <ImageIcon size={40} className="placeholder-icon" />
-//                   <Typography className="placeholder-text">לחץ להוספת תמונת כריכה</Typography>
-//                 </div>
-//               )}
-//             </div>
-//             <input
-//               type="file"
-//               ref={coverInputRef}
-//               onChange={handleCoverImageChange}
-//               accept="image/*"
-//               style={{ display: "none" }}
-//             />
-
-//             <Typography className="cover-description">
-//               תמונת הכריכה תוצג בכרטיס השיר ובנגן. מומלץ להשתמש בתמונה ריבועית באיכות גבוהה.
-//             </Typography>
-
-//             <Button
-//               variant={coverPreview ? "outlined" : "contained"}
-//               className={coverPreview ? "change-button" : "upload-button"}
-//               onClick={() => coverInputRef.current?.click()}
-//             >
-//               {coverPreview ? "החלף תמונה" : "הוסף תמונה"}
-//             </Button>
-//           </div>
-//         </div>
-//       ),
-//     },
-//     {
-//       label: "סיום",
-//       description: "סקירה והעלאה",
-//       content: (
-//         <div className="step-content">
-//           <div className="summary-container">
-//             <Typography className="summary-title">סיכום פרטי השיר</Typography>
-
-//             <div className="summary-item">
-//               <div className="summary-label">שם השיר:</div>
-//               <div className="summary-value">{songName || "לא הוזן"}</div>
-//             </div>
-
-//             <div className="summary-item">
-//               <div className="summary-label">אמן:</div>
-//               <div className="summary-value">{artist || user.userName}</div>
-//             </div>
-
-//             <div className="summary-item">
-//               <div className="summary-label">ז'אנר:</div>
-//               <div className="summary-value">{genre || "לא הוזן"}</div>
-//             </div>
-
-//             <div className="summary-item">
-//               <div className="summary-label">סטטוס:</div>
-//               <div className="summary-value">{isPublic ? "ציבורי" : "פרטי"}</div>
-//             </div>
-
-//             <div className="summary-item">
-//               <div className="summary-label">קובץ שמע:</div>
-//               <div className="summary-value">{songFile ? songFile.name : "לא נבחר"}</div>
-//             </div>
-
-//             <div className="summary-item">
-//               <div className="summary-label">תמונת כריכה:</div>
-//               <div className="summary-value">{coverImage ? coverImage.name : "לא נבחרה"}</div>
-//             </div>
-
-//             {coverPreview && (
-//               <div className="summary-cover">
-//                 <img src={coverPreview || "/placeholder.svg"} alt="תמונת כריכה" className="summary-cover-image" />
-//               </div>
-//             )}
-//           </div>
-//         </div>
-//       ),
-//     },
-//   ]
-
-//   return (
-//     <div className="add-song-stepper">
-//       <Stepper activeStep={activeStep} orientation="vertical" className="stepper">
-//         {steps.map((step, index) => (
-//           <Step key={step.label} className={`step ${activeStep === index ? "active-step" : ""}`}>
-//             <StepLabel
-//               StepIconProps={{
-//                 className: "step-icon",
-//               }}
-//               className="step-label"
-//             >
-//               <Typography className="step-title">{step.label}</Typography>
-//               <Typography className="step-description">{step.description}</Typography>
-//             </StepLabel>
-//             <StepContent className="step-content-wrapper">
-//               {step.content}
-//               <div className="step-actions">
-//                 <Button
-//                   disabled={activeStep === 0}
-//                   onClick={handleBack}
-//                   className="back-button"
-//                   startIcon={<ChevronRight size={16} />}
-//                 >
-//                   חזור
-//                 </Button>
-
-//                 {activeStep === steps.length - 1 ? (
-//                   <Button
-//                     variant="contained"
-//                     onClick={handleSubmit}
-//                     className="submit-button"
-//                     disabled={loading || !songFile || !songName}
-//                     endIcon={loading ? <CircularProgress size={16} color="inherit" /> : null}
-//                   >
-//                     {loading ? "מעלה..." : "העלה שיר"}
-//                   </Button>
-//                 ) : (
-//                   <Button
-//                     variant="contained"
-//                     onClick={handleNext}
-//                     className="next-button"
-//                     endIcon={<ChevronLeft size={16} />}
-//                     disabled={(activeStep === 0 && !songFile) || extractingMetadata}
-//                   >
-//                     המשך
-//                   </Button>
-//                 )}
-//               </div>
-//             </StepContent>
-//           </Step>
-//         ))}
-//       </Stepper>
-//     </div>
-//   )
-// }
-
-// export default AddSong
+export default AddSong

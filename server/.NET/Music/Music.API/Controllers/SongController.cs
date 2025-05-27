@@ -55,6 +55,16 @@ namespace Music.API.Controllers
                 return null;
             return await _iService.GetByUserIdAsync(userId);
         }
+
+        [HttpGet("UserFull/{userId}")]
+        public async Task<IEnumerable<Song>> GetByUserFullId(int userId)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Replace("Bearer ", string.Empty);
+            var tokenId = int.Parse(HttpContext.User.Claims.First(claim => claim.Type == "id").Value);
+            if (tokenId != userId)
+                return null;
+            return await _iService.GetByUserIdFullAsync(userId);
+        }
         [HttpGet("{id}/Full")]
         [AllowAnonymous]
         public async Task<ActionResult<Song>> Get(int id)

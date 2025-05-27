@@ -68,6 +68,7 @@ import SongPlayer from "./SongPlayer"
 import { loadSong } from "../store/songSlice"
 import MainSidebar from "./MainSidebar"
 import "../css/AppLayout.css"
+import Loader from "./ui/Loader"
 
 export const getUserDataFromToken = (token: string) => {
   try {
@@ -84,13 +85,14 @@ const AppLayout = () => {
   const songPlayer = useSelector((state: StoreType) => state.songPlayer.song)
   const authState = useSelector((state: StoreType) => state.user.authState)
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
-
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true)
       const token = localStorage.getItem("authToken")
       const song = sessionStorage.getItem("songPlayer")
       if (token != null) {
-        const id = getUserDataFromToken(token)
+        const id = await getUserDataFromToken(token)
         if (id) {
           await dispatch(loadUser(id))
         }
@@ -98,6 +100,7 @@ const AppLayout = () => {
       if (song) {
         dispatch(loadSong(JSON.parse(song)))
       }
+      setIsLoading(false)
     }
 
     fetchData()
@@ -105,11 +108,14 @@ const AppLayout = () => {
   return (
     <div className="app-layout">
       <MainSidebar expanded={sidebarExpanded} setExpanded={setSidebarExpanded} />
+      {isLoading ? (
+        <div className="load"><Loader text="טוען נתונים..."/></div>
+      ):
       <main className={`main-content ${sidebarExpanded ? "sidebar-expanded" : "sidebar-collapsed"}`}>
         <Outlet />
         {songPlayer.id != 0 && <div style={{ height: "80px" }}></div>}
         {songPlayer.id != 0 && <SongPlayer />}
-      </main>
+      </main>}
     </div>
   )
 }

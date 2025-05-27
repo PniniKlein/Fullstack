@@ -15,6 +15,7 @@ namespace Music.Core.IServices
         Task<IEnumerable<SongDto>> GetPublicAsync();
         Task<IEnumerable<SongDto>> GetByCategoryPublicAsync(string gener);
         Task<IEnumerable<Song>> GetByUserIdAsync(int userId);
+        Task<IEnumerable<Song>> GetByUserIdFullAsync(int userId);
         Task<Song> GetByIdFullAsync(int id);
         Task<SongDto>? GetByIdAsync(int id);
         Task<SongDto> AddAsync(SongDto attractionDto);

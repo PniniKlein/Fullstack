@@ -323,7 +323,7 @@ const Register = () => {
           })
 
           setTimeout(() => {
-            navigate(-1)
+            navigate("/")
           }, 2000)
         }
       } catch (error) {
@@ -365,10 +365,10 @@ const Register = () => {
             <h1 className="brand-name">SingSong</h1>
             <p className="brand-tagline">המקום שלך למוזיקה</p>
 
-            <div className="decorative-circles">
-              <div className="decorative-circle circle-sm"></div>
-              <div className="decorative-circle circle-md"></div>
-              <div className="decorative-circle circle-lg"></div>
+            <div className="auth-decorative-circles">
+              <div className="auth-decorative-circle auth-circle-sm"></div>
+              <div className="auth-decorative-circle auth-circle-md"></div>
+              <div className="auth-decorative-circle auth-circle-lg"></div>
             </div>
 
             <div className="sound-waves">
@@ -449,7 +449,7 @@ const Register = () => {
                 {errors.password && <span className="error-text">{errors.password}</span>}
               </div>
 
-              <button type="submit" className={`submit-button ${isLoading ? "loading" : ""}`} disabled={isLoading}>
+              <button type="submit" className={`register-submit-button ${isLoading ? "loading" : ""}`} disabled={isLoading}>
                 {isLoading ? <span className="button-spinner"></span> : "הרשם"}
               </button>
             </form>

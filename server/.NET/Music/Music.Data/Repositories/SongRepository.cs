@@ -34,7 +34,11 @@ namespace Music.Data.Repositories
         {
            return await _dataSet.Where(x => x.UserId == userId).ToListAsync();
         }
-
+        public async Task<IEnumerable<Song>> GetByUserIdFullAsync(int userId)
+        {
+            return await _dataSet.Where(x => x.UserId == userId).Include(s => s.Comments.OrderByDescending(c => c.Create_at)) // מיון התגובות בסדר יורד לפי תאריך יצירה
+                .ThenInclude(c => c.User).ToListAsync();
+        }
         public async Task<Song?> GetByIdFullAsync(int id)
         {
             return await _dataSet

@@ -12,6 +12,15 @@ export const getSongsByUserId = async (userId: number) => {
      }
 }
 
+export const getFullSongsByUserId = async (userId: number) => {
+    try {
+        const res = await api.get('/Song/UserFull/'+userId)
+        return res.data;
+     } catch (e) {
+         console.log(e);
+     }
+}
+
 export const getSongById = async (id: number) => {
     try {
         console.log(id)
@@ -153,3 +162,5 @@ export const handleDownload = async (song:Song) => {
       }
     }
   };
+
+  

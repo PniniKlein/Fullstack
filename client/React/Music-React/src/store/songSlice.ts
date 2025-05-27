@@ -8,7 +8,7 @@ const emptySong: Song = {
     pathSong: '',
     gener: '',
     lyrics: '',
-    play: 0,
+    plays: 0,
     comments: [],
     create_at: '',
     isPublic: false,

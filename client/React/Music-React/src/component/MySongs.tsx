@@ -93,8 +93,9 @@ import PrivateSongs from "./PrivateSongs"
 import PublicSongs from "./PublicSongs"
 import SongAnalytics from "./SongAnalytics"
 import AddSong from "./AddSong"
-import { Globe, Lock, BarChart2, Plus } from "lucide-react"
+import { Globe, Lock, BarChart2, Plus, Minus } from "lucide-react"
 import "../css/MySongs.css"
+import SongsView from "./SongsView"
 
 const MySongs = () => {
   const dispatch = useDispatch<Dispatch>()
@@ -144,14 +145,15 @@ const MySongs = () => {
           className={`nav-option add-option ${activeView === "add" ? "active" : ""}`}
           onClick={() =>activeView=== "add"? setActiveView("public"): setActiveView("add")}
         >
-          <Plus size={18} />
+          {activeView !== "add" && <Plus size={18} />}
+          {activeView === "add" && <Minus size={18} />}
           <span>{activeView === "add" ? "סגור" : "הוסף שיר"}</span>
         </div>
       </div>
 
       <Box className="content-section">
-        {activeView === "public" && <PublicSongs />}
-        {activeView === "private" && <PrivateSongs />}
+        {activeView === "public" && <SongsView  mode="public"/>}
+        {activeView === "private" && <SongsView mode="private" />}
         {activeView === "analytics" && <SongAnalytics />}
         {activeView === "add" && <AddSong />}
       </Box>

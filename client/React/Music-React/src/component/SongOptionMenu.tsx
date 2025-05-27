@@ -75,7 +75,7 @@ const dispatch = useDispatch<Dispatch>();
         }}
         PaperProps={{
           sx: {
-            backgroundColor: "#222",
+            backgroundColor: "#111",
             borderRadius: "12px",
             color: "#fff",
             minWidth: 180,
@@ -134,8 +134,8 @@ const dispatch = useDispatch<Dispatch>();
           key={val}
           onClick={() => handleSpeedChange(val)}
           sx={{
-            backgroundColor: "#333",
-            "&:hover": { backgroundColor: "#555" },
+            backgroundColor: "#1A1A1A",
+            "&:hover": { backgroundColor: "#222" },
             position: "relative",
             paddingRight: "30px",
             "&:before": {

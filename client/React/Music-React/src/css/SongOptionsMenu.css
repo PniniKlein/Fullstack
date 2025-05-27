@@ -6,7 +6,7 @@
 }
 
 .menu-paper {
-  background-color: #333;
+  background-color: #111;
   border-radius: 12px;
   color: #fff;
   min-width: 180px;
@@ -16,11 +16,11 @@
 
 .menu-item {
   color: #fff;
-  background-color: #444;
+  background-color: #222;
 }
 
 .menu-item:hover {
-  background-color: #555;
+  background-color: #333;
 }
 
 .menu-item-gradient {
@@ -34,7 +34,7 @@
 }
 
 .divider {
-  background-color: #555;
+  background-color: #333;
 }
 
 .speed-typography {

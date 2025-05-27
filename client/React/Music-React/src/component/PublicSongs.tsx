@@ -1,47 +1,45 @@
 "use client"
 
+import type React from "react"
+import { useMemo } from "react"
+
 import { useEffect, useState } from "react"
-import { Box, InputBase, Select, MenuItem, FormControl, Typography } from "@mui/material"
 import { useSelector } from "react-redux"
+import { motion, AnimatePresence } from "framer-motion"
 import type { StoreType } from "../store/store"
 import type { Song } from "../model/Song"
-import {
-  Search,
-  ArrowDownAZ,
-  ArrowUpAZ,
-  Calendar,
-  Music,
-  SlidersHorizontal,
-  Headphones,
-  X,
-  Grid,
-  List,
-  Play,
-  Clock,
-} from "lucide-react"
+import SongCard from "./SongCard"
+// import SongsSearchFilter from "."
+import { Globe, Award } from "lucide-react"
 import "../css/PublicSongs.css"
-import type { JSX } from "react"
+import SongsSearchFilter from "./SongsSearchFilter"
 
 const PublicSongs = () => {
   const user = useSelector((state: StoreType) => state.user.user)
   const [searchTerm, setSearchTerm] = useState("")
-  const [sortBy, setSortBy] = useState("newest")
   const [filteredSongs, setFilteredSongs] = useState<Song[]>([])
-  const [showFilters, setShowFilters] = useState(false)
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null)
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [activeCardId, setActiveCardId] = useState<number | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  const genres = ["פופ", "רוק", "אלקטרוני", "היפ הופ", "ג'אז", "קלאסי", "מזרחית", "ישראלי", "אחר"]
+  // const publicSongs = user.songs?.filter((song: Song) => song.isPublic) || []
+
+  const publicSongs = useMemo(() => {
+  return user.songs?.filter((song: Song) => song.isPublic) || []
+}, [user.songs])
+
+  // Get only genres that exist in public songs
+  const availableGenres = Array.from(
+    new Set(publicSongs.map((song: Song) => song.gener).filter((genre): genre is string => Boolean(genre))),
+  ).sort()
 
   useEffect(() => {
-    const publicSongs = user.songs?.filter((song: Song) => song.isPublic) || []
-
     let filtered = [...publicSongs]
 
     // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(
-        (song:Song) =>
+        (song: Song) =>
           song.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           song.gener?.toLowerCase().includes(searchTerm.toLowerCase()),
       )
@@ -49,290 +47,115 @@ const PublicSongs = () => {
 
     // Apply genre filter
     if (selectedGenre) {
-      filtered = filtered.filter((song:Song) => song.gener === selectedGenre)
+      filtered = filtered.filter((song: Song) => song.gener === selectedGenre)
     }
 
-    // Apply sorting
-    switch (sortBy) {
-      case "newest":
-        filtered.sort((a:Song, b:Song) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime())
-        break
-      case "oldest":
-        filtered.sort((a:Song, b:Song) => new Date(a.create_at).getTime() - new Date(b.create_at).getTime())
-        break
-      case "title_asc":
-        filtered.sort((a:Song, b:Song) => a.title.localeCompare(b.title))
-        break
-      case "title_desc":
-        filtered.sort((a:Song, b:Song) => b.title.localeCompare(a.title))
-        break
-      case "plays":
-        filtered.sort((a:Song, b:Song) => (b.plays || 0) - (a.plays || 0))
-        break
-      case "genre":
-        filtered.sort((a:Song, b:Song) => (a.gener || "").localeCompare(b.gener || ""))
-        break
-      default:
-        break
-    }
+    // Sort by newest first
+    filtered.sort((a: Song, b: Song) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime())
 
     setFilteredSongs(filtered)
-  }, [user.songs, searchTerm, sortBy, selectedGenre])
+  }, [publicSongs, searchTerm, selectedGenre])
 
-  const handleGenreSelect = (genre: string) => {
-    if (selectedGenre === genre) {
-      setSelectedGenre(null)
-    } else {
-      setSelectedGenre(genre)
+  const handleCardClick = (event: React.MouseEvent, songId: number) => {
+    const target = event.target as HTMLElement
+    if (target.closest("button, svg")) {
+      return
     }
-  }
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString("he-IL", { year: "numeric", month: "numeric", day: "numeric" })
+    setActiveCardId(songId)
   }
 
   return (
-    <div className="songs-container">
-      <div className="filter-bar">
-        <div className="search-wrapper">
-          <div className="search-field">
-            <Search size={18} className="search-icon" />
-            <InputBase
-              placeholder="חפש לפי שם או ז'אנר..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-            {searchTerm && (
-              <button className="clear-search" onClick={() => setSearchTerm("")}>
-                <X size={16} />
-              </button>
-            )}
-          </div>
-        </div>
+    <div className="public-songs-container">
+      {/* Background Effects */}
+      <div className="public-songs-background-wrapper">
+        <div className="public-songs-gradient-circle public-songs-circle-1"></div>
+        <div className="public-songs-gradient-circle public-songs-circle-2"></div>
+        <div className="public-songs-gradient-circle public-songs-circle-3"></div>
 
-        <div className="filter-actions">
-          <div className="view-toggle">
-            <button
-              className={`view-button ${viewMode === "grid" ? "active" : ""}`}
-              onClick={() => setViewMode("grid")}
-              title="תצוגת רשת"
-            >
-              <Grid size={18} />
-            </button>
-            <button
-              className={`view-button ${viewMode === "list" ? "active" : ""}`}
-              onClick={() => setViewMode("list")}
-              title="תצוגת רשימה"
-            >
-              <List size={18} />
-            </button>
-          </div>
-
-          <button
-            className={`filter-toggle ${showFilters ? "active" : ""}`}
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <SlidersHorizontal size={16} />
-            <span>סינון</span>
-          </button>
-
-          <FormControl className="sort-field">
-            <Select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="sort-select"
-              displayEmpty
-              renderValue={(value) => {
-                const options: Record<string, JSX.Element> = {
-                  newest: (
-                    <div className="sort-option">
-                      <Calendar size={16} />
-                      <span>החדש ביותר</span>
-                    </div>
-                  ),
-                  oldest: (
-                    <div className="sort-option">
-                      <Calendar size={16} />
-                      <span>הישן ביותר</span>
-                    </div>
-                  ),
-                  title_asc: (
-                    <div className="sort-option">
-                      <ArrowDownAZ size={16} />
-                      <span>שם (א-ת)</span>
-                    </div>
-                  ),
-                  title_desc: (
-                    <div className="sort-option">
-                      <ArrowUpAZ size={16} />
-                      <span>שם (ת-א)</span>
-                    </div>
-                  ),
-                  plays: (
-                    <div className="sort-option">
-                      <Headphones size={16} />
-                      <span>השמעות</span>
-                    </div>
-                  ),
-                  genre: (
-                    <div className="sort-option">
-                      <Music size={16} />
-                      <span>ז'אנר</span>
-                    </div>
-                  ),
-                }
-                return options[value as string] || "מיון"
-              }}
-            >
-              <MenuItem value="newest">
-                <div className="sort-option">
-                  <Calendar size={16} />
-                  <span>החדש ביותר</span>
-                </div>
-              </MenuItem>
-              <MenuItem value="oldest">
-                <div className="sort-option">
-                  <Calendar size={16} />
-                  <span>הישן ביותר</span>
-                </div>
-              </MenuItem>
-              <MenuItem value="title_asc">
-                <div className="sort-option">
-                  <ArrowDownAZ size={16} />
-                  <span>שם (א-ת)</span>
-                </div>
-              </MenuItem>
-              <MenuItem value="title_desc">
-                <div className="sort-option">
-                  <ArrowUpAZ size={16} />
-                  <span>שם (ת-א)</span>
-                </div>
-              </MenuItem>
-              <MenuItem value="plays">
-                <div className="sort-option">
-                  <Headphones size={16} />
-                  <span>השמעות</span>
-                </div>
-              </MenuItem>
-              <MenuItem value="genre">
-                <div className="sort-option">
-                  <Music size={16} />
-                  <span>ז'אנר</span>
-                </div>
-              </MenuItem>
-            </Select>
-          </FormControl>
+        {/* Musical Notes Background */}
+        <div className="public-songs-floating-notes">
+          <div className="public-songs-note note-1">♪</div>
+          <div className="public-songs-note note-2">♫</div>
+          <div className="public-songs-note note-3">♬</div>
+          <div className="public-songs-note note-4">♫</div>
+          <div className="public-songs-note note-5">♪</div>
+          <div className="public-songs-note note-6">♫</div>
+          <div className="public-songs-note note-7">♬</div>
+          <div className="public-songs-note note-8">♪</div>
         </div>
       </div>
 
-      {showFilters && (
-        <div className="advanced-filters">
-          <div className="filter-group">
-            <div className="filter-label">סנן לפי ז'אנר</div>
-            <div className="filter-options">
-              {genres.map((genre) => (
-                <div
-                  key={genre}
-                  className={`filter-chip ${selectedGenre === genre ? "active" : ""}`}
-                  onClick={() => handleGenreSelect(genre)}
-                >
-                  {genre}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Search and Filter Component */}
+      <SongsSearchFilter
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        selectedGenre={selectedGenre}
+        setSelectedGenre={setSelectedGenre}
+        availableGenres={availableGenres}
+        componentName="public-songs"
+      />
 
-      <div className="results-info">
-        <span className="results-count">{filteredSongs.length} שירים</span>
-        {searchTerm && <span className="search-query">תוצאות עבור: "{searchTerm}"</span>}
-        {selectedGenre && (
-          <div className="selected-genre">
-            <span>{selectedGenre}</span>
-            <button className="remove-genre" onClick={() => setSelectedGenre(null)}>
-              <X size={14} />
-            </button>
-          </div>
-        )}
-      </div>
 
-      {filteredSongs.length > 0 ? (
-        viewMode === "grid" ? (
-          <div className="songs-grid">
-            {filteredSongs.map((song) => (
-              <div className="song-card" key={song.id}>
-                <div className="song-image-container">
-                  <img
-                    src={song.pathPicture || "/placeholder.svg?height=200&width=200"}
-                    alt={song.title}
-                    className="song-image"
-                  />
-                  <div className="song-overlay">
-                    <button className="play-button">
-                      <Play size={20} />
-                    </button>
-                  </div>
-                </div>
-                <div className="song-info">
-                  <div className="song-header">
-                    <Typography className="song-title">{song.title}</Typography>
-                    <div className="song-genre">{song.gener || "ללא ז'אנר"}</div>
-                  </div>
-                  <Typography className="song-artist">{user.userName || "אמן לא ידוע"}</Typography>
-                  <div className="song-meta">
-                    <div className="play-count">
-                      <Headphones size={14} />
-                      <span>{song.plays || 0}</span>
-                    </div>
-                    <div className="song-date">
-                      <Clock size={14} />
-                      <span>{formatDate(song.create_at)}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+      {/* Content */}
+      {filteredSongs.length === 0 ? (
+        <motion.div
+          className="public-songs-empty-state"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="public-songs-empty-icon-container">
+            <div className="public-songs-empty-glow"></div>
+            <Globe size={64} className="public-songs-empty-icon" />
           </div>
-        ) : (
-          <div className="songs-list">
-            {filteredSongs.map((song) => (
-              <div className="song-list-item" key={song.id}>
-                <div className="song-list-image">
-                  <img
-                    src={song.pathPicture || "/placeholder.svg?height=80&width=80"}
-                    alt={song.title}
-                    className="song-image"
-                  />
-                  <button className="play-button-small">
-                    <Play size={16} />
-                  </button>
-                </div>
-                <div className="song-list-info">
-                  <div className="song-list-title">{song.title}</div>
-                  <div className="song-list-artist">{user.userName || "אמן לא ידוע"}</div>
-                </div>
-                <div className="song-list-genre">{song.gener || "ללא ז'אנר"}</div>
-                <div className="song-list-plays">
-                  <Headphones size={14} />
-                  <span>{song.plays || 0}</span>
-                </div>
-                <div className="song-list-date">{formatDate(song.create_at)}</div>
-              </div>
-            ))}
-          </div>
-        )
+          <h3>{searchTerm ? `לא נמצאו שירים התואמים לחיפוש "${searchTerm}"` : "אין שירים ציבוריים עדיין"}</h3>
+          <p>
+            {searchTerm ? "נסה לחפש במילות מפתח אחרות או שנה את הפילטרים" : "הוסף שירים או הפוך שירים פרטיים לציבוריים"}
+          </p>
+        </motion.div>
       ) : (
-        <Box className="no-songs">
-          {searchTerm ? (
-            <>לא נמצאו שירים התואמים לחיפוש "{searchTerm}"</>
-          ) : (
-            <>אין שירים ציבוריים. הוסף שירים או הפוך שירים פרטיים לציבוריים.</>
-          )}
-        </Box>
+        <motion.div
+          className="public-songs-grid"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <AnimatePresence>
+            {filteredSongs.map((song, index) => (
+              <motion.div
+                key={song.id}
+                className="public-songs-card-wrapper"
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -50, scale: 0.9 }}
+                transition={{ duration: 0.5, delay: index * 0.05 }}
+                style={{ "--index": index } as React.CSSProperties}
+              >
+                <SongCard
+                  song={song}
+                  activeCardId={activeCardId}
+                  onCardClick={handleCardClick}
+                  setActiveCardId={setActiveCardId}
+                  showActions={true}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
       )}
+      <motion.div
+        className="public-songs-results-info"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Award size={16} />
+        <span>
+          {searchTerm || selectedGenre
+            ? `נמצאו ${filteredSongs.length} שירים`
+            : `${filteredSongs.length} שירים ציבוריים`}
+        </span>
+      </motion.div>
     </div>
   )
 }

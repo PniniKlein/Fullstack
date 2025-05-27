@@ -216,11 +216,11 @@
 }
 
 .music-library-gradient-circle.circle-1 {
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 400px;
   background: linear-gradient(135deg, #d59039 0%, #f7c26b 100%);
   top: -100px;
-  right: -100px;
+  right: -150px;
   animation: float 15s ease-in-out infinite alternate;
 }
 

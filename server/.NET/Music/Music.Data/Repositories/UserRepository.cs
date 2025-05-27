@@ -76,8 +76,8 @@ namespace Music.Data.Repositories
                     Password = x.Password,
                     PathProfile = x.PathProfile,
                     Create_at = x.Create_at,
-                    CountSongs = x.Songs.Count,
-                    CountFollowees = x.Followees.Count,
+                    CountSongs = x.Songs.Count(s => s.IsPublic),
+                    CountFollowers = x.Followers.Count,
                     RoleList = x.RoleList
                 })
                 .ToListAsync();

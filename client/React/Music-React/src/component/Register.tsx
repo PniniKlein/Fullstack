@@ -371,11 +371,11 @@ const Register = () => {
               <div className="auth-decorative-circle auth-circle-lg"></div>
             </div>
 
-            <div className="sound-waves">
-              <div className="wave wave-1"></div>
-              <div className="wave wave-2"></div>
-              <div className="wave wave-3"></div>
-              <div className="wave wave-4"></div>
+            <div className="auth-sound-waves">
+              <div className="auth-wave auth-wave-1"></div>
+              <div className="auth-wave auth-wave-2"></div>
+              <div className="auth-wave auth-wave-3"></div>
+              <div className="auth-wave auth-wave-4"></div>
             </div>
           </div>
         </div>

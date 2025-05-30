@@ -46,6 +46,7 @@ import {
   X,
 } from "lucide-react"
 import "../css/SongAnalytics.css"
+import SkeletonLoader from "./ui/Loader"
 
 interface AnalyticsData {
   totalPlays: number
@@ -878,19 +879,7 @@ const SongAnalytics = () => {
 
   if (loading) {
     return (
-      <div className="advanced-analytics-container">
-        <div className="advanced-analytics-loading">
-          <motion.div
-            className="loading-container-advanced"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="loading-spinner-advanced"></div>
-            <div className="loading-text-advanced">טוען נתוני ניתוח מתקדמים...</div>
-          </motion.div>
-        </div>
-      </div>
+      <SkeletonLoader text="טוען מתוני ניתוח..."/>
     )
   }
 

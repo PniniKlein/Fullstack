@@ -443,6 +443,7 @@
   background-clip: text;
   margin: 0 0 15px;
   transition: all 0.3s ease;
+  height: 80px;
 }
 
 .artist-card-modern:hover .artist-name-modern {

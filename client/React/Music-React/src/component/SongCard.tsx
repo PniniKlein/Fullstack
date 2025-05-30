@@ -33,8 +33,8 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
   const user = useSelector((state: StoreType) => state.user.user)
 
   const sendEmailShare = async (emails: string[], song: Song) => {
-const subject = "שיר ששותף איתך ב-singsong";
-      const body = `
+    const subject = "שיר ששותף איתך ב-singsong";
+    const body = `
         <div style="direction: rtl; background-color: #f4f4f4; padding: 40px 0; font-family: Arial, sans-serif;">
           <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 35px;">
             <h2 style="color: #333; font-size: 24px; text-align: center;">
@@ -52,26 +52,26 @@ const subject = "שיר ששותף איתך ב-singsong";
         </div>
       `;
 
-      try {
-        const result = await dispatch(sendEmail({ to: emails, subject, body }));
-        if (result.meta.requestStatus === "fulfilled") {
-          console.log("המייל נשלח בהצלחה!");
-        } else {
-          console.log("שגיאה בשליחת המייל.");
-        }
-      } catch {
-          console.log("שגיאה בשליחת המייל.");
-      } finally {
-        // setSnackbarOpen(true);
-        const token = localStorage.getItem("authToken");
-        if (token) {
-          const id = getUserDataFromToken(token);
-          if (id) {
-            dispatch(loadUser(id));
-          }
+    try {
+      const result = await dispatch(sendEmail({ to: emails, subject, body }));
+      if (result.meta.requestStatus === "fulfilled") {
+        console.log("המייל נשלח בהצלחה!");
+      } else {
+        console.log("שגיאה בשליחת המייל.");
+      }
+    } catch {
+      console.log("שגיאה בשליחת המייל.");
+    } finally {
+      // setSnackbarOpen(true);
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        const id = getUserDataFromToken(token);
+        if (id) {
+          dispatch(loadUser(id));
         }
       }
-}
+    }
+  }
 
   const dispatch = useDispatch<Dispatch>()
   const navigate = useNavigate()
@@ -144,21 +144,21 @@ const subject = "שיר ששותף איתך ב-singsong";
   const confirmDelete = async () => {
     setIsLoading(true)
     try {
-       if (await deleteSong(song.id)) {
-          if (song.id == songPlayer.id)
-              dispatch(resetSong())
-              setSnackbarMessage("השיר נמחק בהצלחה!");
-              const token = localStorage.getItem("authToken");
-              if (token) {
-                const id = getUserDataFromToken(token);
-                if (id) {
-                  dispatch(loadUser(id));
-                }
-              }
-              setSnackbarOpen(true);
-        } else {
-          setSnackbarMessage("שגיאה במחיקת השיר");
-          setSnackbarOpen(true);
+      if (await deleteSong(song.id)) {
+        if (song.id == songPlayer.id)
+          dispatch(resetSong())
+        setSnackbarMessage("השיר נמחק בהצלחה!");
+        const token = localStorage.getItem("authToken");
+        if (token) {
+          const id = getUserDataFromToken(token);
+          if (id) {
+            dispatch(loadUser(id));
+          }
+        }
+        setSnackbarOpen(true);
+      } else {
+        setSnackbarMessage("שגיאה במחיקת השיר");
+        setSnackbarOpen(true);
       }
     } catch (error) {
       setSnackbarMessage("שגיאה במחיקת השיר")
@@ -182,7 +182,7 @@ const subject = "שיר ששותף איתך ב-singsong";
       if (token) {
         const id = getUserDataFromToken(token)
         if (id) {
-                dispatch(loadUser(id));
+          dispatch(loadUser(id));
         }
       }
 
@@ -281,28 +281,29 @@ const subject = "שיר ששותף איתך ב-singsong";
                 </div>
 
                 <div className="options-list">
-                  <div className="option-item-modern primary-option" onClick={(e) => handleOptionClick("view", e)}>
-                    <Eye size={16} />
-                    <span>צפה בפרטים</span>
-                    <div className="option-glow"></div>
-                  </div>
-
-                  <div className="option-item-modern" onClick={(e) => handleOptionClick("play", e)}>
-                    <Play size={16} />
-                    <span>נגן עכשיו</span>
-                  </div>
+                  {user.id !== song.userId && song.isPublic && (
+                    <div className="option-item-modern primary-option" onClick={(e) => handleOptionClick("view", e)}>
+                      <Eye size={16} />
+                      <span>צפה בפרטים</span>
+                      <div className="option-glow"></div>
+                    </div>)}
+                  {user.id !== song.userId && (
+                    <div className="option-item-modern" onClick={(e) => handleOptionClick("play", e)}>
+                      <Play size={16} />
+                      <span>נגן עכשיו</span>
+                    </div>)}
 
                   <div className="option-item-modern" onClick={(e) => handleOptionClick("download", e)}>
                     <Download size={16} />
                     <span>הורד שיר</span>
                   </div>
+                  {song.isPublic && (
+                    < div className="option-item-modern" onClick={(e) => handleOptionClick("share", e)}>
+                      <Mail size={16} />
+                      <span>שתף במייל</span>
+                    </div>)}
 
-                  <div className="option-item-modern" onClick={(e) => handleOptionClick("share", e)}>
-                    <Mail size={16} />
-                    <span>שתף במייל</span>
-                  </div>
-
-                  {showActions && (
+                  {user.id == song.userId && (
                     <>
                       <div className="option-item-modern" onClick={(e) => handleOptionClick("edit", e)}>
                         <Edit size={16} />
@@ -348,12 +349,12 @@ const subject = "שיר ששותף איתך ב-singsong";
           <div className="divider-line"></div>
         </div>
 
-        <div className="action-buttons-elegant">
-          <button className="action-button-elegant" onClick={(e) => handleOptionClick("view", e)}>
+        <div className="song-card-action-buttons-elegant">
+          <button className="song-card-action-button-elegant" onClick={(e) => handleOptionClick("view", e)}>
             <Eye size={14} />
             <span>פרטים</span>
           </button>
-          <button className="action-button-elegant" onClick={handleDownload2}>
+          <button className="song-card-action-button-elegant" onClick={handleDownload2}>
             <Download size={14} />
             <span>הורדה</span>
           </button>
@@ -365,7 +366,7 @@ const subject = "שיר ששותף איתך ב-singsong";
         <div className="note note-1">♪</div>
         <div className="note note-2">♫</div>
       </div>
-    </div>
+    </div >
   )
 }
 

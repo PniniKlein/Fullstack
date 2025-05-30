@@ -8,6 +8,7 @@ import SongCard from "./SongCard"
 import { Globe, Lock, Award } from "lucide-react"
 import SongsSearchFilter from "./SongsSearchFilter"
 import "../css/SongsView.css"
+import { useNavigate } from "react-router-dom"
 
 type SongsViewProps = {
   mode: "public" | "private"
@@ -19,7 +20,7 @@ const SongsView = ({ mode }: SongsViewProps) => {
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null)
   const [filteredSongs, setFilteredSongs] = useState<Song[]>([])
   const [activeCardId, setActiveCardId] = useState<number | null>(null)
-
+  const navigate = useNavigate()
   const songs = useMemo(() => {
     if (!user.songs) return []
     return user.songs.filter((song:Song) =>
@@ -45,7 +46,15 @@ const SongsView = ({ mode }: SongsViewProps) => {
     filtered.sort((a:Song, b:Song) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime())
     setFilteredSongs(filtered)
   }, [songs, searchTerm, selectedGenre])
+  const handleCardClick = (event: React.MouseEvent, songId: number) => {
+    const target = event.target as HTMLElement
 
+    if (target.closest("button, svg")) {
+      return
+    }
+    setActiveCardId(songId)
+    navigate(`/songComments/${songId}`)
+  }
   const icon = mode === "public" ? <Globe size={64} /> : <Lock size={64} />
   const emptyTitle = mode === "public" ? "אין שירים ציבוריים עדיין" : "אין שירים פרטיים עדיין"
   const emptyText = mode === "public"
@@ -91,11 +100,7 @@ const SongsView = ({ mode }: SongsViewProps) => {
                 <SongCard
                   song={song}
                   activeCardId={activeCardId}
-                  onCardClick={(e) => {
-                    if (!(e.target as HTMLElement).closest("button, svg")) {
-                      setActiveCardId(song.id)
-                    }
-                  }}
+                  onCardClick={handleCardClick}
                   setActiveCardId={setActiveCardId}
                   showActions={true}
                 />

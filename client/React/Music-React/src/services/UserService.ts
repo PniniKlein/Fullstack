@@ -22,15 +22,16 @@ export const getArtistById = async (id:number) => {
 export const getArtistByIdFull = async (id:number) => {
     try {
         const res = await api.get(`/User/${id}/FullPublic`);
+        console.log(res.data);
         return res.data;
     } catch (e) {
         console.log(e);
     }
 }
 
-export const addFollowee = async (followeeId:number,followerId:number) => {
+export const addFollowee = async (followerId:number,followeeId:number) => {
     try {
-        const payload = {followeeId,followerId};
+        const payload = {followerId,followeeId};
         console.log(payload)
         const res = await api.post(`/UserFollower`, payload);
         return res.data;

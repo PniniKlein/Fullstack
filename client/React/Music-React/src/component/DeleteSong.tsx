@@ -4,13 +4,14 @@ import { Song } from "../model/Song";
 import { loadUser } from "../store/userSlice";
 import { getUserDataFromToken } from "./AppLayout";
 import { deleteSong } from "../services/SongsService";
-import SnackbarGreen from "./SnackbarGreen";
+import SnackbarGreen from "./SnackbarWarn";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { useState } from "react";
 import { resetSong } from "../store/songSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch, StoreType } from "../store/store";
+import SnackbarWarn from "./SnackbarWarn";
 const MySwal = withReactContent(Swal);
 
 
@@ -18,6 +19,7 @@ const DeleteSong = ({ song, className }: { song: Song; className?: string }) => 
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [col,setCol] =useState("red");
     const dispatch = useDispatch<Dispatch>();
     const songPlayer = useSelector((state: StoreType) => state.songPlayer.song);
 
@@ -84,9 +86,11 @@ const DeleteSong = ({ song, className }: { song: Song; className?: string }) => 
                         dispatch(loadUser(id));
                     }
                 }
+                setCol("green")
                 setSnackbarOpen(true);
             } else {
                 setSnackbarMessage("שגיאה במחיקת השיר");
+                setCol("red")
                 setSnackbarOpen(true);
             }
         }
@@ -97,7 +101,7 @@ const DeleteSong = ({ song, className }: { song: Song; className?: string }) => 
             onClick={() => handleDelete(song.id)}
             icon={<Delete sx={{ fontSize: 28 }} />}
         />
-        <SnackbarGreen snackbarMessage={snackbarMessage} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} />
+        <SnackbarWarn col={col} snackbarMessage={snackbarMessage} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} />
     </>);
 };
 export default DeleteSong;

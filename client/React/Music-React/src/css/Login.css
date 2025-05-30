@@ -151,19 +151,19 @@
   animation: wave 3s infinite;
 }
 
-.wave-1 {
+.auth-wave-1 {
   animation-delay: 0s;
 }
 
-.wave-2 {
+.auth-wave-2 {
   animation-delay: 0.5s;
 }
 
-.wave-3 {
+.auth-wave-3 {
   animation-delay: 1s;
 }
 
-.wave-4 {
+.auth-wave-4 {
   animation-delay: 1.5s;
 }
 
@@ -232,7 +232,7 @@
   }
 }
 
-.sound-waves {
+.auth-sound-waves {
   position: absolute;
   bottom: 40px;
   left: 0;
@@ -244,29 +244,29 @@
   gap: 4px;
 }
 
-.wave {
+.auth-wave {
   width: 4px;
   background: linear-gradient(to top, #d59039, #f7c26b);
   border-radius: 2px;
   animation: sound-wave 1.5s infinite ease-in-out;
 }
 
-.wave-1 {
+.auth-wave-1 {
   height: 60%;
   animation-delay: 0.2s;
 }
 
-.wave-2 {
+.auth-wave-2 {
   height: 30%;
   animation-delay: 0.5s;
 }
 
-.wave-3 {
+.auth-wave-3 {
   height: 75%;
   animation-delay: 0.1s;
 }
 
-.wave-4 {
+.auth-wave-4 {
   height: 45%;
   animation-delay: 0.7s;
 }

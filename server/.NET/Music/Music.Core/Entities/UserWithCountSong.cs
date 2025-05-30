@@ -19,7 +19,7 @@ namespace Music.Core.Entities
         public string PathProfile { get; set; }
         public DateTime Create_at { get; set; } = DateTime.UtcNow;
         public int CountSongs { get; set; }
-        public int CountFollowers { get; set; }
+        public int CountFollowees { get; set; }
         public List<Role> RoleList { get; set; }
     }
 }

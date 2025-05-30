@@ -11,10 +11,11 @@ import type { SongPostModel } from "../model/PostModel/SongPostModel"
 import { updateSong } from "../services/SongsService"
 import type { Dispatch } from "../store/store"
 import { loadUser } from "../store/userSlice"
-import SnackbarGreen from "./SnackbarGreen"
+import SnackbarGreen from "./SnackbarWarn"
 import axios from "axios"
 import api from "../interceptor/axiosConfig"
 import "../css/UpdateSong.css"
+import SnackbarWarn from "./SnackbarWarn"
 
 const UpdateSong = () => {
   const { state } = useLocation()
@@ -25,12 +26,12 @@ const UpdateSong = () => {
 
   const [formData, setFormData] = useState(song)
   const [errors, setErrors] = useState<{ title: string }>({ title: "" })
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [snackbarMessage, setSnackbarMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [imagePreview, setImagePreview] = useState<string | null>(song?.pathPicture || null)
   const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null)
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [col,setCol] = useState("green") 
   useEffect(() => {
     if (selectedImageFile) {
       const reader = new FileReader()
@@ -66,7 +67,9 @@ const UpdateSong = () => {
 
       return presignedUrl.split("?")[0]
     } catch (error) {
-      console.error("שגיאה בהעלאת הקובץ:", error)
+      setCol("red")
+      setSnackbarMessage("שגיאה בהעלאת הקובץ")
+      setSnackbarOpen(true)
       return null
     }
   }
@@ -89,6 +92,7 @@ const UpdateSong = () => {
         if (uploadedUrl) {
           imageUrl = uploadedUrl
         } else {
+          setCol("red")
           setSnackbarMessage("שגיאה בהעלאת התמונה")
           setSnackbarOpen(true)
           setIsLoading(false)
@@ -109,6 +113,7 @@ const UpdateSong = () => {
         const updatedSong = await updateSong(song.id, songToUpdate)
         dispatch(loadUser(song.userId))
         if (updatedSong) {
+          setCol("green")
           setSnackbarMessage("השיר עודכן בהצלחה")
           setSnackbarOpen(true)
           setTimeout(() => {
@@ -117,6 +122,7 @@ const UpdateSong = () => {
         }
       } catch (error) {
         console.error(error)
+        setCol("red")
         setSnackbarMessage("שגיאה בעדכון השיר")
         setSnackbarOpen(true)
       }
@@ -338,7 +344,7 @@ const UpdateSong = () => {
         </motion.div>
       </motion.div>
 
-      <SnackbarGreen snackbarMessage={snackbarMessage} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} />
+      <SnackbarWarn col={col} snackbarMessage={snackbarMessage} snackbarOpen={snackbarOpen} setSnackbarOpen={setSnackbarOpen} />
     </div>
   )
 }

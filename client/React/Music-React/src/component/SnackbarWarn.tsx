@@ -1,6 +1,6 @@
 import { Alert, Snackbar } from "@mui/material";
 
-const SnackbarGreen = ({snackbarMessage,snackbarOpen,setSnackbarOpen}:{snackbarMessage:string,snackbarOpen:boolean,setSnackbarOpen:Function}) => {
+const SnackbarWarn = ({snackbarMessage,snackbarOpen,setSnackbarOpen,col}:{snackbarMessage:string,snackbarOpen:boolean,setSnackbarOpen:Function,col:string}) => {
     return (<>
     <Snackbar
       open={snackbarOpen}
@@ -11,7 +11,7 @@ const SnackbarGreen = ({snackbarMessage,snackbarOpen,setSnackbarOpen}:{snackbarM
       <Alert
         severity="success"
         sx={{
-          backgroundColor: "#2E7D32",
+          backgroundColor: col=="green"?"#2E7D32":"#D32F2F",
           color: "white",
           "& .MuiAlert-icon": { color: "white" },
         }}
@@ -21,4 +21,4 @@ const SnackbarGreen = ({snackbarMessage,snackbarOpen,setSnackbarOpen}:{snackbarM
     </Snackbar>
     </>)
 }
-export default SnackbarGreen;
+export default SnackbarWarn;

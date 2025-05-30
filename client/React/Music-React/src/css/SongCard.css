@@ -457,13 +457,13 @@
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(213, 144, 57, 0.3), transparent);
 }
-.action-buttons-elegant {
+.song-card-action-buttons-elegant {
   display: flex;
   gap: 12px;
   margin-top: 0;
 }
 
-.action-button-elegant {
+.song-card-action-button-elegant {
   flex: 1;
   display: flex;
   align-items: center;
@@ -498,28 +498,28 @@
   width: 80%;
 } */
 
-.action-button-elegant:hover {
+.song-card-action-button-elegant:hover {
   color: rgba(255, 255, 255, 0.9);
   transform: translateY(-1px);
 }
 
-.action-button-elegant svg {
+.song-card-action-button-elegant svg {
   color: rgba(213, 144, 57, 0.7);
   transition: all 0.3s ease;
   filter: drop-shadow(0 0 3px rgba(213, 144, 57, 0.2));
 }
 
-.action-button-elegant:hover svg {
+.song-card-action-button-elegant:hover svg {
   color: rgba(213, 144, 57, 0.9);
   transform: scale(1.1);
   filter: drop-shadow(0 0 6px rgba(213, 144, 57, 0.4));
 }
 
-.action-button-elegant span {
+.song-card-action-button-elegant span {
   transition: all 0.3s ease;
 }
 
-.action-button-elegant:hover span {
+.song-card-action-button-elegant:hover span {
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 

@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useDispatch, useSelector } from "react-redux"
@@ -10,23 +8,10 @@ import axios from "axios"
 import api from "../interceptor/axiosConfig"
 import * as mm from "music-metadata-browser"
 import { Buffer } from "buffer"
-import {
-  Upload,
-  Music,
-  Edit3,
-  Save,
-  ArrowRight,
-  ArrowLeft,
-  FileAudio,
-  Disc3,
-  Sparkles,
-  CheckCircle,
-  AlertCircle,
-  Globe,
-  Lock,
-  Camera,
-} from "lucide-react"
+import {Upload,Music,Edit3,Save,ArrowRight,ArrowLeft,FileAudio,Disc3,Sparkles,CheckCircle
+  ,AlertCircle,Globe,Lock,Camera,} from "lucide-react"
 import "../css/AddSong.css"
+import { SongPostModel } from "../model/PostModel/SongPostModel"
 
 declare global {
   interface Window {
@@ -34,16 +19,6 @@ declare global {
   }
 }
 window.Buffer = Buffer
-
-interface SongData {
-  title: string
-  gener: string
-  lyrics: string
-  isPublic: boolean
-  pathSong: string
-  pathPicture: string
-  userId: number
-}
 
 interface SongMetadata {
   title: string
@@ -59,12 +34,15 @@ const AddSong = () => {
   const [progress, setProgress] = useState(0)
   const [loading, setLoading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
-  const [songData, setSongData] = useState<Partial<SongData>>({})
+  const [songData, setSongData] = useState<Partial<SongPostModel>>({})
   const [songMetadata, setSongMetadata] = useState<SongMetadata | null>(null)
   const [originalFile, setOriginalFile] = useState<File | null>(null)
   const [customCoverImage, setCustomCoverImage] = useState<File | null>(null)
   const [coverPreview, setCoverPreview] = useState<string>("")
   const [error, setError] = useState<string>("")
+  const [snackbarOpen, setSnackbarOpen] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState("")
+    const [col,setCol] = useState("green") 
 
   const dispatch = useDispatch()
   const userId = useSelector((state: StoreType) => state.user.user.id)
@@ -211,11 +189,11 @@ const AddSong = () => {
         return
       }
 
-      const finalSongData: SongData = {
+      const finalSongData: SongPostModel = {
         ...songData,
         pathSong: uploadedSongUrl,
         pathPicture: coverImageUrl,
-      } as SongData
+      } as SongPostModel
 
       await addSong(finalSongData)
       dispatch(loadUser(userId) as any)

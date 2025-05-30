@@ -14,119 +14,81 @@ const AddComment = ({ handleAddComment }: AddCommentProps) => {
   const [newComment, setNewComment] = useState<string>("")
   const [newRating, setNewRating] = useState<number>(0)
   const [hoveredValue, setHoveredValue] = useState<number | null>(null)
-  const [isFocused, setIsFocused] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const maxStars = 5
 
   const handleMouseEnter = (index: number) => setHoveredValue(index + 1)
   const handleMouseLeave = () => setHoveredValue(null)
   const handleClick = (index: number) => setNewRating(index + 1)
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       add()
     }
   }
 
-  const add = () => {
+  const add = async () => {
     if (!newComment.trim() && newRating === 0) return
-    handleAddComment(newComment, newRating)
-    setNewComment("")
-    setNewRating(0)
+
+    setIsLoading(true)
+    try {
+      await handleAddComment(newComment, newRating)
+      setNewComment("")
+      setNewRating(0)
+    } catch (error) {
+      console.error("שגיאה בהוספת התגובה:", error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <div className="add-comment-modern">
-      {/* Background Effects */}
-      <div className="add-comment-background-effects">
-        <div className="add-comment-gradient-orb"></div>
-      </div>
-
-      <motion.div
-        className="add-comment-container"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        {/* Rating Section */}
-        <div className="add-comment-rating-section">
-          <div className="rating-label">
-            <Star size={16} className="rating-icon" />
-            <span>דירוג השיר</span>
-          </div>
-          <div className="rating-stars-container">
-            {[...Array(maxStars)].map((_, index) => (
-              <motion.div
-                key={index}
-                className={`rating-star ${index < (hoveredValue || newRating) ? "active" : ""}`}
-                onMouseEnter={() => handleMouseEnter(index)}
-                onMouseLeave={handleMouseLeave}
-                onClick={() => handleClick(index)}
-                whileHover={{ scale: 1.2 }}
-                whileTap={{ scale: 0.9 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Star size={20} fill={index < (hoveredValue || newRating) ? "currentColor" : "none"} />
-              </motion.div>
-            ))}
-          </div>
-          {newRating > 0 && (
+    <div className="add-comment-mui-style">
+      <div className="add-comment-comment-input-container">
+        <div className="add-comment-rating-section-inline">
+          {[...Array(maxStars)].map((_, index) => (
             <motion.div
-              className="rating-value"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
+              key={index}
+              className={`add-comment-star-rating ${index < (hoveredValue || newRating) ? "hovered" : ""}`}
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => handleClick(index)}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
             >
-              {newRating}/5
+              <Star size={20} fill={index < (hoveredValue || newRating) ? "currentColor" : "none"} />
             </motion.div>
-          )}
+          ))}
+          <div className="add-comment-divider-line"></div>
         </div>
 
-        {/* Comment Input Section */}
-        <div className="add-comment-input-section">
-          <div className={`comment-input-wrapper ${isFocused ? "focused" : ""}`}>
-            <div className="input-glow"></div>
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              onKeyDown={handleKeyDown}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
-              placeholder="שתף את המחשבות שלך על השיר..."
-              className="comment-textarea"
-              rows={3}
-            />
+        <input
+          type="text"
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          onKeyDown={handleKeyDown}
+          placeholder="כתוב תגובה..."
+          className="add-comment-comment-input-field"
+          disabled={isLoading}
+        />
 
-            <motion.button
-              className="send-button"
-              onClick={add}
-              disabled={!newComment.trim() && newRating === 0}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Send size={18} />
-            </motion.button>
-          </div>
-        </div>
-
-        {/* Character Counter */}
-        {newComment.length > 0 && (
-          <motion.div
-            className="character-counter"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            {newComment.length} תווים
-          </motion.div>
-        )}
-      </motion.div>
+        <motion.button
+          className="add-comment-send-button-inline"
+          onClick={add}
+          disabled={(!newComment.trim() && newRating === 0) || isLoading}
+          whileHover={{ scale: isLoading ? 1 : 1.05 }}
+          whileTap={{ scale: isLoading ? 1 : 0.95 }}
+        >
+          {isLoading ? <div className="add-comment-loading-spinner-inline"></div> : <Send size={18} />}
+        </motion.button>
+      </div>
     </div>
   )
 }
 
 export default AddComment
+
 
 
 // "use client"

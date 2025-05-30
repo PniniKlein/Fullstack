@@ -6,5 +6,5 @@ export type UserWithCountList ={
     pathProfile?: string,
     create_at:string,
     countSongs: number,
-    countFollowees:number,
+    countFollowers:number,
 } 

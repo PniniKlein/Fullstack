@@ -225,12 +225,12 @@ const ArtistsList = () => {
                       </div>
                       <div className="stat-item">
                         <Star size={14} />
-                        <span>{artist.countFollowees || 0} עוקבים</span>
+                        <span>{artist.countFollowers || 0} עוקבים</span>
                       </div>
                     </div>
 
                     {/* Trending Badge */}
-                    {artist.countSongs>5 && artist.countFollowees>0 && (
+                    {artist.countSongs>5 && artist.countFollowers>0 && (
                       <motion.div
                         className="trending-badge"
                         initial={{ opacity: 0, x: 20 }}

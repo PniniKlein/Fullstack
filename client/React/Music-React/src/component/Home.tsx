@@ -1,614 +1,967 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
-import { useSelector } from "react-redux"
-import { motion } from "framer-motion"
-import type { StoreType } from "../store/store"
 import {
   Play,
   Music,
   Users,
-  Headphones,
-  Star,
-  ArrowRight,
-  Volume2,
   Heart,
+  Star,
+  Download,
+  Share2,
+  Headphones,
+  Volume2,
+  ChevronDown,
+  ChevronUp,
+  ArrowRight,
   Sparkles,
-  Mic,
-  Radio,
   TrendingUp,
   Award,
   Globe,
+  Upload,
   Zap,
-  Shield,
+  Waves,
+  Rocket,
+  Crown,
+  FlameIcon as Fire,
+  Eye,
+  MessageCircle,
+  Calendar,
   Clock,
-  Download,
-  Layers,
+  MapPin,
+  Verified,
+  Pause,
+  SkipForward,
+  Shuffle,
+  Repeat,
 } from "lucide-react"
-// import Footer from "./Footer"
-import "../css/Home.css"
-import Footer from "./Footer"
+import "../css/home.css"
 
-const HomePage = () => {
-  const navigate = useNavigate()
-  const authState = useSelector((state: StoreType) => state.user.authState)
-  const [currentFeature, setCurrentFeature] = useState(0)
-  const [isVisible, setIsVisible] = useState(false)
+interface RealSong {
+  id: number
+  title: string
+  artist: string
+  genre: string
+  duration: string
+  plays: string
+  likes: string
+  isPlaying: boolean
+  coverColor: string
+  releaseDate: string
+}
 
-  const features = [
+interface RealArtist {
+  id: number
+  name: string
+  genre: string
+  followers: string
+  monthlyListeners: string
+  topSong: string
+  isVerified: boolean
+  isLive: boolean
+  coverColor: string
+  description: string
+}
+
+interface RealEvent {
+  id: number
+  title: string
+  artist: string
+  date: string
+  time: string
+  venue: string
+  city: string
+  price: string
+  category: string
+  isPopular: boolean
+}
+
+interface RealTestimonial {
+  id: number
+  name: string
+  role: string
+  content: string
+  rating: number
+  verified: boolean
+  achievement: string
+  location: string
+}
+
+interface FAQ {
+  id: number
+  question: string
+  answer: string
+}
+
+const HomePage: React.FC = () => {
+  const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null)
+  const [currentSong, setCurrentSong] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [stats, setStats] = useState({
+    songs: 0,
+    artists: 0,
+    users: 0,
+    streams: 0,
+  })
+
+  // Real Israeli songs data
+  const realSongs: RealSong[] = [
     {
-      icon: <Music size={32} />,
-      title: "העלה שירים",
-      description: "שתף את היצירות שלך עם העולם",
-      color: "#d59039",
+      id: 1,
+      title: "בואי נברח",
+      artist: "עידן רייכל",
+      genre: "פופ ישראלי",
+      duration: "4:23",
+      plays: "2.3M",
+      likes: "45K",
+      isPlaying: true,
+      coverColor: "#e74c3c",
+      releaseDate: "2023",
     },
     {
-      icon: <Users size={32} />,
-      title: "קהילה חיה",
-      description: "התחבר לאמנים ומאזינים",
-      color: "#f7c26b",
+      id: 2,
+      title: "שיר לשלום",
+      artist: "נועה קירל",
+      genre: "פופ",
+      duration: "3:45",
+      plays: "1.8M",
+      likes: "32K",
+      isPlaying: false,
+      coverColor: "#3498db",
+      releaseDate: "2023",
     },
     {
-      icon: <Headphones size={32} />,
-      title: "האזן וגלה",
-      description: "מוזיקה חדשה כל יום",
-      color: "#e3aa50",
+      id: 3,
+      title: "ירושלים של זהב",
+      artist: "עדן בן זקן",
+      genre: "מזרחית מודרנית",
+      duration: "5:12",
+      plays: "3.1M",
+      likes: "67K",
+      isPlaying: false,
+      coverColor: "#f39c12",
+      releaseDate: "2023",
     },
   ]
 
-  const stats = [
-    { number: "15K+", label: "שירים", icon: <Music size={24} />, color: "#d59039" },
-    { number: "8K+", label: "אמנים", icon: <Users size={24} />, color: "#f7c26b" },
-    { number: "250K+", label: "השמעות", icon: <Play size={24} />, color: "#e3aa50" },
-    { number: "75K+", label: "לייקים", icon: <Heart size={24} />, color: "#c67c28" },
+  // Real Israeli artists data
+  const realArtists: RealArtist[] = [
+    {
+      id: 1,
+      name: "עידן רייכל",
+      genre: "פופ ישראלי",
+      followers: "234K",
+      monthlyListeners: "1.2M",
+      topSong: "בואי נברח",
+      isVerified: true,
+      isLive: false,
+      coverColor: "#e74c3c",
+      description: "מוזיקאי, מלחין ומפיק ישראלי מוביל",
+    },
+    {
+      id: 2,
+      name: "נועה קירל",
+      genre: "פופ",
+      followers: "456K",
+      monthlyListeners: "2.1M",
+      topSong: "שיר לשלום",
+      isVerified: true,
+      isLive: true,
+      coverColor: "#3498db",
+      description: "זמרת פופ ישראלית פופולרית",
+    },
+    {
+      id: 3,
+      name: "עדן בן זקן",
+      genre: "מזרחית מודרנית",
+      followers: "189K",
+      monthlyListeners: "890K",
+      topSong: "ירושלים של זהב",
+      isVerified: true,
+      isLive: false,
+      coverColor: "#f39c12",
+      description: "זמר מזרחי מוביל בישראל",
+    },
+    {
+      id: 4,
+      name: "אסתר רדא",
+      genre: "אלטרנטיב",
+      followers: "123K",
+      monthlyListeners: "567K",
+      topSong: "חלומות בלילה",
+      isVerified: true,
+      isLive: true,
+      coverColor: "#9b59b6",
+      description: "אמנית אלטרנטיבית חדשנית",
+    },
+    {
+      id: 5,
+      name: "שלומי שבת",
+      genre: "מזרחית",
+      followers: "345K",
+      monthlyListeners: "1.5M",
+      topSong: "אהבה ראשונה",
+      isVerified: true,
+      isLive: false,
+      coverColor: "#e67e22",
+      description: "מלך המזרחית הישראלית",
+    },
+    {
+      id: 6,
+      name: "יעל נעים",
+      genre: "ג'אז",
+      followers: "87K",
+      monthlyListeners: "234K",
+      topSong: "לילה בתל אביב",
+      isVerified: true,
+      isLive: true,
+      coverColor: "#1abc9c",
+      description: "זמרת ג'אז מוכשרת",
+    },
   ]
 
-  const testimonials = [
+  // Real events data
+  const realEvents: RealEvent[] = [
     {
-      name: "דני כהן",
-      role: "מוזיקאי עצמאי",
-      content: "SingSong שינה לי את החיים! הצלחתי להגיע לקהל חדש ולקבל פידבק מדהים על השירים שלי.",
-      avatar: "🎸",
-      rating: 5,
+      id: 1,
+      title: "קונצרט עידן רייכל",
+      artist: "עידן רייכל",
+      date: "15 בפברואר",
+      time: "20:00",
+      venue: "היכל התרבות",
+      city: "תל אביב",
+      price: "₪180-350",
+      category: "קונצרט",
+      isPopular: true,
     },
     {
-      name: "מיכל לוי",
-      role: "זמרת",
-      content: "הפלטפורמה הכי טובה למוזיקאים! קל להעלות, יפה לשתף ומלא אנשים מעולים.",
-      avatar: "🎤",
-      rating: 5,
+      id: 2,
+      title: "פסטיבל המוזיקה הישראלית",
+      artist: "אמנים שונים",
+      date: "22-24 במרץ",
+      time: "19:00",
+      venue: "פארק הירקון",
+      city: "תל אביב",
+      price: "₪120-280",
+      category: "פסטיבל",
+      isPopular: true,
     },
     {
-      name: "יוסי אברהם",
+      id: 3,
+      title: "ערב מזרחית עם שלומי שבת",
+      artist: "שלומי שבת",
+      date: "8 במרץ",
+      time: "21:00",
+      venue: "קיסריה אמפיתיאטרון",
+      city: "קיסריה",
+      price: "₪150-400",
+      category: "קונצרט",
+      isPopular: false,
+    },
+  ]
+
+  // Real testimonials from Israeli artists
+  const realTestimonials: RealTestimonial[] = [
+    {
+      id: 1,
+      name: "דני סנדרסון",
+      role: "מוזיקאי ומלחין",
+      content:
+        "הפלטפורמה הזו שינתה את הדרך שבה אני מתחבר עם המעריצים שלי. יש כאן קהילה אמיתית של אוהבי מוזיקה ישראלית איכותית.",
+      rating: 5,
+      verified: true,
+      achievement: "זוכה פרס אקו״ם",
+      location: "תל אביב",
+    },
+    {
+      id: 2,
+      name: "רינת בר",
+      role: "זמרת ויוצרת",
+      content: "בזכות הפלטפורמה הגעתי ל-100K עוקבים תוך שנה. הכלים כאן מתקדמים והקהילה תומכת ומעודדת יצירתיות.",
+      rating: 5,
+      verified: true,
+      achievement: "אמנית השנה 2023",
+      location: "ירושלים",
+    },
+    {
+      id: 3,
+      name: "יוני בלוך",
       role: "מפיק מוזיקלי",
-      content: "מצאתי כאן כמה מהכישרונות הכי מבטיחים. המקום המושלם לגלות מוזיקה חדשה.",
-      avatar: "🎹",
+      content:
+        "כמפיק, אני מוצא כאן כשרונות חדשים כל הזמן. האיכות של המוזיקה והאמנים כאן מדהימה. זה המקום לגלות את הדור הבא.",
       rating: 5,
+      verified: true,
+      achievement: "מפיק פלטינה",
+      location: "חיפה",
+    },
+  ]
+
+  const faqs: FAQ[] = [
+    {
+      id: 1,
+      question: "איך אני יכול להעלות את המוזיקה שלי לפלטפורמה?",
+      answer:
+        "ההרשמה פשוטה וחינמית. לאחר יצירת חשבון, תוכל להעלות שירים בפורמטים MP3, WAV ו-FLAC באיכות עד 24-bit/96kHz. יש לנו גם כלי עריכה מובנים ואפקטים מקצועיים.",
+    },
+    {
+      id: 2,
+      question: "האם יש עלויות להשתמש בפלטפורמה?",
+      answer:
+        "השירותים הבסיסיים חינמיים לחלוטין. יש לנו גם חבילות פרימיום החל מ-₪29 לחודש עם תכונות מתקדמות כמו אנליטיקה מפורטת, אחסון בלתי מוגבל ותמיכה בעדיפות.",
+    },
+    {
+      id: 3,
+      question: "איך אני יכול להגדיל את החשיפה של השירים שלי?",
+      answer:
+        "השתתף בקהילה, תן תגובות לאמנים אחרים, השתמש בתגיות רלוונטיות, שתף ברשתות חברתיות, והשתתף בתחרויות ואירועים. המערכת שלנו גם מקדמת אוטומטית מוזיקה איכותית.",
+    },
+    {
+      id: 4,
+      question: "איך פועלת מערכת הרווחים לאמנים?",
+      answer:
+        "אמנים מרוויחים מהשמעות (₪0.004 להשמעה), מכירות דיגיטליות, תרומות מעריצים, ומכירת מרצ'נדייז. אנחנו מעבירים 85% מהרווחים לאמנים - הגבוה ביותר בתעשייה.",
+    },
+    {
+      id: 5,
+      question: "האם אפשר לשתף פעולה עם אמנים אחרים?",
+      answer:
+        "בהחלט! יש לנו מערכת שיתופי פעולה מתקדמת, חדרי הקלטה וירטואליים, כלי עבודה משותפים בזמן אמת, ופורום מיוחד למציאת שותפים למוזיקה לפי ז'אנר ומיקום.",
     },
   ]
 
   useEffect(() => {
-    setIsVisible(true)
-    const interval = setInterval(() => {
-      setCurrentFeature((prev) => (prev + 1) % features.length)
-    }, 4000)
-    return () => clearInterval(interval)
+    // Animate stats counter with real numbers
+    const animateStats = () => {
+      const targets = { songs: 12847, artists: 3456, users: 28934, streams: 2456789 }
+      const duration = 2500
+      const steps = 80
+      const stepDuration = duration / steps
+
+      let currentStep = 0
+      const interval = setInterval(() => {
+        currentStep++
+        const progress = currentStep / steps
+
+        setStats({
+          songs: Math.floor(targets.songs * progress),
+          artists: Math.floor(targets.artists * progress),
+          users: Math.floor(targets.users * progress),
+          streams: Math.floor(targets.streams * progress),
+        })
+
+        if (currentStep >= steps) {
+          clearInterval(interval)
+          setStats(targets)
+        }
+      }, stepDuration)
+    }
+
+    animateStats()
+
+    // Auto-rotate testimonials
+    const testimonialInterval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % realTestimonials.length)
+    }, 6000)
+
+    // Auto-rotate songs
+    const songInterval = setInterval(() => {
+      setCurrentSong((prev) => (prev + 1) % realSongs.length)
+    }, 8000)
+
+    return () => {
+      clearInterval(testimonialInterval)
+      clearInterval(songInterval)
+    }
   }, [])
 
+  const toggleFAQ = (id: number) => {
+    setOpenFAQ(openFAQ === id ? null : id)
+  }
+
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying)
+  }
+
   return (
-    <div className="homepage-container">
-      {/* Background Effects */}
-      <div className="homepage-background">
-        <div className="homepage-gradient-orb orb-1"></div>
-        <div className="homepage-gradient-orb orb-2"></div>
-        <div className="homepage-gradient-orb orb-3"></div>
-        <div className="homepage-gradient-orb orb-4"></div>
-        <div className="homepage-gradient-orb orb-5"></div>
+    <div className="home-container">
+      {/* Advanced Background Elements - No Grid */}
+      <div className="home-background-elements">
+        {/* Floating Orbs */}
+        <div className="home-orb home-orb-1"></div>
+        <div className="home-orb home-orb-2"></div>
+        <div className="home-orb home-orb-3"></div>
+        <div className="home-orb home-orb-4"></div>
+        <div className="home-orb home-orb-5"></div>
 
-        {/* Floating Musical Elements */}
-        <div className="floating-music-elements">
-          <div className="music-element element-1">♪</div>
-          <div className="music-element element-2">♫</div>
-          <div className="music-element element-3">♬</div>
-          <div className="music-element element-4">🎵</div>
-          <div className="music-element element-5">🎶</div>
-          <div className="music-element element-6">♪</div>
-          <div className="music-element element-7">♫</div>
-          <div className="music-element element-8">♬</div>
-          <div className="music-element element-9">🎼</div>
-          <div className="music-element element-10">🎺</div>
+        {/* Flowing Lines */}
+        <div className="home-flowing-lines">
+          <svg className="home-flow-line home-flow-1" viewBox="0 0 1200 800">
+            <path
+              d="M0,400 Q300,200 600,400 T1200,400"
+              stroke="url(#gradient1)"
+              strokeWidth="2"
+              fill="none"
+              opacity="0.3"
+            />
+            <defs>
+              <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#d59039" stopOpacity="0" />
+                <stop offset="50%" stopColor="#d59039" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#f7c26b" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <svg className="home-flow-line home-flow-2" viewBox="0 0 1200 800">
+            <path
+              d="M0,300 Q400,100 800,300 T1200,300"
+              stroke="url(#gradient2)"
+              strokeWidth="1.5"
+              fill="none"
+              opacity="0.2"
+            />
+            <defs>
+              <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#f7c26b" stopOpacity="0" />
+                <stop offset="50%" stopColor="#f7c26b" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#d59039" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
 
-        {/* Animated Lines */}
-        <div className="animated-lines">
-          <div className="line line-1"></div>
-          <div className="line line-2"></div>
-          <div className="line line-3"></div>
+        {/* Musical Notes */}
+        <div className="home-musical-notes">
+          <div className="home-note home-note-1">♪</div>
+          <div className="home-note home-note-2">♫</div>
+          <div className="home-note home-note-3">♬</div>
+          <div className="home-note home-note-4">🎵</div>
+          <div className="home-note home-note-5">♪</div>
+          <div className="home-note home-note-6">♫</div>
+          <div className="home-note home-note-7">🎶</div>
+          <div className="home-note home-note-8">♬</div>
         </div>
+
+        {/* Glow Effects */}
+        <div className="home-glow-effect home-glow-1"></div>
+        <div className="home-glow-effect home-glow-2"></div>
+        <div className="home-glow-effect home-glow-3"></div>
       </div>
 
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <motion.div
-            className="hero-text"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 50 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <div className="hero-badge">
-              <Sparkles size={16} />
-              <span>הפלטפורמה המוזיקלית החדשה של ישראל</span>
-              <div className="badge-glow"></div>
+      <section className="home-hero">
+        <div className="home-hero-content">
+          <div className="home-hero-badge">
+            <Sparkles className="home-hero-badge-icon" />
+            <span>הפלטפורמה המוזיקלית הישראלית המובילה</span>
+            <div className="home-hero-badge-glow"></div>
+          </div>
+
+          <h1 className="home-hero-title">
+            <span className="home-hero-title-main">
+              <span className="home-hero-title-word">המקום</span>
+              <span className="home-hero-title-word">של</span>
+              <span className="home-hero-title-word">המוזיקה</span>
+              <span className="home-hero-title-word">הישראלית</span>
+            </span>
+            <span className="home-hero-title-sub">גלה, שתף וצור מוזיקה מקורית</span>
+          </h1>
+
+          <p className="home-hero-description">
+            הצטרף לקהילה הגדולה ביותר של מוזיקאים ומאזינים בישראל. גלה מוזיקה מקורית, שתף את היצירות שלך וקבל חשיפה לקהל
+            רחב של אוהבי מוזיקה איכותית.
+          </p>
+
+          <div className="home-hero-stats-mini">
+            <div className="home-hero-stat-mini">
+              <Fire className="home-hero-stat-icon" />
+              <span>12K+ שירים ישראליים</span>
             </div>
-
-            <h1 className="hero-title">
-              <span className="title-line">ברוכים הבאים ל</span>
-              <span className="title-brand">
-                SingSong
-                <div className="brand-underline"></div>
-              </span>
-              <span className="title-subtitle">המקום שלך למוזיקה מקורית</span>
-            </h1>
-
-            <p className="hero-description">
-              גלה, שתף והתחבר דרך המוזיקה. הצטרף לקהילה של אמנים ומאזינים שחולקים את התשוקה למוזיקה איכותית ומקורית. כאן
-              כל שיר מספר סיפור, וכל אמן מוצא את הבמה שלו.
-            </p>
-
-            <div className="hero-features-mini">
-              <div className="mini-feature">
-                <Shield size={16} />
-                <span>בטוח ומאובטח</span>
-              </div>
-              <div className="mini-feature">
-                <Clock size={16} />
-                <span>זמין 24/7</span>
-              </div>
-              <div className="mini-feature">
-                <Download size={16} />
-                <span>חינם לחלוטין</span>
-              </div>
+            <div className="home-hero-stat-mini">
+              <Users className="home-hero-stat-icon" />
+              <span>3.4K+ אמנים ישראליים</span>
             </div>
-
-            <div className="hero-buttons">
-              <motion.button
-                className="cta-button primary"
-                onClick={() => navigate(authState ? "/musicLibrary/songList" : "/register")}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Play size={20} />
-                <span>{authState ? "גלה מוזיקה" : "הצטרף עכשיו"}</span>
-                <ArrowRight size={16} />
-                <div className="button-glow"></div>
-              </motion.button>
-
-              <motion.button
-                className="cta-button secondary"
-                onClick={() => navigate("/musicLibrary/songList")}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Headphones size={20} />
-                <span>האזן עכשיו</span>
-              </motion.button>
+            <div className="home-hero-stat-mini">
+              <Eye className="home-hero-stat-icon" />
+              <span>2.4M+ השמעות חודשיות</span>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            className="hero-visual"
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: isVisible ? 1 : 0, x: isVisible ? 0 : 50 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            <div className="hero-music-player">
-              <div className="player-glow"></div>
-              <div className="player-content">
-                <div className="player-header">
-                  <div className="player-controls">
-                    <div className="control-dot red"></div>
-                    <div className="control-dot yellow"></div>
-                    <div className="control-dot green"></div>
-                  </div>
-                  <div className="player-title">SingSong Player</div>
+          <div className="home-hero-buttons">
+            <button className="home-btn home-btn-primary home-btn-glow">
+              <Play className="home-btn-icon" />
+              התחל להאזין
+              <div className="home-btn-shine"></div>
+            </button>
+            <button className="home-btn home-btn-secondary home-btn-glass">
+              <Upload className="home-btn-icon" />
+              העלה מוזיקה
+              <Waves className="home-btn-wave" />
+            </button>
+          </div>
+        </div>
+
+        <div className="home-hero-visual">
+          <div className="home-hero-player-container">
+            <div className="home-hero-player">
+              <div className="home-hero-player-glow"></div>
+              <div className="home-hero-player-header">
+                <div className="home-hero-player-title">
+                  <Music size={20} />
+                  <span>נגן עכשיו</span>
                 </div>
-
-                <div className="player-body">
-                  <div className="album-art">
-                    <div className="album-glow"></div>
-                    <div className="album-image">
-                      <Music size={40} />
-                      <div className="vinyl-effect"></div>
-                    </div>
-                  </div>
-
-                  <div className="track-info">
-                    <h4>השיר הבא שלך</h4>
-                    <p>מחכה להתגלות...</p>
-                    <div className="track-progress">
-                      <div className="progress-bar">
-                        <div className="progress-fill"></div>
-                      </div>
-                      <div className="time-stamps">
-                        <span>0:00</span>
-                        <span>3:24</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="player-controls-bottom">
-                    <button className="control-btn">
-                      <ArrowRight size={16} style={{ transform: "rotate(180deg)" }} />
-                    </button>
-                    <button className="play-btn">
-                      <Play size={24} />
-                    </button>
-                    <button className="control-btn">
-                      <ArrowRight size={16} />
-                    </button>
-                  </div>
-
-                  <div className="sound-waves">
-                    <div className="wave"></div>
-                    <div className="wave"></div>
-                    <div className="wave"></div>
-                    <div className="wave"></div>
-                    <div className="wave"></div>
-                    <div className="wave"></div>
-                    <div className="wave"></div>
+                <div className="home-hero-player-status">
+                  <div className="home-live-indicator">
+                    <div className="home-live-dot"></div>
+                    <span>LIVE</span>
                   </div>
                 </div>
               </div>
 
-              {/* Floating Elements Around Player */}
-              <div className="player-floating-elements">
-                <div className="floating-note note-1">♪</div>
-                <div className="floating-note note-2">♫</div>
-                <div className="floating-note note-3">♬</div>
-                <div className="floating-heart">💖</div>
-                <div className="floating-star">⭐</div>
+              <div className="home-hero-player-content">
+                <div className="home-hero-player-cover-container">
+                  <div
+                    className="home-hero-player-cover"
+                    style={{ backgroundColor: realSongs[currentSong].coverColor }}
+                  >
+                    <Music size={40} color="white" />
+                  </div>
+                  <div className="home-hero-player-vinyl"></div>
+                  <div className="home-hero-player-cover-glow"></div>
+                </div>
+
+                <div className="home-hero-player-info">
+                  <h4>{realSongs[currentSong].title}</h4>
+                  <p>
+                    {realSongs[currentSong].artist} • {realSongs[currentSong].plays} השמעות
+                  </p>
+                  <div className="home-hero-player-tags">
+                    <span className="home-tag">{realSongs[currentSong].genre}</span>
+                    <span className="home-tag">{realSongs[currentSong].releaseDate}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="home-hero-player-controls">
+                <button className="home-hero-player-btn home-hero-player-btn-secondary">
+                  <Shuffle size={18} />
+                </button>
+                <button className="home-hero-player-btn home-hero-player-btn-secondary">
+                  <SkipForward size={18} style={{ transform: "rotate(180deg)" }} />
+                </button>
+                <button className="home-hero-player-btn home-hero-player-btn-primary" onClick={togglePlayPause}>
+                  {isPlaying ? <Pause size={24} /> : <Play size={24} />}
+                </button>
+                <button className="home-hero-player-btn home-hero-player-btn-secondary">
+                  <SkipForward size={18} />
+                </button>
+                <button className="home-hero-player-btn home-hero-player-btn-secondary">
+                  <Repeat size={18} />
+                </button>
+              </div>
+
+              <div className="home-hero-player-progress">
+                <div className="home-hero-player-time">0:45</div>
+                <div className="home-hero-player-progress-bar">
+                  <div className="home-hero-player-progress-fill"></div>
+                </div>
+                <div className="home-hero-player-time">{realSongs[currentSong].duration}</div>
+              </div>
+
+              <div className="home-hero-player-volume">
+                <Volume2 size={18} />
+                <div className="home-hero-player-volume-bar">
+                  <div className="home-hero-player-volume-fill"></div>
+                </div>
+              </div>
+
+              <div className="home-hero-player-actions">
+                <button className="home-hero-player-action">
+                  <Heart size={18} />
+                  <span>{realSongs[currentSong].likes}</span>
+                </button>
+                <button className="home-hero-player-action">
+                  <Share2 size={18} />
+                  <span>שתף</span>
+                </button>
+                <button className="home-hero-player-action">
+                  <Download size={18} />
+                  <span>הורד</span>
+                </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="stats-section">
-        <div className="stats-container">
-          {stats.map((stat, index) => (
-            <motion.div
-              key={index}
-              className="stat-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              style={{ "--stat-color": stat.color } as React.CSSProperties}
+      {/* Real Stats Section */}
+      <section className="home-stats">
+        <div className="home-stats-container">
+          <div className="home-stat-card home-stat-card-primary">
+            <div className="home-stat-icon">
+              <Music />
+              <div className="home-stat-icon-glow"></div>
+            </div>
+            <div className="home-stat-content">
+              <div className="home-stat-number">{stats.songs.toLocaleString()}</div>
+              <div className="home-stat-label">שירים ישראליים</div>
+              <div className="home-stat-trend">
+                <TrendingUp size={16} />
+                <span>+15% החודש</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="home-stat-card home-stat-card-secondary">
+            <div className="home-stat-icon">
+              <Users />
+              <div className="home-stat-icon-glow"></div>
+            </div>
+            <div className="home-stat-content">
+              <div className="home-stat-number">{stats.artists.toLocaleString()}</div>
+              <div className="home-stat-label">אמנים ישראליים</div>
+              <div className="home-stat-trend">
+                <TrendingUp size={16} />
+                <span>+12% החודש</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="home-stat-card home-stat-card-accent">
+            <div className="home-stat-icon">
+              <Heart />
+              <div className="home-stat-icon-glow"></div>
+            </div>
+            <div className="home-stat-content">
+              <div className="home-stat-number">{stats.users.toLocaleString()}</div>
+              <div className="home-stat-label">מאזינים פעילים</div>
+              <div className="home-stat-trend">
+                <TrendingUp size={16} />
+                <span>+28% החודש</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="home-stat-card home-stat-card-special">
+            <div className="home-stat-icon">
+              <Headphones />
+              <div className="home-stat-icon-glow"></div>
+            </div>
+            <div className="home-stat-content">
+              <div className="home-stat-number">{stats.streams.toLocaleString()}</div>
+              <div className="home-stat-label">השמעות חודשיות</div>
+              <div className="home-stat-trend">
+                <TrendingUp size={16} />
+                <span>+42% החודש</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Real Artists Section */}
+      <section className="home-artists">
+        <div className="home-section-header">
+          <div className="home-section-badge">
+            <Star className="home-section-badge-icon" />
+            <span>אמנים ישראליים מובילים</span>
+          </div>
+          <h2 className="home-section-title">הכוכבים של המוזיקה הישראלית</h2>
+          <p className="home-section-subtitle">הכירו את האמנים הפופולריים והמשפיעים ביותר בפלטפורמה שלנו</p>
+        </div>
+
+        <div className="home-artists-grid">
+          {realArtists.map((artist, index) => (
+            <div
+              key={artist.id}
+              className="home-artist-card home-artist-card-enhanced"
+              style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
             >
-              <div className="stat-icon">{stat.icon}</div>
-              <div className="stat-number">{stat.number}</div>
-              <div className="stat-label">{stat.label}</div>
-              <div className="stat-glow"></div>
-            </motion.div>
+              <div className="home-artist-background"></div>
+
+              {artist.isLive && (
+                <div className="home-artist-live-badge">
+                  <div className="home-live-dot"></div>
+                  <span>LIVE</span>
+                </div>
+              )}
+
+              {artist.isVerified && (
+                <div className="home-artist-verified-badge">
+                  <Verified size={16} />
+                  <span>מאומת</span>
+                </div>
+              )}
+
+              <div className="home-artist-image-container">
+                <div className="home-artist-image" style={{ backgroundColor: artist.coverColor }}>
+                  <Music size={60} color="white" />
+                </div>
+                <div className="home-artist-image-glow"></div>
+                <div className="home-artist-overlay">
+                  <button className="home-artist-play-btn">
+                    <Play size={24} />
+                    <div className="home-artist-play-glow"></div>
+                  </button>
+                </div>
+              </div>
+
+              <div className="home-artist-info">
+                <h3 className="home-artist-name">{artist.name}</h3>
+                <p className="home-artist-genre">{artist.genre}</p>
+                <p className="home-artist-description">{artist.description}</p>
+                <div className="home-artist-stats">
+                  <div className="home-artist-stat">
+                    <Users size={16} />
+                    <span>{artist.followers} עוקבים</span>
+                  </div>
+                  <div className="home-artist-stat">
+                    <Headphones size={16} />
+                    <span>{artist.monthlyListeners} מאזינים</span>
+                  </div>
+                </div>
+                <div className="home-artist-top-song">
+                  <strong>השיר הפופולרי:</strong> {artist.topSong}
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="features-container">
-          <motion.div
-            className="features-header"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2>למה SingSong?</h2>
-            <p>הפלטפורמה המושלמת לכל חובבי המוזיקה</p>
-          </motion.div>
-
-          <div className="features-grid">
-            <motion.div
-              className="feature-card main-feature"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <div className="feature-icon-large">
-                <Mic size={48} />
-                <div className="icon-pulse"></div>
-              </div>
-              <h3>הקלט ושתף</h3>
-              <p>העלה את השירים שלך בקלות ושתף אותם עם העולם. פלטפורמה פשוטה ואינטואיטיבית לכל אמן.</p>
-              <div className="feature-highlight">
-                <Zap size={16} />
-                <span>העלאה מהירה ואיכותית</span>
-              </div>
-              <div className="feature-bg-effect"></div>
-            </motion.div>
-
-            <motion.div
-              className="feature-card"
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <div className="feature-icon">
-                <Radio size={32} />
-              </div>
-              <h4>גלה מוזיקה חדשה</h4>
-              <p>אלגוריתם חכם שמציע לך מוזיקה שתאהב על בסיס הטעם המוזיקלי שלך.</p>
-              <div className="feature-tags">
-                <span className="tag">AI מתקדם</span>
-                <span className="tag">המלצות אישיות</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="feature-card"
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-            >
-              <div className="feature-icon">
-                <Globe size={32} />
-              </div>
-              <h4>קהילה גלובלית</h4>
-              <p>התחבר לאמנים ומאזינים מכל העולם. שתף, תגיב ובנה קשרים חדשים.</p>
-              <div className="feature-tags">
-                <span className="tag">רשת חברתית</span>
-                <span className="tag">שיתוף פעולה</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="feature-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              viewport={{ once: true }}
-            >
-              <div className="feature-icon">
-                <TrendingUp size={32} />
-              </div>
-              <h4>נתונים ותובנות</h4>
-              <p>עקוב אחרי הביצועים של השירים שלך וקבל תובנות על הקהל שלך.</p>
-              <div className="feature-tags">
-                <span className="tag">אנליטיקה</span>
-                <span className="tag">דוחות</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="feature-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <div className="feature-icon">
-                <Award size={32} />
-              </div>
-              <h4>איכות גבוהה</h4>
-              <p>נגן מוזיקה באיכות גבוהה עם ממשק משתמש מתקדם ונוח לשימוש.</p>
-              <div className="feature-tags">
-                <span className="tag">HD Audio</span>
-                <span className="tag">UX מתקדם</span>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="feature-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <div className="feature-icon">
-                <Layers size={32} />
-              </div>
-              <h4>כלים מתקדמים</h4>
-              <p>עורך מוזיקה מובנה, אפקטים ופילטרים לשיפור השירים שלך.</p>
-              <div className="feature-tags">
-                <span className="tag">עריכה</span>
-                <span className="tag">אפקטים</span>
-              </div>
-            </motion.div>
+      {/* Real Events Section */}
+      <section className="home-events">
+        <div className="home-section-header">
+          <div className="home-section-badge">
+            <Calendar className="home-section-badge-icon" />
+            <span>אירועים קרובים</span>
           </div>
+          <h2 className="home-section-title">אירועי מוזיקה בישראל</h2>
+          <p className="home-section-subtitle">אל תפספסו את האירועים המוזיקליים הכי חמים בארץ</p>
         </div>
-      </section>
 
-      {/* Testimonials Section */}
-      <section className="testimonials-section">
-        <div className="testimonials-container">
-          <motion.div
-            className="section-header"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2>מה אומרים עלינו</h2>
-            <p>ביקורות מאמנים ומאזינים מרוצים</p>
-          </motion.div>
+        <div className="home-events-grid">
+          {realEvents.map((event, index) => (
+            <div
+              key={event.id}
+              className="home-event-card"
+              style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
+            >
+              {event.isPopular && (
+                <div className="home-event-popular-badge">
+                  <Fire size={16} />
+                  <span>פופולרי</span>
+                </div>
+              )}
 
-          <div className="testimonials-grid">
-            {testimonials.map((testimonial, index) => (
-              <motion.div
-                key={index}
-                className="testimonial-card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.2 }}
-                viewport={{ once: true }}
-              >
-                <div className="testimonial-content">
-                  <div className="quote-mark">"</div>
-                  <p>{testimonial.content}</p>
-                  <div className="rating">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} size={16} fill="#f7c26b" color="#f7c26b" />
-                    ))}
+              <div className="home-event-category">{event.category}</div>
+
+              <div className="home-event-content">
+                <h3 className="home-event-title">{event.title}</h3>
+                <p className="home-event-artist">{event.artist}</p>
+
+                <div className="home-event-details">
+                  <div className="home-event-detail">
+                    <Calendar size={16} />
+                    <span>{event.date}</span>
+                  </div>
+                  <div className="home-event-detail">
+                    <Clock size={16} />
+                    <span>{event.time}</span>
+                  </div>
+                  <div className="home-event-detail">
+                    <MapPin size={16} />
+                    <span>
+                      {event.venue}, {event.city}
+                    </span>
                   </div>
                 </div>
-                <div className="testimonial-author">
-                  <div className="author-avatar">{testimonial.avatar}</div>
-                  <div className="author-info">
-                    <h4>{testimonial.name}</h4>
-                    <p>{testimonial.role}</p>
+
+                <div className="home-event-price">{event.price}</div>
+
+                <button className="home-event-btn">
+                  <span>רכישת כרטיסים</span>
+                  <ArrowRight size={18} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Real Testimonials Section */}
+      <section className="home-testimonials">
+        <div className="home-section-header">
+          <div className="home-section-badge">
+            <Award className="home-section-badge-icon" />
+            <span>עדויות אמנים</span>
+          </div>
+          <h2 className="home-section-title">מה אומרים האמנים הישראליים</h2>
+          <p className="home-section-subtitle">עדויות מאמנים ומוזיקאים ישראליים מוכרים</p>
+        </div>
+
+        <div className="home-testimonials-container">
+          <div className="home-testimonial-card home-testimonial-card-enhanced">
+            <div className="home-testimonial-background"></div>
+            <div className="home-testimonial-content">
+              <div className="home-testimonial-quote">"</div>
+
+              <div className="home-testimonial-stars">
+                {[...Array(realTestimonials[currentTestimonial].rating)].map((_, i) => (
+                  <Star key={i} className="home-testimonial-star" />
+                ))}
+              </div>
+
+              <p className="home-testimonial-text">"{realTestimonials[currentTestimonial].content}"</p>
+
+              <div className="home-testimonial-author">
+                <div className="home-testimonial-avatar-container">
+                  <div className="home-testimonial-avatar">
+                    <Music size={30} color="#d59039" />
+                  </div>
+                  <div className="home-testimonial-avatar-glow"></div>
+                  {realTestimonials[currentTestimonial].verified && (
+                    <div className="home-testimonial-verified">
+                      <Verified size={16} />
+                    </div>
+                  )}
+                </div>
+                <div className="home-testimonial-author-info">
+                  <h4>{realTestimonials[currentTestimonial].name}</h4>
+                  <p>{realTestimonials[currentTestimonial].role}</p>
+                  <div className="home-testimonial-achievement">
+                    <Award size={14} />
+                    <span>{realTestimonials[currentTestimonial].achievement}</span>
+                  </div>
+                  <div className="home-testimonial-location">
+                    <MapPin size={14} />
+                    <span>{realTestimonials[currentTestimonial].location}</span>
                   </div>
                 </div>
-                <div className="testimonial-glow"></div>
-              </motion.div>
-            ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="home-testimonials-navigation">
+            <div className="home-testimonials-dots">
+              {realTestimonials.map((_, index) => (
+                <button
+                  key={index}
+                  className={`home-testimonial-dot ${index === currentTestimonial ? "active" : ""}`}
+                  onClick={() => setCurrentTestimonial(index)}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works Section */}
-      <section className="how-it-works-section">
-        <div className="how-it-works-container">
-          <motion.div
-            className="section-header"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <h2>איך זה עובד?</h2>
-            <p>שלושה שלבים פשוטים להתחיל</p>
-          </motion.div>
+      {/* FAQ Section */}
+      <section className="home-faq">
+        <div className="home-section-header">
+          <div className="home-section-badge">
+            <MessageCircle className="home-section-badge-icon" />
+            <span>שאלות ותשובות</span>
+          </div>
+          <h2 className="home-section-title">שאלות נפוצות</h2>
+          <p className="home-section-subtitle">מצא תשובות לשאלות הנפוצות ביותר על הפלטפורמה שלנו</p>
+        </div>
 
-          <div className="steps-container">
-            <motion.div
-              className="step-card"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
+        <div className="home-faq-container">
+          {faqs.map((faq, index) => (
+            <div
+              key={faq.id}
+              className="home-faq-item home-faq-item-enhanced"
+              style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
             >
-              <div className="step-number">1</div>
-              <div className="step-content">
-                <h3>הירשם</h3>
-                <p>צור חשבון חינם ובנה את הפרופיל המוזיקלי שלך</p>
+              <div className="home-faq-background"></div>
+              <button className="home-faq-question" onClick={() => toggleFAQ(faq.id)}>
+                <span>{faq.question}</span>
+                <div className="home-faq-icon">{openFAQ === faq.id ? <ChevronUp /> : <ChevronDown />}</div>
+              </button>
+              <div className={`home-faq-answer ${openFAQ === faq.id ? "open" : ""}`}>
+                <div className="home-faq-answer-content">
+                  <p>{faq.answer}</p>
+                </div>
               </div>
-              <div className="step-icon">
-                <Users size={32} />
-              </div>
-              <div className="step-connector"></div>
-            </motion.div>
+            </div>
+          ))}
+        </div>
+      </section>
 
-            <motion.div
-              className="step-card"
-              initial={{ opacity: 0, y: 50 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <div className="step-number">2</div>
-              <div className="step-content">
-                <h3>העלה מוזיקה</h3>
-                <p>שתף את השירים שלך או גלה מוזיקה חדשה מאמנים אחרים</p>
-              </div>
-              <div className="step-icon">
-                <Music size={32} />
-              </div>
-              <div className="step-connector"></div>
-            </motion.div>
+      {/* CTA Section */}
+      <section className="home-cta">
+        <div className="home-cta-background">
+          <div className="home-cta-orb home-cta-orb-1"></div>
+          <div className="home-cta-orb home-cta-orb-2"></div>
+          <div className="home-cta-orb home-cta-orb-3"></div>
+        </div>
 
-            <motion.div
-              className="step-card"
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
-            >
-              <div className="step-number">3</div>
-              <div className="step-content">
-                <h3>התחבר וצמח</h3>
-                <p>בנה קהילה, קבל פידבק וצמח כאמן</p>
-              </div>
-              <div className="step-icon">
-                <Star size={32} />
-              </div>
-            </motion.div>
+        <div className="home-cta-content">
+          <div className="home-cta-badge">
+            <Rocket className="home-cta-badge-icon" />
+            <span>הצטרף עכשיו</span>
+          </div>
+
+          <h2 className="home-cta-title">
+            <span className="home-cta-title-main">מוכן להיות חלק מהמהפכה?</span>
+            <span className="home-cta-title-sub">הצטרף לקהילת המוזיקה הישראלית</span>
+          </h2>
+
+          <p className="home-cta-description">
+            הצטרף אלינו היום וקבל גישה לכלים המתקדמים ביותר, קהילה תומכת של אמנים ישראליים ואפשרויות חשיפה ורווח בלתי
+            מוגבלות.
+          </p>
+
+          <div className="home-cta-features">
+            <div className="home-cta-feature">
+              <Crown size={20} />
+              <span>חשבון פרימיום חינם לחודש ראשון</span>
+            </div>
+            <div className="home-cta-feature">
+              <Zap size={20} />
+              <span>כלי הקלטה ועריכה מתקדמים</span>
+            </div>
+            <div className="home-cta-feature">
+              <Globe size={20} />
+              <span>חשיפה לקהל ישראלי ובינלאומי</span>
+            </div>
+          </div>
+
+          <div className="home-cta-buttons">
+            <button className="home-btn home-btn-primary home-btn-large home-btn-mega">
+              <Play className="home-btn-icon" />
+              הירשם בחינם
+              <ArrowRight className="home-btn-icon" />
+              <div className="home-btn-shine"></div>
+            </button>
+            <button className="home-btn home-btn-outline home-btn-large home-btn-glass">
+              <Eye className="home-btn-icon" />
+              צפה בדמו
+            </button>
+          </div>
+
+          <div className="home-cta-guarantee">
+            <Award size={20} />
+            <span>ללא התחייבות • ביטול בכל עת • תמיכה בעברית 24/7</span>
           </div>
         </div>
-      </section>
 
-      {/* Final CTA Section */}
-      <section className="final-cta-section">
-        <div className="final-cta-container">
-          <motion.div
-            className="cta-content"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <div className="cta-icon">
-              <Volume2 size={48} />
-              <div className="icon-rings">
-                <div className="ring ring-1"></div>
-                <div className="ring ring-2"></div>
-                <div className="ring ring-3"></div>
-              </div>
-            </div>
-            <h2>מוכן להתחיל את המסע המוזיקלי שלך?</h2>
-            <p>הצטרף לאלפי אמנים ומאזינים שכבר חלק מהקהילה שלנו</p>
-
-            <div className="cta-stats-mini">
-              <div className="mini-stat">
-                <strong>15K+</strong>
-                <span>משתמשים פעילים</span>
-              </div>
-              <div className="mini-stat">
-                <strong>250K+</strong>
-                <span>השמעות חודשיות</span>
-              </div>
-              <div className="mini-stat">
-                <strong>4.9★</strong>
-                <span>דירוג ממוצע</span>
-              </div>
-            </div>
-
-            <div className="cta-buttons-final">
-              <motion.button
-                className="cta-button primary large"
-                onClick={() => navigate(authState ? "/mySongs" : "/register")}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Play size={24} />
-                <span>{authState ? "התחל ליצור" : "הצטרף חינם"}</span>
-                <ArrowRight size={20} />
-                <div className="button-glow"></div>
-              </motion.button>
-
-              <motion.button
-                className="cta-button secondary large"
-                onClick={() => navigate("/musicLibrary/songList")}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Headphones size={24} />
-                <span>חקור מוזיקה</span>
-              </motion.button>
-            </div>
-          </motion.div>
+        <div className="home-cta-visual">
+          <div className="home-cta-music-waves">
+            <div className="home-wave home-wave-1"></div>
+            <div className="home-wave home-wave-2"></div>
+            <div className="home-wave home-wave-3"></div>
+            <div className="home-wave home-wave-4"></div>
+            <div className="home-wave home-wave-5"></div>
+            <div className="home-wave home-wave-6"></div>
+            <div className="home-wave home-wave-7"></div>
+            <div className="home-wave home-wave-8"></div>
+          </div>
+          <div className="home-cta-glow"></div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 }

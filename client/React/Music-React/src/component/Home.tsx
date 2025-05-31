@@ -3,6 +3,8 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useSelector } from "react-redux"
+import type { StoreType } from "../store/store"
 import {
   Play,
   Music,
@@ -14,642 +16,464 @@ import {
   TrendingUp,
   Award,
   Upload,
-  Crown,
   Eye,
   Verified,
-  Pause,
-  SkipForward,
-  Shuffle,
-  Repeat,
+  Star,
+  Clock,
+  FlameIcon as Fire,
+  Zap,
+  Crown,
   Share2,
   Download,
-  Star,
-  Calendar,
-  Clock,
-  MapPin,
-  FlameIcon as Fire,
-  Mic,
-  Zap,
-  Globe,
 } from "lucide-react"
+import { getAllPublic } from "../services/SongsService"
+import { artistList } from "../services/UserService"
+import type { Song } from "../model/Song"
+import type { UserWithCountList } from "../model/userWithCountList"
+import SongCard from "./SongCard"
+// import { loadSong } from "../store/songSlice"
 import "../css/Home.css"
-
-interface Song {
-  id: number
-  title: string
-  artist: string
-  genre: string
-  duration: string
-  plays: string
-  likes: string
-  coverColor: string
-  releaseDate: string
-}
-
-interface Artist {
-  id: number
-  name: string
-  genre: string
-  followers: string
-  isVerified: boolean
-  isLive: boolean
-  coverColor: string
-  description: string
-}
-
-interface Event {
-  id: number
-  title: string
-  artist: string
-  date: string
-  time: string
-  venue: string
-  city: string
-  price: string
-  category: string
-  isPopular: boolean
-}
 
 const Home: React.FC = () => {
   const navigate = useNavigate()
-  const [currentSong, setCurrentSong] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(true)
+  // const dispatch = useDispatch<Dispatch>()
+  const user = useSelector((state: StoreType) => state.user.user)
+  const currentSong = useSelector((state: StoreType) => state.songPlayer.song)
+
+  const [recentSongs, setRecentSongs] = useState<Song[]>([])
+  const [topArtists, setTopArtists] = useState<UserWithCountList[]>([])
+  const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
-    songs: 0,
-    artists: 0,
-    users: 0,
-    streams: 0,
+    totalSongs: 0,
+    totalArtists: 0,
+    totalPlays: 0,
+    activeUsers: 0,
   })
 
-  // נתוני שירים ישראליים אמיתיים
-  const songs: Song[] = [
-    {
-      id: 1,
-      title: "בואי נברח",
-      artist: "עידן רייכל",
-      genre: "פופ ישראלי",
-      duration: "4:23",
-      plays: "2.3M",
-      likes: "45K",
-      coverColor: "#d59039",
-      releaseDate: "2023",
-    },
-    {
-      id: 2,
-      title: "שיר לשלום",
-      artist: "נועה קירל",
-      genre: "פופ",
-      duration: "3:45",
-      plays: "1.8M",
-      likes: "32K",
-      coverColor: "#f7c26b",
-      releaseDate: "2023",
-    },
-    {
-      id: 3,
-      title: "ירושלים של זהב",
-      artist: "עדן בן זקן",
-      genre: "מזרחית מודרנית",
-      duration: "5:12",
-      plays: "3.1M",
-      likes: "67K",
-      coverColor: "#d59039",
-      releaseDate: "2023",
-    },
-  ]
-
-  // נתוני אמנים ישראליים
-  const artists: Artist[] = [
-    {
-      id: 1,
-      name: "עידן רייכל",
-      genre: "פופ ישראלי",
-      followers: "234K",
-      isVerified: true,
-      isLive: false,
-      coverColor: "#d59039",
-      description: "מוזיקאי, מלחין ומפיק ישראלי מוביל",
-    },
-    {
-      id: 2,
-      name: "נועה קירל",
-      genre: "פופ",
-      followers: "456K",
-      isVerified: true,
-      isLive: true,
-      coverColor: "#f7c26b",
-      description: "זמרת פופ ישראלית פופולרית",
-    },
-    {
-      id: 3,
-      name: "עדן בן זקן",
-      genre: "מזרחית מודרנית",
-      followers: "189K",
-      isVerified: true,
-      isLive: false,
-      coverColor: "#d59039",
-      description: "זמר מזרחי מוביל בישראל",
-    },
-    {
-      id: 4,
-      name: "שלומי שבת",
-      genre: "מזרחית",
-      followers: "345K",
-      isVerified: true,
-      isLive: true,
-      coverColor: "#f7c26b",
-      description: "מלך המזרחית הישראלית",
-    },
-  ]
-
-  // נתוני אירועים
-  const events: Event[] = [
-    {
-      id: 1,
-      title: "קונצרט עידן רייכל",
-      artist: "עידן רייכל",
-      date: "15 בפברואר",
-      time: "20:00",
-      venue: "היכל התרבות",
-      city: "תל אביב",
-      price: "₪180-350",
-      category: "קונצרט",
-      isPopular: true,
-    },
-    {
-      id: 2,
-      title: "פסטיבל המוזיקה הישראלית",
-      artist: "אמנים שונים",
-      date: "22-24 במרץ",
-      time: "19:00",
-      venue: "פארק הירקון",
-      city: "תל אביב",
-      price: "₪120-280",
-      category: "פסטיבל",
-      isPopular: true,
-    },
-    {
-      id: 3,
-      title: "ערב מזרחית עם שלומי שבת",
-      artist: "שלומי שבת",
-      date: "8 במרץ",
-      time: "21:00",
-      venue: "קיסריה אמפיתיאטרון",
-      city: "קיסריה",
-      price: "₪150-400",
-      category: "קונצרט",
-      isPopular: false,
-    },
-  ]
-
   useEffect(() => {
-    // אנימציית ספירת הסטטיסטיקות
-    const animateStats = () => {
-      const targets = { songs: 12847, artists: 3456, users: 28934, streams: 2456789 }
-      const duration = 2000
-      const steps = 60
-      const stepDuration = duration / steps
-
-      let currentStep = 0
-      const interval = setInterval(() => {
-        currentStep++
-        const progress = currentStep / steps
-
-        setStats({
-          songs: Math.floor(targets.songs * progress),
-          artists: Math.floor(targets.artists * progress),
-          users: Math.floor(targets.users * progress),
-          streams: Math.floor(targets.streams * progress),
-        })
-
-        if (currentStep >= steps) {
-          clearInterval(interval)
-          setStats(targets)
-        }
-      }, stepDuration)
-    }
-
-    animateStats()
-
-    // החלפת שירים אוטומטית
-    const songInterval = setInterval(() => {
-      setCurrentSong((prev) => (prev + 1) % songs.length)
-    }, 5000)
-
-    return () => {
-      clearInterval(songInterval)
-    }
+    loadRealData()
   }, [])
 
-  const togglePlayPause = () => {
-    setIsPlaying(!isPlaying)
+  const loadRealData = async () => {
+    setLoading(true)
+    try {
+      // טעינת שירים אמיתיים
+      const songsData = await getAllPublic()
+      const sortedSongs = songsData
+        .sort((a: Song, b: Song) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime())
+        .slice(0, 6)
+      setRecentSongs(sortedSongs)
+
+      // טעינת אמנים אמיתיים
+      const artistsData = await artistList()
+      const sortedArtists = artistsData
+        .sort((a: UserWithCountList, b: UserWithCountList) => (b.countSongs || 0) - (a.countSongs || 0))
+        .slice(0, 8)
+      setTopArtists(sortedArtists)
+
+      // חישוב סטטיסטיקות אמיתיות
+      const totalPlays = songsData.reduce((sum: number, song: Song) => sum + (song.plays || 0), 0)
+      setStats({
+        totalSongs: songsData.length,
+        totalArtists: artistsData.length,
+        totalPlays: totalPlays,
+        activeUsers: artistsData.filter((artist: UserWithCountList) => artist.countSongs > 0).length,
+      })
+    } catch (error) {
+      console.error("שגיאה בטעינת נתונים:", error)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  const handleNavigate = (path: string) => {
-    navigate(path)
+  // const handlePlaySong = (song: Song) => {
+  //   dispatch(loadSong(song))
+  // }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString("he-IL", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  }
+
+  const formatNumber = (num: number) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "M"
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "K"
+    }
+    return num.toString()
+  }
+
+  if (loading) {
+    return (
+      <div className="home-loading">
+        <div className="loading-spinner-large"></div>
+        <p>טוען נתונים אמיתיים...</p>
+      </div>
+    )
   }
 
   return (
-    <div className="home-container">
-      {/* רקע פשוט */}
-      <div className="home-background">
-        <div className="home-gradient-orb home-gradient-orb-1"></div>
-        <div className="home-gradient-orb home-gradient-orb-2"></div>
+    <div className="home-container-real">
+      {/* רקע */}
+      <div className="home-background-real">
+        <div className="home-gradient-orb-real home-gradient-orb-1"></div>
+        <div className="home-gradient-orb-real home-gradient-orb-2"></div>
       </div>
 
       {/* סקציית גיבור */}
-      <section className="home-hero">
-        <div className="home-hero-content">
-          <div className="home-hero-badge">
+      <section className="home-hero-real">
+        <div className="home-hero-content-real">
+          <div className="home-hero-badge-real">
             <Sparkles size={20} />
-            <span>הפלטפורמה המוזיקלית הישראלית המובילה</span>
+            <span>פלטפורמת המוזיקה הישראלית שלך</span>
           </div>
 
-          <h1 className="home-hero-title">המקום של המוזיקה הישראלית</h1>
+          <h1 className="home-hero-title-real">
+            גלה את המוזיקה
+            <br />
+            <span className="home-hero-highlight">הישראלית האמיתית</span>
+          </h1>
 
-          <p className="home-hero-description">
-            גלה, שתף וצור מוזיקה מקורית. הצטרף לקהילה הגדולה ביותר של מוזיקאים ומאזינים בישראל.
+          <p className="home-hero-description-real">
+            {stats.totalSongs} שירים אמיתיים מ-{stats.totalArtists} אמנים ישראליים.
+            <br />
+            הצטרף לקהילה שכבר צברה {formatNumber(stats.totalPlays)} השמעות!
           </p>
 
-          <div className="home-hero-stats-mini">
-            <div className="home-hero-stat-mini">
-              <Fire size={20} />
-              <span>12K+ שירים ישראליים</span>
-            </div>
-            <div className="home-hero-stat-mini">
-              <Users size={20} />
-              <span>3.4K+ אמנים ישראליים</span>
-            </div>
-            <div className="home-hero-stat-mini">
-              <Eye size={20} />
-              <span>2.4M+ השמעות חודשיות</span>
-            </div>
-          </div>
-
-          <div className="home-hero-buttons">
-            <button className="home-btn home-btn-primary" onClick={() => handleNavigate("/musicLibrary/songList")}>
+          <div className="home-hero-buttons-real">
+            <button className="home-btn-real home-btn-primary-real" onClick={() => navigate("/musicLibrary/songList")}>
               <Play size={20} />
-              התחל להאזין
+              גלה שירים ({stats.totalSongs})
             </button>
-            <button className="home-btn home-btn-secondary" onClick={() => handleNavigate("/mySongs")}>
-              <Upload size={20} />
-              העלה מוזיקה
-            </button>
+            {user?.id ? (
+              <button className="home-btn-real home-btn-secondary-real" onClick={() => navigate("/mySongs")}>
+                <Upload size={20} />
+                השירים שלי
+              </button>
+            ) : (
+              <button className="home-btn-real home-btn-secondary-real" onClick={() => navigate("/register")}>
+                <Users size={20} />
+                הצטרף אלינו
+              </button>
+            )}
           </div>
         </div>
 
-        <div className="home-hero-visual">
-          <div className="home-player">
-            <div className="home-player-header">
-              <div className="home-player-title">
+        {/* נגן אמיתי */}
+        {currentSong && (
+          <div className="home-current-player-real">
+            <div className="home-player-header-real">
+              <div className="home-player-title-real">
                 <Music size={18} />
-                <span>נגן עכשיו</span>
+                <span>מנגן עכשיו</span>
               </div>
-              <div className="home-live-badge">
-                <div className="home-live-dot"></div>
+              <div className="home-live-badge-real">
+                <div className="home-live-dot-real"></div>
                 <span>LIVE</span>
               </div>
             </div>
 
-            <div className="home-player-content">
-              <div className="home-player-cover" style={{ backgroundColor: songs[currentSong].coverColor }}>
-                <Music size={32} color="white" />
+            <div className="home-player-content-real">
+              <div
+                className="home-player-cover-real"
+                style={{
+                  backgroundImage: currentSong.pathPicture ? `url(${currentSong.pathPicture})` : "none",
+                  backgroundColor: currentSong.pathPicture ? "transparent" : "#d59039",
+                }}
+              >
+                {!currentSong.pathPicture && <Music size={32} color="white" />}
               </div>
-              <div className="home-player-info">
-                <h4>{songs[currentSong].title}</h4>
-                <p>{songs[currentSong].artist}</p>
-                <div className="home-player-stats">
-                  <span>{songs[currentSong].plays} השמעות</span>
-                  <span>{songs[currentSong].likes} לייקים</span>
+              <div className="home-player-info-real">
+                <h4>{currentSong.title}</h4>
+                <p>{currentSong.gener || "כללי"}</p>
+                <div className="home-player-stats-real">
+                  <span>{currentSong.plays || 0} השמעות</span>
+                  <span>נוצר: {formatDate(currentSong.create_at)}</span>
                 </div>
               </div>
             </div>
 
-            <div className="home-player-controls">
-              <button className="home-player-btn">
-                <Shuffle size={16} />
-              </button>
-              <button className="home-player-btn">
-                <SkipForward size={16} style={{ transform: "rotate(180deg)" }} />
-              </button>
-              <button className="home-player-btn home-player-btn-primary" onClick={togglePlayPause}>
-                {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-              </button>
-              <button className="home-player-btn">
-                <SkipForward size={16} />
-              </button>
-              <button className="home-player-btn">
-                <Repeat size={16} />
-              </button>
-            </div>
-
-            <div className="home-player-progress">
-              <div className="home-player-time">1:23</div>
-              <div className="home-player-progress-bar">
-                <div className="home-player-progress-fill"></div>
-              </div>
-              <div className="home-player-time">{songs[currentSong].duration}</div>
-            </div>
-
-            <div className="home-player-actions">
-              <button className="home-player-action">
+            <div className="home-player-actions-real">
+              <button className="home-player-action-real">
                 <Heart size={16} />
-                <span>{songs[currentSong].likes}</span>
+                <span>אהבתי</span>
               </button>
-              <button className="home-player-action">
+              <button className="home-player-action-real">
                 <Share2 size={16} />
                 <span>שתף</span>
               </button>
-              <button className="home-player-action">
+              <button className="home-player-action-real">
                 <Download size={16} />
                 <span>הורד</span>
               </button>
             </div>
           </div>
-        </div>
+        )}
       </section>
 
-      {/* סקציית סטטיסטיקות */}
-      <section className="home-stats">
-        <div className="home-stats-grid">
-          <div className="home-stat-card">
-            <div className="home-stat-icon">
+      {/* סטטיסטיקות אמיתיות */}
+      <section className="home-stats-real">
+        <div className="home-stats-grid-real">
+          <div className="home-stat-card-real">
+            <div className="home-stat-icon-real">
               <Music size={24} />
             </div>
-            <div className="home-stat-number">{stats.songs.toLocaleString()}</div>
-            <div className="home-stat-label">שירים ישראליים</div>
-            <div className="home-stat-trend">
-              <TrendingUp size={16} />
-              <span>+15% החודש</span>
-            </div>
+            <div className="home-stat-number-real">{stats.totalSongs}</div>
+            <div className="home-stat-label-real">שירים ישראליים</div>
+            <div className="home-stat-desc-real">מכל הז'אנרים</div>
           </div>
-          <div className="home-stat-card">
-            <div className="home-stat-icon">
+          <div className="home-stat-card-real">
+            <div className="home-stat-icon-real">
               <Users size={24} />
             </div>
-            <div className="home-stat-number">{stats.artists.toLocaleString()}</div>
-            <div className="home-stat-label">אמנים ישראליים</div>
-            <div className="home-stat-trend">
-              <TrendingUp size={16} />
-              <span>+12% החודש</span>
-            </div>
+            <div className="home-stat-number-real">{stats.totalArtists}</div>
+            <div className="home-stat-label-real">אמנים רשומים</div>
+            <div className="home-stat-desc-real">יוצרים פעילים</div>
           </div>
-          <div className="home-stat-card">
-            <div className="home-stat-icon">
-              <Heart size={24} />
-            </div>
-            <div className="home-stat-number">{stats.users.toLocaleString()}</div>
-            <div className="home-stat-label">מאזינים פעילים</div>
-            <div className="home-stat-trend">
-              <TrendingUp size={16} />
-              <span>+28% החודש</span>
-            </div>
-          </div>
-          <div className="home-stat-card">
-            <div className="home-stat-icon">
+          <div className="home-stat-card-real">
+            <div className="home-stat-icon-real">
               <Headphones size={24} />
             </div>
-            <div className="home-stat-number">{stats.streams.toLocaleString()}</div>
-            <div className="home-stat-label">השמעות חודשיות</div>
-            <div className="home-stat-trend">
-              <TrendingUp size={16} />
-              <span>+42% החודש</span>
+            <div className="home-stat-number-real">{formatNumber(stats.totalPlays)}</div>
+            <div className="home-stat-label-real">השמעות כולל</div>
+            <div className="home-stat-desc-real">מאז ההקמה</div>
+          </div>
+          <div className="home-stat-card-real">
+            <div className="home-stat-icon-real">
+              <Fire size={24} />
             </div>
+            <div className="home-stat-number-real">{stats.activeUsers}</div>
+            <div className="home-stat-label-real">אמנים פעילים</div>
+            <div className="home-stat-desc-real">עם שירים</div>
           </div>
         </div>
       </section>
 
-      {/* סקציית אמנים מובילים */}
-      <section className="home-artists">
-        <div className="home-section-header">
-          <div className="home-section-badge">
-            <Star size={16} />
-            <span>אמנים ישראליים מובילים</span>
+      {/* שירים חדשים אמיתיים */}
+      <section className="home-recent-songs-real">
+        <div className="home-section-header-real">
+          <div className="home-section-badge-real">
+            <Clock size={16} />
+            <span>שירים חדשים</span>
           </div>
-          <h2 className="home-section-title">הכוכבים של המוזיקה הישראלית</h2>
-          <p className="home-section-subtitle">הכירו את האמנים הפופולריים והמשפיעים ביותר בפלטפורמה שלנו</p>
+          <h2 className="home-section-title-real">השירים החדשים ביותר</h2>
+          <p className="home-section-subtitle-real">השירים שהועלו לאחרונה על ידי האמנים שלנו</p>
         </div>
 
-        <div className="home-artists-grid">
-          {artists.map((artist, index) => (
-            <div
-              key={artist.id}
-              className="home-artist-card"
-              style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
-            >
-              {artist.isLive && (
-                <div className="home-artist-live-badge">
-                  <div className="home-live-dot"></div>
-                  <span>LIVE</span>
-                </div>
-              )}
-
-              {artist.isVerified && (
-                <div className="home-artist-verified-badge">
-                  <Verified size={16} />
-                  <span>מאומת</span>
-                </div>
-              )}
-
-              <div className="home-artist-image-container">
-                <div className="home-artist-image" style={{ backgroundColor: artist.coverColor }}>
-                  <Music size={40} color="white" />
-                </div>
-                <div className="home-artist-overlay">
-                  <button className="home-artist-play-btn" onClick={() => handleNavigate("/musicLibrary/artistList")}>
-                    <Play size={24} />
-                  </button>
-                </div>
+        {recentSongs.length > 0 ? (
+          <div className="home-songs-grid-real">
+            {recentSongs.map((song, index) => (
+              <div
+                key={song.id}
+                className="home-song-card-wrapper-real"
+                style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
+              >
+                <SongCard song={song} showActions={true} />
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="home-empty-state-real">
+            <Music size={64} />
+            <h3>אין שירים עדיין</h3>
+            <p>היה הראשון להעלות שיר!</p>
+            <button className="home-btn-real home-btn-primary-real" onClick={() => navigate("/mySongs")}>
+              <Upload size={20} />
+              העלה שיר ראשון
+            </button>
+          </div>
+        )}
 
-              <div className="home-artist-info">
-                <h3 className="home-artist-name">{artist.name}</h3>
-                <p className="home-artist-genre">{artist.genre}</p>
-                <p className="home-artist-description">{artist.description}</p>
-                <div className="home-artist-stats">
-                  <div className="home-artist-stat">
-                    <Users size={16} />
-                    <span>{artist.followers} עוקבים</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="home-section-cta">
-          <button className="home-btn home-btn-outline" onClick={() => handleNavigate("/musicLibrary/artistList")}>
-            <Users size={20} />
-            צפה בכל האמנים
+        <div className="home-section-cta-real">
+          <button className="home-btn-real home-btn-outline-real" onClick={() => navigate("/musicLibrary/songList")}>
+            <Music size={20} />
+            צפה בכל השירים ({stats.totalSongs})
             <ArrowRight size={20} />
           </button>
         </div>
       </section>
 
-      {/* סקציית אירועים קרובים */}
-      <section className="home-events">
-        <div className="home-section-header">
-          <div className="home-section-badge">
-            <Calendar size={16} />
-            <span>אירועים קרובים</span>
+      {/* אמנים מובילים אמיתיים */}
+      <section className="home-top-artists-real">
+        <div className="home-section-header-real">
+          <div className="home-section-badge-real">
+            <Star size={16} />
+            <span>אמנים מובילים</span>
           </div>
-          <h2 className="home-section-title">אירועי מוזיקה בישראל</h2>
-          <p className="home-section-subtitle">אל תפספסו את האירועים המוזיקליים הכי חמים בארץ</p>
+          <h2 className="home-section-title-real">האמנים הפעילים ביותר</h2>
+          <p className="home-section-subtitle-real">האמנים עם הכי הרבה שירים ועוקבים</p>
         </div>
 
-        <div className="home-events-grid">
-          {events.map((event, index) => (
-            <div
-              key={event.id}
-              className="home-event-card"
-              style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
-            >
-              {event.isPopular && (
-                <div className="home-event-popular-badge">
-                  <Fire size={16} />
-                  <span>פופולרי</span>
-                </div>
-              )}
-
-              <div className="home-event-category">{event.category}</div>
-
-              <div className="home-event-content">
-                <h3 className="home-event-title">{event.title}</h3>
-                <p className="home-event-artist">{event.artist}</p>
-
-                <div className="home-event-details">
-                  <div className="home-event-detail">
-                    <Calendar size={16} />
-                    <span>{event.date}</span>
-                  </div>
-                  <div className="home-event-detail">
-                    <Clock size={16} />
-                    <span>{event.time}</span>
-                  </div>
-                  <div className="home-event-detail">
-                    <MapPin size={16} />
-                    <span>
-                      {event.venue}, {event.city}
-                    </span>
-                  </div>
+        {topArtists.length > 0 ? (
+          <div className="home-artists-grid-real">
+            {topArtists.map((artist, index) => (
+              <div
+                key={artist.id}
+                className="home-artist-card-real"
+                style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
+                onClick={() => navigate(`/artists/${artist.id}`)}
+              >
+                <div className="home-artist-image-real">
+                  {artist.pathProfile ? (
+                    <img src={artist.pathProfile || "/placeholder.svg"} alt={artist.userName} />
+                  ) : (
+                    <div className="home-artist-placeholder-real">
+                      <Users size={40} />
+                    </div>
+                  )}
                 </div>
 
-                <div className="home-event-price">{event.price}</div>
+                <div className="home-artist-info-real">
+                  <div className="home-artist-name-real">
+                    {artist.userName}
+                    <Verified size={16} className="home-verified-icon-real" />
+                  </div>
+                  <div className="home-artist-stats-real">
+                    <div className="home-artist-stat-real">
+                      <Music size={14} />
+                      <span>{artist.countSongs || 0} שירים</span>
+                    </div>
+                    <div className="home-artist-stat-real">
+                      <Users size={14} />
+                      <span>{50} עוקבים</span>
+                    </div>
+                  </div>
+                </div>
 
-                <button className="home-event-btn">
-                  <span>רכישת כרטיסים</span>
-                  <ArrowRight size={18} />
-                </button>
+                <div className="home-artist-overlay-real">
+                  <button className="home-artist-play-btn-real">
+                    <Play size={24} />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        ) : (
+          <div className="home-empty-state-real">
+            <Users size={64} />
+            <h3>אין אמנים עדיין</h3>
+            <p>היה הראשון להירשם כאמן!</p>
+            <button className="home-btn-real home-btn-primary-real" onClick={() => navigate("/register")}>
+              <Users size={20} />
+              הירשם כאמן
+            </button>
+          </div>
+        )}
+
+        <div className="home-section-cta-real">
+          <button className="home-btn-real home-btn-outline-real" onClick={() => navigate("/musicLibrary/artistList")}>
+            <Users size={20} />
+            צפה בכל האמנים ({stats.totalArtists})
+            <ArrowRight size={20} />
+          </button>
         </div>
       </section>
 
-      {/* סקציית תכונות */}
-      <section className="home-features">
-        <div className="home-section-header">
-          <div className="home-section-badge">
+      {/* תכונות הפלטפורמה */}
+      <section className="home-features-real">
+        <div className="home-section-header-real">
+          <div className="home-section-badge-real">
             <Zap size={16} />
-            <span>תכונות מתקדמות</span>
+            <span>תכונות הפלטפורמה</span>
           </div>
-          <h2 className="home-section-title">למה לבחור בנו?</h2>
-          <p className="home-section-subtitle">הכלים והתכונות הטובים ביותר לאמנים ומאזינים</p>
+          <h2 className="home-section-title-real">למה לבחור בנו?</h2>
+          <p className="home-section-subtitle-real">הכלים והתכונות שיעזרו לך להצליח</p>
         </div>
 
-        <div className="home-features-grid">
-          <div className="home-feature-card">
-            <div className="home-feature-icon">
+        <div className="home-features-grid-real">
+          <div className="home-feature-card-real">
+            <div className="home-feature-icon-real">
               <Upload size={32} />
             </div>
-            <h3>העלאה קלה</h3>
-            <p>העלה את המוזיקה שלך בקלות ובמהירות עם הכלים המתקדמים שלנו</p>
+            <h3>העלאה פשוטה</h3>
+            <p>העלה שירים בקלות ובמהירות עם ממשק פשוט וידידותי</p>
           </div>
-          <div className="home-feature-card">
-            <div className="home-feature-icon">
+          <div className="home-feature-card-real">
+            <div className="home-feature-icon-real">
               <TrendingUp size={32} />
             </div>
-            <h3>אנליטיקה מתקדמת</h3>
-            <p>עקוב אחר הביצועים של השירים שלך עם דוחות מפורטים ותובנות</p>
+            <h3>מעקב אחר ביצועים</h3>
+            <p>עקוב אחר מספר ההשמעות והפופולריות של השירים שלך</p>
           </div>
-          <div className="home-feature-card">
-            <div className="home-feature-icon">
+          <div className="home-feature-card-real">
+            <div className="home-feature-icon-real">
               <Users size={32} />
             </div>
-            <h3>קהילה תומכת</h3>
-            <p>הצטרף לקהילה של אמנים ומאזינים שתומכים זה בזה</p>
+            <h3>קהילה ישראלית</h3>
+            <p>התחבר עם אמנים ומאזינים ישראליים אחרים</p>
           </div>
-          <div className="home-feature-card">
-            <div className="home-feature-icon">
-              <Crown size={32} />
+          <div className="home-feature-card-real">
+            <div className="home-feature-icon-real">
+              <Share2 size={32} />
             </div>
-            <h3>רווחים הוגנים</h3>
-            <p>קבל את הרווחים הגבוהים ביותר בתעשייה מהמוזיקה שלך</p>
-          </div>
-          <div className="home-feature-card">
-            <div className="home-feature-icon">
-              <Globe size={32} />
-            </div>
-            <h3>חשיפה גלובלית</h3>
-            <p>הגע לקהל בינלאומי והפץ את המוזיקה שלך ברחבי העולם</p>
-          </div>
-          <div className="home-feature-card">
-            <div className="home-feature-icon">
-              <Mic size={32} />
-            </div>
-            <h3>כלי הקלטה מקצועיים</h3>
-            <p>השתמש בכלי הקלטה ועריכה מתקדמים ישירות מהדפדפן</p>
+            <h3>שיתוף קל</h3>
+            <p>שתף את המוזיקה שלך בקלות ברשתות חברתיות ובמייל</p>
           </div>
         </div>
       </section>
 
-      {/* סקציית קריאה לפעולה */}
-      <section className="home-cta">
-        <div className="home-cta-content">
-          <div className="home-cta-badge">
-            <Sparkles size={20} />
+      {/* קריאה לפעולה */}
+      <section className="home-cta-real">
+        <div className="home-cta-content-real">
+          <div className="home-cta-badge-real">
+            <Crown size={20} />
             <span>הצטרף עכשיו</span>
           </div>
 
-          <h2 className="home-cta-title">מוכן להיות חלק מהמהפכה?</h2>
-          <p className="home-cta-description">
-            הצטרף אלינו היום וקבל גישה לכלים המתקדמים ביותר, קהילה תומכת של אמנים ישראליים ואפשרויות חשיפה ורווח בלתי
-            מוגבלות.
+          <h2 className="home-cta-title-real">מוכן להתחיל את המסע המוזיקלי שלך?</h2>
+          <p className="home-cta-description-real">
+            הצטרף ל-{stats.totalArtists} האמנים שכבר בחרו בנו ותהיה חלק מהקהילה המוזיקלית הישראלית הגדלה והמתפתחת
           </p>
 
-          <div className="home-cta-features">
-            <div className="home-cta-feature">
-              <Crown size={20} />
-              <span>חשבון פרימיום חינם לחודש ראשון</span>
-            </div>
-            <div className="home-cta-feature">
-              <Zap size={20} />
-              <span>כלי הקלטה ועריכה מתקדמים</span>
-            </div>
-            <div className="home-cta-feature">
-              <Globe size={20} />
-              <span>חשיפה לקהל ישראלי ובינלאומי</span>
-            </div>
+          <div className="home-cta-buttons-real">
+            {user?.id ? (
+              <>
+                <button
+                  className="home-btn-real home-btn-primary-real home-btn-large-real"
+                  onClick={() => navigate("/mySongs")}
+                >
+                  <Upload size={20} />
+                  העלה שיר חדש
+                  <ArrowRight size={20} />
+                </button>
+                <button
+                  className="home-btn-real home-btn-outline-real home-btn-large-real"
+                  onClick={() => navigate("/musicLibrary/songList")}
+                >
+                  <Eye size={20} />
+                  גלה מוזיקה חדשה
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="home-btn-real home-btn-primary-real home-btn-large-real"
+                  onClick={() => navigate("/register")}
+                >
+                  <Users size={20} />
+                  הירשם בחינם
+                  <ArrowRight size={20} />
+                </button>
+                <button
+                  className="home-btn-real home-btn-outline-real home-btn-large-real"
+                  onClick={() => navigate("/musicLibrary/songList")}
+                >
+                  <Eye size={20} />
+                  צפה בשירים
+                </button>
+              </>
+            )}
           </div>
 
-          <div className="home-cta-buttons">
-            <button className="home-btn home-btn-primary home-btn-large" onClick={() => handleNavigate("/register")}>
-              <Play size={20} />
-              הירשם בחינם
-              <ArrowRight size={20} />
-            </button>
-            <button
-              className="home-btn home-btn-outline home-btn-large"
-              onClick={() => handleNavigate("/musicLibrary/songList")}
-            >
-              <Eye size={20} />
-              צפה בדמו
-            </button>
-          </div>
-
-          <div className="home-cta-guarantee">
+          <div className="home-cta-guarantee-real">
             <Award size={16} />
-            <span>ללא התחייבות • ביטול בכל עת • תמיכה בעברית 24/7</span>
+            <span>חינם לחלוטין • ללא התחייבות • תמיכה בעברית</span>
           </div>
         </div>
       </section>

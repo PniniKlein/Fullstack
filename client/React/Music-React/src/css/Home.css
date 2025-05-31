@@ -1,13 +1,13 @@
-.home-container {
+.home-container-real {
   min-height: 100vh;
-  background: radial-gradient(ellipse at top, #0a0a0a 0%, #000000 100%);
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   color: #ffffff;
   position: relative;
   overflow-x: hidden;
 }
 
-/* רקע פשוט */
-.home-background {
+/* רקע */
+.home-background-real {
   position: fixed;
   top: 0;
   left: 0;
@@ -17,19 +17,19 @@
   z-index: 0;
 }
 
-.home-gradient-orb {
+.home-gradient-orb-real {
   position: absolute;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(213, 144, 57, 0.15), transparent 70%);
-  filter: blur(100px);
-  animation: float 20s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(213, 144, 57, 0.1), transparent 70%);
+  filter: blur(80px);
+  animation: float-real 15s ease-in-out infinite;
 }
 
 .home-gradient-orb-1 {
-  width: 600px;
-  height: 600px;
-  top: -200px;
-  right: -200px;
+  width: 500px;
+  height: 500px;
+  top: -150px;
+  right: -150px;
   animation-delay: 0s;
 }
 
@@ -38,21 +38,49 @@
   height: 400px;
   bottom: -100px;
   left: -100px;
-  animation-delay: 10s;
+  animation-delay: 7s;
 }
 
-@keyframes float {
+@keyframes float-real {
   0%,
   100% {
     transform: translate(0, 0) scale(1);
   }
   50% {
-    transform: translate(50px, -50px) scale(1.1);
+    transform: translate(30px, -30px) scale(1.1);
+  }
+}
+
+/* טעינה */
+.home-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 2rem;
+}
+
+.loading-spinner-large {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(213, 144, 57, 0.2);
+  border-top: 4px solid #d59039;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
 /* סקציית גיבור */
-.home-hero {
+.home-hero-real {
   position: relative;
   z-index: 1;
   min-height: 100vh;
@@ -64,16 +92,16 @@
   gap: 4rem;
 }
 
-.home-hero-content {
+.home-hero-content-real {
   flex: 1;
   max-width: 600px;
 }
 
-.home-hero-badge {
+.home-hero-badge-real {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(213, 144, 57, 0.1);
+  background: rgba(213, 144, 57, 0.15);
   border: 1px solid rgba(213, 144, 57, 0.3);
   padding: 0.75rem 1.5rem;
   border-radius: 50px;
@@ -84,46 +112,35 @@
   backdrop-filter: blur(10px);
 }
 
-.home-hero-title {
+.home-hero-title-real {
   font-size: 4rem;
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: 1.5rem;
+  color: #ffffff;
+}
+
+.home-hero-highlight {
   background: linear-gradient(135deg, #d59039, #f7c26b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.home-hero-description {
+.home-hero-description-real {
   font-size: 1.25rem;
   line-height: 1.6;
   color: #aaaaaa;
-  margin-bottom: 2rem;
-}
-
-.home-hero-stats-mini {
-  display: flex;
-  gap: 2rem;
   margin-bottom: 2.5rem;
-  flex-wrap: wrap;
 }
 
-.home-hero-stat-mini {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-  color: #d59039;
-}
-
-.home-hero-buttons {
+.home-hero-buttons-real {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
 }
 
-.home-btn {
+.home-btn-real {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -137,70 +154,65 @@
   text-decoration: none;
 }
 
-.home-btn-primary {
+.home-btn-primary-real {
   background: linear-gradient(135deg, #d59039, #f7c26b);
   color: #1a1a1a;
   box-shadow: 0 4px 15px rgba(213, 144, 57, 0.3);
 }
 
-.home-btn-primary:hover {
+.home-btn-primary-real:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(213, 144, 57, 0.4);
 }
 
-.home-btn-secondary {
+.home-btn-secondary-real {
   background: rgba(255, 255, 255, 0.1);
   color: #ffffff;
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
 }
 
-.home-btn-secondary:hover {
+.home-btn-secondary-real:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
 
-.home-btn-outline {
+.home-btn-outline-real {
   background: transparent;
   color: #d59039;
   border: 2px solid #d59039;
 }
 
-.home-btn-outline:hover {
+.home-btn-outline-real:hover {
   background: #d59039;
   color: #1a1a1a;
 }
 
-.home-btn-large {
+.home-btn-large-real {
   padding: 1.25rem 2.5rem;
   font-size: 1.1rem;
 }
 
-.home-hero-visual {
+/* נגן אמיתי */
+.home-current-player-real {
   flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.home-player {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(30px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 24px;
   padding: 2rem;
-  width: 400px;
+  max-width: 400px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
 }
 
-.home-player-header {
+.home-player-header-real {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1.5rem;
 }
 
-.home-player-title {
+.home-player-title-real {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -208,7 +220,7 @@
   color: #d59039;
 }
 
-.home-live-badge {
+.home-live-badge-real {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -221,15 +233,15 @@
   color: #ff4444;
 }
 
-.home-live-dot {
+.home-live-dot-real {
   width: 8px;
   height: 8px;
   background: #ff4444;
   border-radius: 50%;
-  animation: live-pulse 1.5s ease-in-out infinite;
+  animation: live-pulse-real 1.5s ease-in-out infinite;
 }
 
-@keyframes live-pulse {
+@keyframes live-pulse-real {
   0%,
   100% {
     opacity: 1;
@@ -241,14 +253,14 @@
   }
 }
 
-.home-player-content {
+.home-player-content-real {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.home-player-cover {
+.home-player-cover-real {
   width: 80px;
   height: 80px;
   border-radius: 12px;
@@ -256,118 +268,38 @@
   align-items: center;
   justify-content: center;
   border: 2px solid rgba(213, 144, 57, 0.3);
+  background-size: cover;
+  background-position: center;
 }
 
-.home-player-info h4 {
+.home-player-info-real h4 {
   margin: 0 0 0.5rem 0;
   font-size: 1.1rem;
   font-weight: 700;
   color: #ffffff;
 }
 
-.home-player-info p {
+.home-player-info-real p {
   margin: 0 0 0.5rem 0;
   color: #aaaaaa;
   font-size: 0.9rem;
 }
 
-.home-player-stats {
+.home-player-stats-real {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.25rem;
   font-size: 0.8rem;
   color: #d59039;
 }
 
-.home-player-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.home-player-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  color: #ffffff;
-}
-
-.home-player-btn-primary {
-  background: linear-gradient(135deg, #d59039, #f7c26b);
-  border: none;
-  width: 50px;
-  height: 50px;
-  color: #1a1a1a;
-}
-
-.home-player-btn:hover {
-  transform: scale(1.1);
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.home-player-btn-primary:hover {
-  transform: scale(1.1);
-  box-shadow: 0 10px 25px rgba(213, 144, 57, 0.4);
-}
-
-.home-player-progress {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.home-player-time {
-  font-size: 0.8rem;
-  color: #aaaaaa;
-  font-weight: 500;
-  min-width: 30px;
-}
-
-.home-player-progress-bar {
-  flex: 1;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.home-player-progress-fill {
-  height: 100%;
-  width: 35%;
-  background: linear-gradient(135deg, #d59039, #f7c26b);
-  border-radius: 2px;
-  animation: progress-move 4s ease-in-out infinite;
-}
-
-@keyframes progress-move {
-  0% {
-    width: 35%;
-  }
-  50% {
-    width: 65%;
-  }
-  100% {
-    width: 35%;
-  }
-}
-
-.home-player-actions {
+.home-player-actions-real {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.home-player-action {
+.home-player-action-real {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -381,14 +313,14 @@
   transition: all 0.3s ease;
 }
 
-.home-player-action:hover {
+.home-player-action-real:hover {
   background: rgba(213, 144, 57, 0.2);
   border-color: rgba(213, 144, 57, 0.4);
   color: #d59039;
 }
 
-/* סקציית סטטיסטיקות */
-.home-stats {
+/* סטטיסטיקות אמיתיות */
+.home-stats-real {
   position: relative;
   z-index: 1;
   padding: 4rem 2rem;
@@ -396,7 +328,7 @@
   backdrop-filter: blur(10px);
 }
 
-.home-stats-grid {
+.home-stats-grid-real {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
@@ -404,7 +336,7 @@
   gap: 2rem;
 }
 
-.home-stat-card {
+.home-stat-card-real {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -414,13 +346,13 @@
   transition: all 0.3s ease;
 }
 
-.home-stat-card:hover {
+.home-stat-card-real:hover {
   transform: translateY(-5px);
   border-color: rgba(213, 144, 57, 0.3);
   box-shadow: 0 10px 30px rgba(213, 144, 57, 0.1);
 }
 
-.home-stat-icon {
+.home-stat-icon-real {
   width: 60px;
   height: 60px;
   background: linear-gradient(135deg, #d59039, #f7c26b);
@@ -432,37 +364,32 @@
   color: #1a1a1a;
 }
 
-.home-stat-number {
+.home-stat-number-real {
   font-size: 2.5rem;
   font-weight: 900;
   color: #d59039;
   margin-bottom: 0.5rem;
 }
 
-.home-stat-label {
+.home-stat-label-real {
   font-size: 1rem;
   color: #cccccc;
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
-.home-stat-trend {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  color: #4ade80;
+.home-stat-desc-real {
   font-size: 0.9rem;
-  font-weight: 600;
+  color: #888888;
 }
 
 /* כותרות סקציות */
-.home-section-header {
+.home-section-header-real {
   text-align: center;
   margin-bottom: 3rem;
 }
 
-.home-section-badge {
+.home-section-badge-real {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -477,7 +404,7 @@
   backdrop-filter: blur(10px);
 }
 
-.home-section-title {
+.home-section-title-real {
   font-size: 2.5rem;
   font-weight: 800;
   margin-bottom: 1rem;
@@ -487,7 +414,7 @@
   background-clip: text;
 }
 
-.home-section-subtitle {
+.home-section-subtitle-real {
   font-size: 1.1rem;
   color: #aaaaaa;
   max-width: 600px;
@@ -495,13 +422,13 @@
   line-height: 1.6;
 }
 
-.home-section-cta {
+.home-section-cta-real {
   text-align: center;
   margin-top: 3rem;
 }
 
-/* סקציית אמנים */
-.home-artists {
+/* שירים חדשים */
+.home-recent-songs-real {
   position: relative;
   z-index: 1;
   padding: 6rem 2rem;
@@ -509,164 +436,22 @@
   margin: 0 auto;
 }
 
-.home-artists-grid {
+.home-songs-grid-real {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
   margin-bottom: 3rem;
 }
 
-.home-artist-card {
-  position: relative;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 2rem;
-  text-align: center;
-  backdrop-filter: blur(20px);
-  transition: all 0.4s ease;
-  overflow: hidden;
-  animation: fade-in-up 0.6s ease-out forwards;
+.home-song-card-wrapper-real {
+  animation: fade-in-up-real 0.6s ease-out forwards;
   animation-delay: var(--delay);
   opacity: 0;
   transform: translateY(30px);
 }
 
-.home-artist-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  border-color: rgba(213, 144, 57, 0.4);
-  box-shadow: 0 20px 40px rgba(213, 144, 57, 0.2);
-}
-
-.home-artist-live-badge {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 0, 0, 0.2);
-  border: 1px solid rgba(255, 0, 0, 0.4);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #ff4444;
-  z-index: 2;
-}
-
-.home-artist-verified-badge {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(29, 161, 242, 0.2);
-  border: 1px solid rgba(29, 161, 242, 0.4);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #1da1f2;
-  z-index: 2;
-}
-
-.home-artist-image-container {
-  position: relative;
-  margin-bottom: 1.5rem;
-}
-
-.home-artist-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 3px solid rgba(213, 144, 57, 0.3);
-  margin: 0 auto;
-  transition: all 0.3s ease;
-}
-
-.home-artist-overlay {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-.home-artist-card:hover .home-artist-overlay {
-  opacity: 1;
-}
-
-.home-artist-play-btn {
-  background: linear-gradient(135deg, #d59039, #f7c26b);
-  border: none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #1a1a1a;
-}
-
-.home-artist-play-btn:hover {
-  transform: scale(1.1);
-}
-
-.home-artist-info {
-  text-align: right;
-}
-
-.home-artist-name {
-  font-size: 1.3rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-}
-
-.home-artist-genre {
-  color: #aaaaaa;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-}
-
-.home-artist-description {
-  color: #cccccc;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.home-artist-stats {
-  display: flex;
-  justify-content: center;
-}
-
-.home-artist-stat {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #d59039;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-/* סקציית אירועים */
-.home-events {
+/* אמנים מובילים */
+.home-top-artists-real {
   position: relative;
   z-index: 1;
   padding: 6rem 2rem;
@@ -674,124 +459,136 @@
   backdrop-filter: blur(20px);
 }
 
-.home-events-grid {
+.home-artists-grid-real {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
+  margin-bottom: 3rem;
 }
 
-.home-event-card {
+.home-artist-card-real {
   position: relative;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   padding: 2rem;
+  text-align: center;
   backdrop-filter: blur(20px);
   transition: all 0.4s ease;
+  cursor: pointer;
   overflow: hidden;
-  animation: fade-in-up 0.6s ease-out forwards;
+  animation: fade-in-up-real 0.6s ease-out forwards;
   animation-delay: var(--delay);
   opacity: 0;
   transform: translateY(30px);
 }
 
-.home-event-card:hover {
+.home-artist-card-real:hover {
   transform: translateY(-10px) scale(1.02);
   border-color: rgba(213, 144, 57, 0.4);
   box-shadow: 0 20px 40px rgba(213, 144, 57, 0.2);
 }
 
-.home-event-popular-badge {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+.home-artist-image-real {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin: 0 auto 1.5rem;
+  overflow: hidden;
+  border: 3px solid rgba(213, 144, 57, 0.3);
+}
+
+.home-artist-image-real img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-artist-placeholder-real {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #d59039, #f7c26b);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 107, 107, 0.2);
-  border: 1px solid rgba(255, 107, 107, 0.4);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #ff6b6b;
-  z-index: 2;
+  justify-content: center;
+  color: #1a1a1a;
 }
 
-.home-event-category {
-  display: inline-block;
-  background: rgba(213, 144, 57, 0.2);
-  border: 1px solid rgba(213, 144, 57, 0.3);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #d59039;
-  margin-bottom: 1.5rem;
-}
-
-.home-event-content {
+.home-artist-info-real {
   text-align: right;
 }
 
-.home-event-title {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-}
-
-.home-event-artist {
-  color: #aaaaaa;
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
-}
-
-.home-event-details {
-  margin-bottom: 1.5rem;
-}
-
-.home-event-detail {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  color: #cccccc;
-  font-size: 0.9rem;
-}
-
-.home-event-price {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #d59039;
-  margin-bottom: 1.5rem;
-}
-
-.home-event-btn {
+.home-artist-name-real {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(135deg, #d59039, #f7c26b);
-  color: #1a1a1a;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.home-verified-icon-real {
+  color: #1da1f2;
+}
+
+.home-artist-stats-real {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.home-artist-stat-real {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #d59039;
+  font-size: 0.9rem;
   font-weight: 600;
+}
+
+.home-artist-overlay-real {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+  border-radius: 20px;
+}
+
+.home-artist-card-real:hover .home-artist-overlay-real {
+  opacity: 1;
+}
+
+.home-artist-play-btn-real {
+  background: linear-gradient(135deg, #d59039, #f7c26b);
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100%;
+  color: #1a1a1a;
 }
 
-.home-event-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(213, 144, 57, 0.3);
+.home-artist-play-btn-real:hover {
+  transform: scale(1.1);
 }
 
-/* סקציית תכונות */
-.home-features {
+/* תכונות */
+.home-features-real {
   position: relative;
   z-index: 1;
   padding: 6rem 2rem;
@@ -799,13 +596,13 @@
   margin: 0 auto;
 }
 
-.home-features-grid {
+.home-features-grid-real {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
 }
 
-.home-feature-card {
+.home-feature-card-real {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
@@ -815,13 +612,13 @@
   transition: all 0.4s ease;
 }
 
-.home-feature-card:hover {
+.home-feature-card-real:hover {
   transform: translateY(-10px);
   border-color: rgba(213, 144, 57, 0.4);
   box-shadow: 0 20px 40px rgba(213, 144, 57, 0.2);
 }
 
-.home-feature-icon {
+.home-feature-icon-real {
   width: 80px;
   height: 80px;
   background: linear-gradient(135deg, #d59039, #f7c26b);
@@ -833,20 +630,20 @@
   color: #1a1a1a;
 }
 
-.home-feature-card h3 {
+.home-feature-card-real h3 {
   font-size: 1.3rem;
   font-weight: 700;
   margin-bottom: 1rem;
   color: #ffffff;
 }
 
-.home-feature-card p {
+.home-feature-card-real p {
   color: #aaaaaa;
   line-height: 1.6;
 }
 
-/* סקציית קריאה לפעולה */
-.home-cta {
+/* קריאה לפעולה */
+.home-cta-real {
   position: relative;
   z-index: 1;
   padding: 6rem 2rem;
@@ -855,12 +652,12 @@
   text-align: center;
 }
 
-.home-cta-content {
+.home-cta-content-real {
   max-width: 900px;
   margin: 0 auto;
 }
 
-.home-cta-badge {
+.home-cta-badge-real {
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
@@ -875,7 +672,7 @@
   backdrop-filter: blur(20px);
 }
 
-.home-cta-title {
+.home-cta-title-real {
   font-size: 3rem;
   font-weight: 900;
   background: linear-gradient(135deg, #d59039, #f7c26b);
@@ -886,31 +683,14 @@
   margin-bottom: 1.5rem;
 }
 
-.home-cta-description {
+.home-cta-description-real {
   font-size: 1.2rem;
   color: #aaaaaa;
   margin-bottom: 2.5rem;
   line-height: 1.7;
 }
 
-.home-cta-features {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-}
-
-.home-cta-feature {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-weight: 600;
-  color: #d59039;
-  font-size: 1rem;
-}
-
-.home-cta-buttons {
+.home-cta-buttons-real {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
@@ -918,7 +698,7 @@
   margin-bottom: 2rem;
 }
 
-.home-cta-guarantee {
+.home-cta-guarantee-real {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -928,7 +708,30 @@
   font-weight: 500;
 }
 
-@keyframes fade-in-up {
+/* מצב ריק */
+.home-empty-state-real {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #aaaaaa;
+}
+
+.home-empty-state-real svg {
+  color: #666666;
+  margin-bottom: 1.5rem;
+}
+
+.home-empty-state-real h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #cccccc;
+}
+
+.home-empty-state-real p {
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+@keyframes fade-in-up-real {
   to {
     opacity: 1;
     transform: translateY(0);
@@ -937,87 +740,80 @@
 
 /* רספונסיביות */
 @media (max-width: 1024px) {
-  .home-hero {
+  .home-hero-real {
     flex-direction: column;
     text-align: center;
     padding: 2rem 1rem;
     gap: 2rem;
   }
 
-  .home-hero-title {
+  .home-hero-title-real {
     font-size: 3rem;
   }
 
-  .home-stats-grid {
+  .home-stats-grid-real {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
-  .home-player {
-    width: 350px;
+  .home-current-player-real {
+    max-width: 350px;
   }
 
-  .home-stats-grid {
+  .home-stats-grid-real {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
 
-  .home-artists-grid,
-  .home-events-grid,
-  .home-features-grid {
+  .home-songs-grid-real,
+  .home-artists-grid-real,
+  .home-features-grid-real {
     grid-template-columns: 1fr;
   }
 
-  .home-hero-buttons,
-  .home-cta-buttons {
+  .home-hero-buttons-real,
+  .home-cta-buttons-real {
     flex-direction: column;
     align-items: center;
   }
 
-  .home-btn {
+  .home-btn-real {
     width: 100%;
     max-width: 300px;
   }
 
-  .home-section-title {
+  .home-section-title-real {
     font-size: 2rem;
   }
 
-  .home-cta-title {
+  .home-cta-title-real {
     font-size: 2.5rem;
-  }
-
-  .home-hero-stats-mini {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .home-cta-features {
-    flex-direction: column;
-    gap: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .home-hero {
+  .home-hero-real {
     padding: 1rem;
   }
 
-  .home-hero-title {
+  .home-hero-title-real {
     font-size: 2.5rem;
   }
 
-  .home-player {
-    width: 300px;
+  .home-current-player-real {
+    max-width: 300px;
     padding: 1.5rem;
   }
 
-  .home-stats,
-  .home-artists,
-  .home-events,
-  .home-features,
-  .home-cta {
+  .home-recent-songs-real,
+  .home-top-artists-real,
+  .home-features-real,
+  .home-cta-real {
+    padding: 3rem 1rem;
+  }
+
+  .home-stats-real {
     padding: 3rem 1rem;
   }
 }

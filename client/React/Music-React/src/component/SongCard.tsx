@@ -23,7 +23,7 @@ interface SongCardProps {
   showActions?: boolean
 }
 
-const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showActions = true }: SongCardProps) => {
+const SongCard = ({ song, onCardClick }: SongCardProps) => {
   const [showOptions, setShowOptions] = useState(false)
   const [shareEmails, setShareEmails] = useState("")
   const [loadingStates, setLoadingStates] = useState({

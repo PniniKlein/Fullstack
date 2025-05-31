@@ -35,7 +35,7 @@ import {
   Copy,
   Download,
   Share2,
-  Clock,
+  // Clock,
   Volume2,
   Sparkles,
 } from "lucide-react"
@@ -142,11 +142,11 @@ const SongComments = () => {
     return date.toLocaleDateString("he-IL", { day: "numeric", month: "long", year: "numeric" })
   }
 
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = seconds % 60
-    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`
-  }
+  // const formatDuration = (seconds: number) => {
+  //   const minutes = Math.floor(seconds / 60)
+  //   const remainingSeconds = seconds % 60
+  //   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`
+  // }
 
   const handleLike = () => {
     setIsLiked(!isLiked)
@@ -300,11 +300,6 @@ const SongComments = () => {
                   <Volume2 size={16} />
                   <span>{song.plays || Math.floor(Math.random() * 1000)}</span>
                   <small>השמעות</small>
-                </div>
-                <div className="song-comments-stat-item">
-                  <Clock size={16} />
-                  <span>{formatDuration(song.duration || 180)}</span>
-                  <small>משך</small>
                 </div>
                 <div className="song-comments-stat-item">
                   <MessageCircle size={16} />

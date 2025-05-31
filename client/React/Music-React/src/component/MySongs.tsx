@@ -84,22 +84,21 @@
 
 "use client"
 import { useEffect, useState } from "react"
-import { Box, Container } from "@mui/material"
-import { useDispatch, useSelector } from "react-redux"
-import type { Dispatch, StoreType } from "../store/store"
+import { Box } from "@mui/material"
+import { useDispatch } from "react-redux"
+// import type { StoreType } from "../store/store"
 import { loadUser } from "../store/userSlice"
 import { getUserDataFromToken } from "./AppLayout"
-import PrivateSongs from "./PrivateSongs"
-import PublicSongs from "./PublicSongs"
 import SongAnalytics from "./SongAnalytics"
 import AddSong from "./AddSong"
 import { Globe, Lock, BarChart2, Plus, Minus } from "lucide-react"
 import "../css/MySongs.css"
 import SongsView from "./SongsView"
+import { Dispatch } from "../store/store"
 
 const MySongs = () => {
   const dispatch = useDispatch<Dispatch>()
-  const user = useSelector((state: StoreType) => state.user.user)
+  // const user = useSelector((state: StoreType) => state.user.user)
   const [activeView, setActiveView] = useState<"public" | "private" | "analytics" | "add">("public")
 
   useEffect(() => {

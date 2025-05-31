@@ -29,7 +29,7 @@ import "../css/Footer.css"
 const Footer = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState("")
-  const [showScrollTop, setShowScrollTop] = useState(false)
+  // const [showScrollTop, setShowScrollTop] = useState(false)
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })

@@ -40,10 +40,7 @@ import {
   Star,
   Zap,
   Crown,
-  Download,
-  Share2,
-  Mail,
-  X,
+  Download
 } from "lucide-react"
 import "../css/SongAnalytics.css"
 import SkeletonLoader from "./ui/Loader"
@@ -161,8 +158,8 @@ const SongAnalytics = () => {
   const [selectedChart, setSelectedChart] = useState<"overview" | "engagement" | "quality" | "trends">("overview")
   const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("month")
   const [exportLoading, setExportLoading] = useState(false)
-  const [showShareModal, setShowShareModal] = useState(false)
-  const [shareLoading, setShareLoading] = useState("")
+  // const [showShareModal, setShowShareModal] = useState(false)
+  // const [shareLoading, setShareLoading] = useState("")
 
   // Colors for charts
   const COLORS = ["#d59039", "#f7c26b", "#e3aa50", "#c67c28", "#b8661f", "#a55a1a", "#9d4f15", "#8a4412"]

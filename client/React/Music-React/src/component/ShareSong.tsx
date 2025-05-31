@@ -24,8 +24,8 @@ const ShareSong = ({ song, className }: { song: Song; className?: string }) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const dispatch = useDispatch<Dispatch>();
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const sendEmailShare = async (emailList:string[]) => {
     if (shareEmails) {
@@ -80,13 +80,13 @@ const ShareSong = ({ song, className }: { song: Song; className?: string }) => {
         .map((email) => email.trim())
         .filter((email) => email)
       await sendEmailShare(emailList)
-      setSnackbarMessage("השיר נשלח בהצלחה!")
-      setSnackbarOpen(true)
+      // setSnackbarMessage("השיר נשלח בהצלחה!")
+      // setSnackbarOpen(true)
       setOpenShare(false)
       setShareEmails("")
     } catch (error) {
-      setSnackbarMessage("שגיאה בשליחת השיר")
-      setSnackbarOpen(true)
+      // setSnackbarMessage("שגיאה בשליחת השיר")
+      // setSnackbarOpen(true)
     } finally {
       setIsLoading(false)
     }

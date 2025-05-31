@@ -19,7 +19,7 @@ const Comments = ({ comments, currentUser, setComments }: CommentsProps) => {
   const [editedContent, setEditedContent] = useState<string>("")
   const [expandedComments, setExpandedComments] = useState<number[]>([])
   const [showAllComments, setShowAllComments] = useState(false)
-  const [hoveredComment, setHoveredComment] = useState<number | null>(null)
+  // const [hoveredComment, setHoveredComment] = useState<number | null>(null)
   const [loadingStates, setLoadingStates] = useState<{ [key: number]: boolean }>({})
   const [hoveredStars, setHoveredStars] = useState<{ [key: number]: number | null }>({})
   const [editedRating, setEditedRating] = useState<number>(0)

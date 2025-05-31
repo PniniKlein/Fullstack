@@ -2,7 +2,7 @@
 
 import { Box, CircularProgress, Typography } from "@mui/material"
 import { motion } from "framer-motion"
-import { useTheme } from "./ThemeContext"
+// import { useTheme } from "./ThemeContext"
 // import { getTranslation } from "./translations"
 
 interface LoadingSpinnerProps {
@@ -13,7 +13,7 @@ interface LoadingSpinnerProps {
 }
 
 const LoadingSpinner = ({ size = 40, thickness = 4, text, fullScreen = false }: LoadingSpinnerProps) => {
-  const { language } = useTheme()
+  // const { language } = useTheme()
   // const t = (key: string) => getTranslation(key, language)
 
   // const defaultText = t("common.loading")

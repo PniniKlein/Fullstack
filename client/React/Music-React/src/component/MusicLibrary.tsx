@@ -9,7 +9,7 @@ import "../css/MusicLibrary.css"
 
 const MusicLibrary = () => {
   const location = useLocation()
-  const [animateTitle, setAnimateTitle] = useState(true)
+  const [animateTitle] = useState(true)
 
   return (
     <div className="music-library-container">

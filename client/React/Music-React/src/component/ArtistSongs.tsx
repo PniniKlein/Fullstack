@@ -40,8 +40,8 @@ const ArtistSongs = () => {
   const isFollow = user.followees?.some((f: number) => (id ? +id === f : false))
   const countF = artist?.followers?.length || 0
   const [countFollowers,setCountFollowers] = useState<number>(countF)
-  const countP = artist?.songs?.reduce((acc, song: Song) => acc + (song.plays || 0), 0) || 0
-  const [countPlays, setCountPlays] = useState(countP)
+  // const countP = artist?.songs?.reduce((acc, song: Song) => acc + (song.plays || 0), 0) || 0
+  // const [countPlays, setCountPlays] = useState(countP)
   const [isFollowing, setIsFollowing] = useState(isFollow)
   const [isLoading, setIsLoading] = useState(true)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
@@ -67,8 +67,8 @@ const ArtistSongs = () => {
   }, [id, authState])
 
   useEffect(() => {
-    const totalPlays = artist?.songs.reduce((acc, song: Song) => acc + (song.plays || 0), 0)
-    setCountPlays(totalPlays ? totalPlays : 0)
+    // const totalPlays = artist?.songs.reduce((acc, song: Song) => acc + (song.plays || 0), 0)
+    // setCountPlays(totalPlays ? totalPlays : 0)
   }, [])
 
   useEffect(() => {

@@ -38,11 +38,14 @@ const ArtistSongs = () => {
   const { user } = useSelector((state: StoreType) => state.user)
   const authState = useSelector((state: StoreType) => state.user.authState)
   const isFollow = user.followees?.some((f: number) => (id ? +id === f : false))
+  const countF = artist?.followers?.length || 0
+  const [countFollowers,setCountFollowers] = useState<number>(countF)
   const countP = artist?.songs?.reduce((acc, song: Song) => acc + (song.plays || 0), 0) || 0
   const [countPlays, setCountPlays] = useState(countP)
   const [isFollowing, setIsFollowing] = useState(isFollow)
   const [isLoading, setIsLoading] = useState(true)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const [isFollowLoading, setIsFollowLoading] = useState(false)
 
   useEffect(() => {
     const fetchArtist = async () => {
@@ -66,7 +69,7 @@ const ArtistSongs = () => {
   useEffect(() => {
     const totalPlays = artist?.songs.reduce((acc, song: Song) => acc + (song.plays || 0), 0)
     setCountPlays(totalPlays ? totalPlays : 0)
-  }, [user.songs])
+  }, [])
 
   useEffect(() => {
     if (authState && user.followees) {
@@ -135,17 +138,23 @@ const ArtistSongs = () => {
       return
     }
 
+    setIsFollowLoading(true)
+
     try {
       if (isFollowing) {
         await removeFollowee(artist.id)
         dispatch({ type: "user/removeFollowee", payload: artist })
+        setCountFollowers(countFollowers-1)
       } else {
-        await addFollowee(artist.id, user.id)
+        await addFollowee( user.id,artist.id)
         dispatch({ type: "user/addFollowee", payload: artist })
+        setCountFollowers(countFollowers+1)
       }
       setIsFollowing(!isFollowing)
     } catch (error) {
       console.error("שגיאה בעדכון מעקב:", error)
+    } finally {
+      setIsFollowLoading(false)
     }
   }
 
@@ -212,7 +221,6 @@ const ArtistSongs = () => {
                 )}
               </div>
               <div className="status-badges-beautiful">
-
                 <motion.div
                   className="status-badge artist-badge"
                   initial={{ scale: 0, rotate: 180 }}
@@ -247,7 +255,7 @@ const ArtistSongs = () => {
               >
                 <div className="stat-circle-inner">
                   <Users size={20} />
-                  <span className="stat-number">{user.followers?.length || 0}</span>
+                  <span className="stat-number">{artist.followers?.length || 0}</span>
                   <span className="stat-label">עוקבים</span>
                 </div>
                 <div className="stat-circle-border"></div>
@@ -273,7 +281,9 @@ const ArtistSongs = () => {
               >
                 <div className="stat-circle-inner">
                   <Headphones size={20} />
-                  <span className="stat-number">{artist?.songs.reduce((acc, song: Song) => acc + (song.plays || 0), 0)}</span>
+                  <span className="stat-number">
+                    {artist?.songs.reduce((acc, song: Song) => acc + (song.plays || 0), 0)}
+                  </span>
                   <span className="stat-label">השמעות</span>
                 </div>
                 <div className="stat-circle-border"></div>
@@ -297,11 +307,17 @@ const ArtistSongs = () => {
               <motion.button
                 className={`follow-button-beautiful ${isFollowing ? "following" : ""}`}
                 onClick={handleFollowToggle}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                disabled={isFollowLoading}
+                whileHover={{ scale: isFollowLoading ? 1 : 1.05 }}
+                whileTap={{ scale: isFollowLoading ? 1 : 0.95 }}
               >
                 <div className="button-glow-beautiful"></div>
-                {authState ? (
+                {isFollowLoading ? (
+                  <>
+                    <div className="loading-spinner-follow"></div>
+                    <span>מעדכן...</span>
+                  </>
+                ) : authState ? (
                   isFollowing ? (
                     <>
                       <UserMinus size={18} />
@@ -393,44 +409,47 @@ const ArtistSongs = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        {artist.songs && artist.songs.length > 0 ? ( <>
-          <motion.div
-            className="artist-songs-grid-beautiful"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <AnimatePresence>
-              {artist.songs.map((song: Song, index) => (
-                <motion.div
-                  key={song.id}
-                  className="artist-song-card-wrapper-beautiful"
-                  initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: -30, scale: 0.9 }}
-                  transition={{ duration: 0.4, delay: index * 0.05 }}
-                  onClick={(e) => handleCardClick(e, song.id)}
-                >
-                  <SongCard
-                    song={song}
-                    activeCardId={activeCardId}
-                    onCardClick={handleCardClick}
-                    setActiveCardId={setActiveCardId}
-                  />
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </motion.div>
+        {artist.songs && artist.songs.length > 0 ? (
+          <>
+            <motion.div
+              className="artist-songs-grid-beautiful"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <AnimatePresence>
+                {artist.songs.map((song: Song, index) => (
                   <motion.div
+                    key={song.id}
+                    className="artist-song-card-wrapper-beautiful"
+                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -30, scale: 0.9 }}
+                    transition={{ duration: 0.4, delay: index * 0.05 }}
+                    onClick={(e) => handleCardClick(e, song.id)}
+                  >
+                    <SongCard
+                      song={song}
+                      activeCardId={activeCardId}
+                      onCardClick={handleCardClick}
+                      setActiveCardId={setActiveCardId}
+                    />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+            <motion.div
               className="song-summary"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
             >
               <Award size={16} />
-              <span>סה"כ {artist?.songs.length} שירים ל{artist.userName}</span>
+              <span>
+                סה"כ {artist?.songs.length} שירים ל{artist.userName}
+              </span>
             </motion.div>
-           </>
+          </>
         ) : (
           <motion.div
             className="no-songs-beautiful"

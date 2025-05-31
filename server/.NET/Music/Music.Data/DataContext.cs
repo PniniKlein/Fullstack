@@ -22,11 +22,11 @@ namespace Music.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-            //optionsBuilder.LogTo(mesege => Console.Write(mesege));
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    base.OnConfiguring(optionsBuilder);
+        //    //optionsBuilder.LogTo(mesege => Console.Write(mesege));
+        //}
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // הגדרת המפתח הראשי של UserFollower

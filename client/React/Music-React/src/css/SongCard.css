@@ -716,7 +716,7 @@
   max-width: 450px;
   width: 90%;
   direction: rtl;
-  background: white;
+  background: #111;
 }
 
 .share-dialog::backdrop,

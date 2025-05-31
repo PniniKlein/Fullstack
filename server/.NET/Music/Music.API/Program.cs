@@ -51,9 +51,13 @@ builder.Configuration["SMTP:PASSWORD"] = Env.GetString("PASSWORD");
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
 string connectionString = Env.GetString("DATABASE_CONNECTION_STRING");
-builder.Services.AddDbContext<DataContext>(options =>
+//builder.Services.AddDbContext<DataContext>(options =>
+//    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
+//    options => options.CommandTimeout(60)));
+
+builder.Services.AddDbContextPool<DataContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
-    options => options.CommandTimeout(60)));
+    mysqlOptions => mysqlOptions.CommandTimeout(60)));
 
 builder.Services.AddOpenApi();
 

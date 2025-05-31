@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://singsong-api.onrender.com/api",
+    // baseURL: "https://singsong-api.onrender.com/api",
+    baseURL: "https://localhost:7093/api",
+    
 });
 
 api.interceptors.request.use((config) => {

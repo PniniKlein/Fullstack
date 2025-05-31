@@ -1,4 +1,4 @@
-import type React from "react"
+// import type React from "react"
 import "../../css/SkeletonLoader.css"
 import { motion } from "framer-motion"
 

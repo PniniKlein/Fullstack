@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { artistList } from "../services/UserService"
-import type { User } from "../model/User"
 import { Search, Users, Star, Music2, Verified, Award, TrendingUp } from "lucide-react"
 import "../css/ArtistsList.css"
 import { UserWithCountList } from "../model/userWithCountList"
@@ -44,10 +43,6 @@ const ArtistsList = () => {
 
     setFilteredArtists(filtered)
   }, [searchTerm, artists])
-
-  const clearSearch = () => {
-    setSearchTerm("")
-  }
 
   return (
     <div className="artists-list-modern">

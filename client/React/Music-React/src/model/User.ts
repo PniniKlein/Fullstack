@@ -7,4 +7,5 @@ export type User ={
     create_at:string,
     songs: [],
     followees:number[],
+    followers?:number[],
 } 

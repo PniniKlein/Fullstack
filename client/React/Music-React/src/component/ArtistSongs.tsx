@@ -24,10 +24,8 @@ import {
   ExternalLink,
   Users,
   Headphones,
-  Star,
   Heart,
   Award,
-  Sparkles,
 } from "lucide-react"
 import "../css/ArtistSongs.css"
 
@@ -249,7 +247,7 @@ const ArtistSongs = () => {
               >
                 <div className="stat-circle-inner">
                   <Users size={20} />
-                  <span className="stat-number">{user.followees?.length}</span>
+                  <span className="stat-number">{user.followers?.length || 0}</span>
                   <span className="stat-label">עוקבים</span>
                 </div>
                 <div className="stat-circle-border"></div>

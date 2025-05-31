@@ -47,8 +47,8 @@ namespace Music.Data.Repositories
         {
             return await _dataSet.Where(x => x.Id == id)
                 .Include(x => x.Songs.Where(s => s.IsPublic))
-                .Include(x => x.Followees)
-            .ThenInclude(f => f.Followee)
+                    .Include(x => x.Followers)
+            .ThenInclude(f => f.Follower)
             .FirstOrDefaultAsync();
         }
 

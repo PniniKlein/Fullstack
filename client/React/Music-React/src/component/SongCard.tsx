@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { IconButton } from "@mui/material"
 import { Play, MoreVertical, Headphones, Download, Music, Edit, Trash2, Globe, Eye, Mail, Calendar } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
@@ -13,6 +13,7 @@ import "../css/SongCard.css"
 import { deleteSong, handleDownload, updateSongToPublic } from "../services/SongsService"
 import { getUserDataFromToken } from "./AppLayout"
 import { loadUser, sendEmail } from "../store/userSlice"
+import SnackbarWarn from "./SnackbarWarn"
 
 interface SongCardProps {
   song: Song
@@ -24,16 +25,40 @@ interface SongCardProps {
 
 const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showActions = true }: SongCardProps) => {
   const [showOptions, setShowOptions] = useState(false)
-  const [showShareDialog, setShowShareDialog] = useState(false)
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [shareEmails, setShareEmails] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [loadingStates, setLoadingStates] = useState({
+    play: false,
+    download: false,
+    share: false,
+    edit: false,
+    delete: false,
+    makePublic: false,
+    view: false,
+  })
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [snackbarColor, setSnackbarColor] = useState("green")
+
+  const shareDialogRef = useRef<HTMLDialogElement>(null)
+  const deleteDialogRef = useRef<HTMLDialogElement>(null)
+
   const user = useSelector((state: StoreType) => state.user.user)
+  const dispatch = useDispatch<Dispatch>()
+  const navigate = useNavigate()
+  const songPlayer = useSelector((state: StoreType) => state.songPlayer?.song)
+
+  const setLoading = (action: string, isLoading: boolean) => {
+    setLoadingStates((prev) => ({ ...prev, [action]: isLoading }))
+  }
+
+  const showSnackbar = (message: string, isSuccess = true) => {
+    setSnackbarMessage(message)
+    setSnackbarColor(isSuccess ? "green" : "red")
+    setSnackbarOpen(true)
+  }
 
   const sendEmailShare = async (emails: string[], song: Song) => {
-    const subject = "שיר ששותף איתך ב-singsong";
+    const subject = "שיר ששותף איתך ב-singsong"
     const body = `
         <div style="direction: rtl; background-color: #f4f4f4; padding: 40px 0; font-family: Arial, sans-serif;">
           <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 35px;">
@@ -50,127 +75,135 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
             <p style="font-size: 15px; color: #888; text-align: center;">נשמע טוב? תמיד אפשר לשתף גם חברים :)</p>
           </div>
         </div>
-      `;
+      `
 
     try {
-      const result = await dispatch(sendEmail({ to: emails, subject, body }));
+      const result = await dispatch(sendEmail({ to: emails, subject, body }))
       if (result.meta.requestStatus === "fulfilled") {
-        console.log("המייל נשלח בהצלחה!");
+        return true
       } else {
-        console.log("שגיאה בשליחת המייל.");
+        return false
       }
     } catch {
-      console.log("שגיאה בשליחת המייל.");
+      return false
     } finally {
-      // setSnackbarOpen(true);
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken")
       if (token) {
-        const id = getUserDataFromToken(token);
+        const id = getUserDataFromToken(token)
         if (id) {
-          dispatch(loadUser(id));
+          dispatch(loadUser(id))
         }
       }
     }
   }
-
-  const dispatch = useDispatch<Dispatch>()
-  const navigate = useNavigate()
-  const songPlayer = useSelector((state: StoreType) => state.songPlayer?.song)
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleDateString("he-IL", { year: "numeric", month: "numeric", day: "numeric" })
   }
 
-  const handlePlay = (e: React.MouseEvent) => {
+  const handlePlay = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    dispatch(updateSong(song))
+    // setLoading("play", true)
+    try {
+      dispatch(updateSong(song))
+    } catch (error) {
+      showSnackbar("שגיאה בהפעלת השיר", false)
+    } finally {
+      setTimeout(() => setLoading("play", false), 500)
+    }
   }
 
   const handleDownload2 = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    setIsLoading(true)
+    setLoading("download", true)
     try {
       await handleDownload(song)
-      setSnackbarMessage("השיר הורד בהצלחה!")
-      setSnackbarOpen(true)
+      showSnackbar("השיר הורד בהצלחה!")
     } catch (error) {
-      setSnackbarMessage("שגיאה בהורדת השיר")
-      setSnackbarOpen(true)
+      showSnackbar("שגיאה בהורדת השיר", false)
     } finally {
-      setIsLoading(false)
+      setLoading("download", false)
+      setShowOptions(false)
     }
   }
 
   const handleShare = (e: React.MouseEvent) => {
     e.stopPropagation()
     setShowOptions(false)
-    setShowShareDialog(true)
+    shareDialogRef.current?.showModal()
   }
 
   const handleSendShare = async () => {
     if (!shareEmails.trim()) return
 
-    setIsLoading(true)
+    setLoading("share", true)
     try {
       const emailList = shareEmails
         .split(",")
         .map((email) => email.trim())
         .filter((email) => email)
-      await sendEmailShare(emailList, song)
-      setSnackbarMessage("השיר נשלח בהצלחה!")
-      setSnackbarOpen(true)
-      setShowShareDialog(false)
-      setShareEmails("")
+
+      const success = await sendEmailShare(emailList, song)
+      if (success) {
+        showSnackbar("השיר נשלח בהצלחה!")
+        shareDialogRef.current?.close()
+        setShareEmails("")
+      } else {
+        showSnackbar("שגיאה בשליחת השיר", false)
+      }
     } catch (error) {
-      setSnackbarMessage("שגיאה בשליחת השיר")
-      setSnackbarOpen(true)
+      showSnackbar("שגיאה בשליחת השיר", false)
     } finally {
-      setIsLoading(false)
+      setLoading("share", false)
     }
   }
 
-  const handleEdit = (e: React.MouseEvent) => {
+  const handleEdit = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    navigate("/updateSong", { state: { song } })
+    setLoading("edit", true)
+    try {
+      navigate("/updateSong", { state: { song } })
+    } catch (error) {
+      showSnackbar("שגיאה בפתיחת עריכת השיר", false)
+    } finally {
+      setTimeout(() => setLoading("edit", false), 500)
+    }
   }
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation()
     setShowOptions(false)
-    setShowDeleteDialog(true)
+    deleteDialogRef.current?.showModal()
   }
 
   const confirmDelete = async () => {
-    setIsLoading(true)
+    setLoading("delete", true)
     try {
       if (await deleteSong(song.id)) {
-        if (song.id == songPlayer.id)
-          dispatch(resetSong())
-        setSnackbarMessage("השיר נמחק בהצלחה!");
-        const token = localStorage.getItem("authToken");
+        if (song.id == songPlayer.id) dispatch(resetSong())
+        showSnackbar("השיר נמחק בהצלחה!")
+        const token = localStorage.getItem("authToken")
         if (token) {
-          const id = getUserDataFromToken(token);
+          const id = getUserDataFromToken(token)
           if (id) {
-            dispatch(loadUser(id));
+            dispatch(loadUser(id))
           }
         }
-        setSnackbarOpen(true);
+        deleteDialogRef.current?.close()
       } else {
-        setSnackbarMessage("שגיאה במחיקת השיר");
-        setSnackbarOpen(true);
+        showSnackbar("שגיאה במחיקת השיר", false)
       }
     } catch (error) {
-      setSnackbarMessage("שגיאה במחיקת השיר")
-      setSnackbarOpen(true)
+      showSnackbar("שגיאה במחיקת השיר", false)
     } finally {
-      setIsLoading(false)
+      setLoading("delete", false)
     }
   }
 
   const handleMakePublic = async (e: React.MouseEvent) => {
     e.stopPropagation()
-    setIsLoading(true)
+    setLoading("makePublic", true)
     try {
       await updateSongToPublic(song.id)
       if (songPlayer?.id === song.id) {
@@ -182,18 +215,29 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
       if (token) {
         const id = getUserDataFromToken(token)
         if (id) {
-          dispatch(loadUser(id));
+          dispatch(loadUser(id))
         }
       }
 
-      setSnackbarMessage("השיר הפך לציבורי!")
-      setSnackbarOpen(true)
+      showSnackbar("השיר הפך לציבורי!")
       setShowOptions(false)
     } catch (error) {
-      setSnackbarMessage("שגיאה בהפיכת השיר לציבורי")
-      setSnackbarOpen(true)
+      showSnackbar("שגיאה בהפיכת השיר לציבורי", false)
     } finally {
-      setIsLoading(false)
+      setLoading("makePublic", false)
+      setShowOptions(false)
+    }
+  }
+
+  const handleView = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setLoading("view", true)
+    try {
+      navigate(`/songComments/${song.id}`)
+    } catch (error) {
+      showSnackbar("שגיאה בפתיחת פרטי השיר", false)
+    } finally {
+      setTimeout(() => setLoading("view", false), 500)
     }
   }
 
@@ -207,25 +251,30 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
 
   const handleOptionClick = (action: string, e: React.MouseEvent) => {
     e.stopPropagation()
-    setShowOptions(false)
 
     switch (action) {
       case "view":
-        navigate(`/songComments/${song.id}`)
+        setShowOptions(false)
+        handleView(e)
         break
       case "edit":
+        setShowOptions(false)
         handleEdit(e)
         break
       case "delete":
+        setShowOptions(false)
         handleDelete(e)
         break
       case "play":
+        setShowOptions(false)
         handlePlay(e)
         break
       case "download":
         handleDownload2(e)
+
         break
       case "share":
+        setShowOptions(false)
         handleShare(e)
         break
       case "makePublic":
@@ -251,8 +300,8 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
           <div className="card-overlay"></div>
 
           {/* Play Button */}
-          <IconButton className="play-button-modern" onClick={handlePlay}>
-            <Play size={24} />
+          <IconButton className="play-button-modern" onClick={handlePlay} disabled={loadingStates.play}>
+            {loadingStates.play ? <div className="loading-spinner-small"></div> : <Play size={24} />}
           </IconButton>
 
           {/* Stats Badge */}
@@ -283,41 +332,48 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
                 <div className="options-list">
                   {user.id !== song.userId && song.isPublic && (
                     <div className="option-item-modern primary-option" onClick={(e) => handleOptionClick("view", e)}>
-                      <Eye size={16} />
+                      {loadingStates.view ? <div className="loading-spinner-tiny"></div> : <Eye size={16} />}
                       <span>צפה בפרטים</span>
                       <div className="option-glow"></div>
-                    </div>)}
+                    </div>
+                  )}
                   {user.id !== song.userId && (
                     <div className="option-item-modern" onClick={(e) => handleOptionClick("play", e)}>
-                      <Play size={16} />
+                      {loadingStates.play ? <div className="loading-spinner-tiny"></div> : <Play size={16} />}
                       <span>נגן עכשיו</span>
-                    </div>)}
+                    </div>
+                  )}
 
                   <div className="option-item-modern" onClick={(e) => handleOptionClick("download", e)}>
-                    <Download size={16} />
+                    {loadingStates.download ? <div className="loading-spinner-tiny"></div> : <Download size={16} />}
                     <span>הורד שיר</span>
                   </div>
                   {song.isPublic && (
-                    < div className="option-item-modern" onClick={(e) => handleOptionClick("share", e)}>
-                      <Mail size={16} />
+                    <div className="option-item-modern" onClick={(e) => handleOptionClick("share", e)}>
+                      {loadingStates.share ? <div className="loading-spinner-tiny"></div> : <Mail size={16} />}
                       <span>שתף במייל</span>
-                    </div>)}
+                    </div>
+                  )}
 
                   {user.id == song.userId && (
                     <>
                       <div className="option-item-modern" onClick={(e) => handleOptionClick("edit", e)}>
-                        <Edit size={16} />
+                        {loadingStates.edit ? <div className="loading-spinner-tiny"></div> : <Edit size={16} />}
                         <span>ערוך שיר</span>
                       </div>
 
                       <div className="option-item-modern" onClick={(e) => handleOptionClick("delete", e)}>
-                        <Trash2 size={16} />
+                        {loadingStates.delete ? <div className="loading-spinner-tiny"></div> : <Trash2 size={16} />}
                         <span>מחק שיר</span>
                       </div>
 
                       {!song.isPublic && (
                         <div className="option-item-modern" onClick={(e) => handleOptionClick("makePublic", e)}>
-                          <Globe size={16} />
+                          {loadingStates.makePublic ? (
+                            <div className="loading-spinner-tiny"></div>
+                          ) : (
+                            <Globe size={16} />
+                          )}
                           <span>הפוך לציבורי</span>
                         </div>
                       )}
@@ -349,13 +405,13 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
           <div className="divider-line"></div>
         </div>
 
-        <div className="song-card-action-buttons-elegant">
-          <button className="song-card-action-button-elegant" onClick={(e) => handleOptionClick("view", e)}>
-            <Eye size={14} />
+        <div className="action-buttons-elegant">
+          <button className="action-button-elegant" onClick={handleView} disabled={loadingStates.view}>
+            {loadingStates.view ? <div className="loading-spinner-tiny"></div> : <Eye size={14} />}
             <span>פרטים</span>
           </button>
-          <button className="song-card-action-button-elegant" onClick={handleDownload2}>
-            <Download size={14} />
+          <button className="action-button-elegant" onClick={handleDownload2} disabled={loadingStates.download}>
+            {loadingStates.download ? <div className="loading-spinner-tiny"></div> : <Download size={14} />}
             <span>הורדה</span>
           </button>
         </div>
@@ -366,7 +422,96 @@ const SongCard = ({ song, activeCardId, onCardClick, setActiveCardId, showAction
         <div className="note note-1">♪</div>
         <div className="note note-2">♫</div>
       </div>
-    </div >
+
+      {/* Share Dialog */}
+      <dialog ref={shareDialogRef} className="share-dialog">
+        <div className="share-dialog-header">
+          <Mail size={20} />
+          <h3>שיתוף השיר במייל</h3>
+          <button className="close-button" onClick={() => shareDialogRef.current?.close()}>
+            ×
+          </button>
+        </div>
+        <div className="share-dialog-content">
+          <div className="song-share-info">
+            <div className="song-share-image" style={{ backgroundImage: `url(${song.pathPicture})` }}></div>
+            <div className="song-share-details">
+              <h4>{song.title}</h4>
+              <p>{song.gener || "כללי"}</p>
+            </div>
+          </div>
+          <div className="share-input-container">
+            <label htmlFor="share-emails">כתובות אימייל (הפרד בפסיקים)</label>
+            <input
+              id="share-emails"
+              type="text"
+              value={shareEmails}
+              onChange={(e) => setShareEmails(e.target.value)}
+              placeholder="example@mail.com, another@mail.com"
+              dir="ltr"
+            />
+          </div>
+          <button
+            className="share-submit-button"
+            onClick={handleSendShare}
+            disabled={loadingStates.share || !shareEmails.trim()}
+          >
+            {loadingStates.share ? (
+              <div className="loading-spinner"></div>
+            ) : (
+              <>
+                <Mail size={16} />
+                <span>שלח</span>
+              </>
+            )}
+          </button>
+        </div>
+      </dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <dialog ref={deleteDialogRef} className="delete-dialog">
+        <div className="delete-dialog-header">
+          <Trash2 size={20} color="#d32f2f" />
+          <h3>מחיקת שיר</h3>
+          <button className="close-button" onClick={() => deleteDialogRef.current?.close()}>
+            ×
+          </button>
+        </div>
+        <div className="delete-dialog-content">
+          <div className="song-delete-info">
+            <div className="song-delete-image" style={{ backgroundImage: `url(${song.pathPicture})` }}></div>
+            <div className="song-delete-details">
+              <h4>{song.title}</h4>
+              <p>{song.gener || "כללי"}</p>
+            </div>
+          </div>
+          <p className="delete-warning">האם אתה בטוח שברצונך למחוק את השיר? פעולה זו אינה ניתנת לביטול.</p>
+          <div className="delete-actions">
+            <button className="cancel-button" onClick={() => deleteDialogRef.current?.close()}>
+              ביטול
+            </button>
+            <button className="confirm-delete-button" onClick={confirmDelete} disabled={loadingStates.delete}>
+              {loadingStates.delete ? (
+                <div className="loading-spinner"></div>
+              ) : (
+                <>
+                  <Trash2 size={16} />
+                  <span>מחק</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </dialog>
+
+      {/* Snackbar */}
+      <SnackbarWarn
+        snackbarMessage={snackbarMessage}
+        snackbarOpen={snackbarOpen}
+        setSnackbarOpen={setSnackbarOpen}
+        col={snackbarColor}
+      />
+    </div>
   )
 }
 

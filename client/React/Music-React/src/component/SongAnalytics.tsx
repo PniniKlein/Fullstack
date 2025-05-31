@@ -879,7 +879,9 @@ const SongAnalytics = () => {
 
   if (loading) {
     return (
-      <SkeletonLoader text="טוען מתוני ניתוח..."/>
+      <div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"500px"}}>
+      <SkeletonLoader text="טוען נתוני ניתוח..."/>
+      </div>
     )
   }
 

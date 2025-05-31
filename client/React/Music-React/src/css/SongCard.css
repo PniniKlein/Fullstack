@@ -683,6 +683,308 @@
   }
 }
 
+/* Share Dialog Styles */
+.share-dialog-overlay,
+.delete-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.share-dialog-overlay.active,
+.delete-dialog-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.share-dialog,
+.delete-dialog {
+  border: none;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  max-width: 450px;
+  width: 90%;
+  direction: rtl;
+  background: white;
+}
+
+.share-dialog::backdrop,
+.delete-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+}
+
+.share-dialog[open],
+.delete-dialog[open] {
+  animation: dialog-appear 0.3s ease;
+}
+
+@keyframes dialog-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.share-dialog-header,
+.delete-dialog-header {
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(90deg, #d59039, #f7c26b);
+  color: white;
+  position: relative;
+  border-radius: 12px 12px 0 0;
+}
+
+.share-dialog-header h3,
+.delete-dialog-header h3 {
+  margin: 0 10px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.close-button {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.share-dialog-content,
+.delete-dialog-content {
+  padding: 20px;
+}
+
+.song-share-info,
+.song-delete-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.song-share-image,
+.song-delete-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  margin-left: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.song-share-details h4,
+.song-delete-details h4 {
+  margin: 0 0 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.song-share-details p,
+.song-delete-details p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.share-input-container {
+  margin-bottom: 20px;
+}
+
+.share-input-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.share-input-container input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.share-input-container input:focus {
+  border-color: #d59039;
+  outline: none;
+}
+
+.share-submit-button,
+.confirm-delete-button,
+.cancel-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  width: 100%;
+  gap: 8px;
+}
+
+.share-submit-button {
+  background: linear-gradient(90deg, #d59039, #f7c26b);
+  color: white;
+}
+
+.share-submit-button:hover:not(:disabled) {
+  background: linear-gradient(90deg, #c48232, #e5b362);
+}
+
+.share-submit-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.delete-warning {
+  color: #d32f2f;
+  font-size: 14px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.delete-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.cancel-button {
+  background-color: #f5f5f5;
+  color: #333;
+  flex: 1;
+}
+
+.cancel-button:hover {
+  background-color: #e5e5e5;
+}
+
+.confirm-delete-button {
+  background-color: #d32f2f;
+  color: white;
+  flex: 1;
+}
+
+.confirm-delete-button:hover:not(:disabled) {
+  background-color: #b71c1c;
+}
+
+.confirm-delete-button:disabled {
+  background-color: #e57373;
+  cursor: not-allowed;
+}
+
+/* Loading Spinners */
+.loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+
+.loading-spinner-tiny {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(213, 144, 57, 0.3);
+  border-radius: 50%;
+  border-top-color: #d59039;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Disabled states */
+.option-item-modern:has(.loading-spinner-tiny) {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.action-button-elegant:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.play-button-modern:disabled {
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .share-dialog,
+  .delete-dialog {
+    width: 95%;
+    max-width: none;
+  }
+
+  .share-dialog-header h3,
+  .delete-dialog-header h3 {
+    font-size: 16px;
+  }
+
+  .song-share-image,
+  .song-delete-image {
+    width: 50px;
+    height: 50px;
+  }
+}
 
 
 

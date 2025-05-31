@@ -40,9 +40,9 @@ const AddSong = () => {
   const [customCoverImage, setCustomCoverImage] = useState<File | null>(null)
   const [coverPreview, setCoverPreview] = useState<string>("")
   const [error, setError] = useState<string>("")
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-    const [snackbarMessage, setSnackbarMessage] = useState("")
-    const [col,setCol] = useState("green") 
+  // const [snackbarOpen, setSnackbarOpen] = useState(false)
+  //   const [snackbarMessage, setSnackbarMessage] = useState("")
+  //   const [col,setCol] = useState("green") 
 
   const dispatch = useDispatch()
   const userId = useSelector((state: StoreType) => state.user.user.id)

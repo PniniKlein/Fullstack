@@ -1,0 +1,216 @@
+.share-comp-dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  visibility: visible;
+}
+
+.share-dialog{
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+   overflow: hidden;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  direction: rtl;
+}
+
+.share-comp-dialog-overlay .share-dialog {
+  transform: translateY(0);
+}
+
+.share-dialog-header{
+  display: flex;
+  align-items: center;
+  padding: 16px 20px;
+  background: linear-gradient(90deg, #d59039, #f7c26b);
+  color: white;
+  position: relative;
+}
+
+.share-dialog-header h3 {
+  margin: 0 10px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.share-close-button {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.share-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.share-dialog-content {
+  padding: 20px;
+}
+
+.share-song-share-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.share-song-share-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  margin-left: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.share-song-share-details h4 {
+  margin: 0 0 5px;
+  font-size: 16px;
+  color: #333;
+}
+
+.share-song-share-details p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.share-input-container {
+  margin-bottom: 20px;
+}
+
+.share-input-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.share-input-container input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.share-input-container input:focus {
+  border-color: #d59039;
+  outline: none;
+}
+
+.share-submit-button,
+.confirm-delete-button,
+.share-cancel-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  width: 100%;
+}
+
+.share-submit-button {
+  background: linear-gradient(90deg, #d59039, #f7c26b);
+  color: white;
+}
+
+.share-submit-button:hover {
+  background: linear-gradient(90deg, #c48232, #e5b362);
+}
+
+.share-submit-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.share-cancel-button {
+  background-color: #f5f5f5;
+  color: #333;
+  flex: 1;
+}
+
+.share-cancel-button:hover {
+  background-color: #e5e5e5;
+}
+
+.confirm-delete-button {
+  background-color: #d32f2f;
+  color: white;
+  flex: 1;
+}
+
+.confirm-delete-button:hover {
+  background-color: #b71c1c;
+}
+
+.confirm-delete-button:disabled {
+  background-color: #e57373;
+  cursor: not-allowed;
+}
+
+.share-loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .share-dialog {
+    width: 95%;
+  }
+
+  .share-dialog-header h3 {
+    font-size: 16px;
+  }
+
+  .song-share-image{
+    width: 50px;
+    height: 50px;
+  }
+}

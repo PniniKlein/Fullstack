@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Search, X, Music, ChevronDown, Filter } from "lucide-react"
+// import { useState } from "react"
+import { motion } from "framer-motion"
+import { Search, X } from "lucide-react"
 import "../css/SongsSearchFilter.css"
 
 interface SongsSearchFilterProps {
@@ -17,21 +17,21 @@ interface SongsSearchFilterProps {
 const SongsSearchFilter = ({
   searchTerm,
   setSearchTerm,
-  selectedGenre,
-  setSelectedGenre,
-  availableGenres,
+  // selectedGenre,
+  // setSelectedGenre,
+  // availableGenres,
   componentName,
 }: SongsSearchFilterProps) => {
-  const [showGenreDropdown, setShowGenreDropdown] = useState(false)
+  // const [showGenreDropdown, setShowGenreDropdown] = useState(false)
 
-  const handleGenreSelect = (genre: string) => {
-    if (selectedGenre === genre) {
-      setSelectedGenre(null)
-    } else {
-      setSelectedGenre(genre)
-    }
-    setShowGenreDropdown(false)
-  }
+  // const handleGenreSelect = (genre: string) => {
+  //   if (selectedGenre === genre) {
+  //     setSelectedGenre(null)
+  //   } else {
+  //     setSelectedGenre(genre)
+  //   }
+  //   setShowGenreDropdown(false)
+  // }
 
   return (
     <div className={`songs-search-filter-container ${componentName}-search-filter`}>

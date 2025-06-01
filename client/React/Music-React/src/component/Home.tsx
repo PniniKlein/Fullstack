@@ -2,553 +2,849 @@
 
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
-// import { Card, CardContent } from "@/components/ui/card"
-// import { Button } from "@/components/ui/button"
-// import { Badge } from "@/components/ui/badge"
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useNavigate } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import type { StoreType, Dispatch } from "../store/store"
 import {
   Play,
-  Pause,
-  Heart,
-  Share2,
   Music,
   Users,
   Headphones,
+  ArrowRight,
+  Sparkles,
+  TrendingUp,
+  Award,
+  Upload,
+  Eye,
+  Verified,
+  Star,
+  Clock,
+  FlameIcon as Fire,
   Zap,
   Crown,
-  FlameIcon as Fire,
-  Orbit,
-  Atom,
-  Rocket,
+  Share2,
+  Volume2,
+  Pause,
+  SkipForward,
+  Shuffle,
+  Repeat,
+  ChevronRight,
+  ChevronLeft,
+  AudioWaveformIcon as Waveform,
+  Mic2,
   Globe,
-  Eye,
-  Lightbulb,
-  Badge,
+  MessageCircle,
 } from "lucide-react"
-import "./css/Home.css"
-import { Button, Card, CardContent } from "@mui/material"
-
-interface Song {
-  id: string
-  title: string
-  artist: string
-  duration: string
-  plays: number
-  likes: number
-  coverUrl: string
-  isPlaying?: boolean
-  genre: string
-  releaseDate: string
-  waveform: number[]
-}
-
-interface Artist {
-  id: string
-  name: string
-  followers: number
-  avatar: string
-  isVerified: boolean
-  genre: string
-  level: number
-}
+import { getAllPublic } from "../services/SongsService"
+import { artistList } from "../services/UserService"
+import type { Song } from "../model/Song"
+import type { UserWithCountList } from "../model/userWithCountList"
+import SongCard from "./SongCard"
+import { loadSong } from "../store/songSlice"
+import "../css/Home.css"
 
 const Home: React.FC = () => {
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null)
-  const [likedSongs, setLikedSongs] = useState<Set<string>>(new Set())
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isLoaded, setIsLoaded] = useState(false)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const audioVisualizerRef = useRef<HTMLCanvasElement>(null)
+  const navigate = useNavigate()
+  const dispatch = useDispatch<Dispatch>()
+  const user = useSelector((state: StoreType) => state.user.user)
+  const currentSong = useSelector((state: StoreType) => state.songPlayer.song)
 
-  const [songs] = useState<Song[]>([
-    {
-      id: "1",
-      title: "Cosmic Odyssey",
-      artist: "Stellar Waves",
-      duration: "4:23",
-      plays: 8472639,
-      likes: 234567,
-      coverUrl: "/placeholder.svg?height=400&width=400",
-      genre: "Synthwave",
-      releaseDate: "2024-03-15",
-      waveform: [0.2, 0.8, 0.6, 0.9, 0.4, 0.7, 0.3, 0.8, 0.5, 0.9, 0.2, 0.6],
-    },
-    {
-      id: "2",
-      title: "Neon Dreams",
-      artist: "CyberPunk",
-      duration: "3:47",
-      plays: 6293847,
-      likes: 189234,
-      coverUrl: "/placeholder.svg?height=400&width=400",
-      genre: "Electronic",
-      releaseDate: "2024-03-10",
-      waveform: [0.4, 0.6, 0.8, 0.5, 0.9, 0.3, 0.7, 0.4, 0.8, 0.6, 0.5, 0.9],
-    },
-    {
-      id: "3",
-      title: "Digital Horizon",
-      artist: "Future Bass",
-      duration: "5:12",
-      plays: 9847293,
-      likes: 345678,
-      coverUrl: "/placeholder.svg?height=400&width=400",
-      genre: "Future Bass",
-      releaseDate: "2024-03-08",
-      waveform: [0.7, 0.4, 0.9, 0.2, 0.8, 0.5, 0.6, 0.9, 0.3, 0.7, 0.4, 0.8],
-    },
-  ])
+  const [recentSongs, setRecentSongs] = useState<Song[]>([])
+  const [topArtists, setTopArtists] = useState<UserWithCountList[]>([])
+  const [popularSongs, setPopularSongs] = useState<Song[]>([])
+  const [loading, setLoading] = useState(true)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [stats, setStats] = useState({
+    totalSongs: 0,
+    totalArtists: 0,
+    totalPlays: 0,
+    activeUsers: 0,
+  })
 
-  const [artists] = useState<Artist[]>([
-    {
-      id: "1",
-      name: "Stellar Waves",
-      followers: 2847293,
-      avatar: "/placeholder.svg?height=150&width=150",
-      isVerified: true,
-      genre: "Synthwave",
-      level: 95,
-    },
-    {
-      id: "2",
-      name: "CyberPunk",
-      followers: 1923847,
-      avatar: "/placeholder.svg?height=150&width=150",
-      isVerified: true,
-      genre: "Electronic",
-      level: 88,
-    },
-    {
-      id: "3",
-      name: "Future Bass",
-      followers: 3492847,
-      avatar: "/placeholder.svg?height=150&width=150",
-      isVerified: true,
-      genre: "Future Bass",
-      level: 92,
-    },
-  ])
-
-  const stats = {
-    totalSongs: 847293,
-    totalArtists: 23847,
-    totalPlays: 847293847,
-    totalUsers: 2847293,
-  }
+  // רפרנסים לאנימציות
+  const heroRef = useRef<HTMLDivElement>(null)
+  const statsRef = useRef<HTMLDivElement>(null)
+  const songsRef = useRef<HTMLDivElement>(null)
+  const artistsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 500)
-    return () => clearTimeout(timer)
-  }, [])
+    loadRealData()
+    initScrollAnimations()
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
-    }
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-
-    const particles: Array<{
-      x: number
-      y: number
-      vx: number
-      vy: number
-      size: number
-      color: string
-      opacity: number
-    }> = []
-
-    for (let i = 0; i < 100; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: (Math.random() - 0.5) * 0.5,
-        size: Math.random() * 3 + 1,
-        color: ["#00ffff", "#ff00ff", "#ffff00", "#ff0080"][Math.floor(Math.random() * 4)],
-        opacity: Math.random() * 0.8 + 0.2,
+    // אנימציית רקע
+    const interval = setInterval(() => {
+      const orbs = document.querySelectorAll(".home-orb-premium")
+      orbs.forEach((orb) => {
+        const randomX = Math.random() * 10 - 5
+        const randomY = Math.random() * 10 - 5
+        orb.animate(
+          [
+            { transform: `translate(${randomX}px, ${randomY}px)` },
+            { transform: `translate(${-randomX}px, ${-randomY}px)` },
+          ],
+          {
+            duration: 10000,
+            easing: "ease-in-out",
+            fill: "forwards",
+          },
+        )
       })
-    }
+    }, 10000)
 
-    const animate = () => {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)"
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      particles.forEach((particle) => {
-        particle.x += particle.vx
-        particle.y += particle.vy
-
-        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
-        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
-
-        ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-        ctx.fillStyle = particle.color
-        ctx.globalAlpha = particle.opacity
-        ctx.fill()
-        ctx.shadowBlur = 20
-        ctx.shadowColor = particle.color
-      })
-
-      requestAnimationFrame(animate)
-    }
-
-    animate()
+    return () => clearInterval(interval)
   }, [])
 
-  const togglePlay = (songId: string) => {
-    setCurrentlyPlaying(currentlyPlaying === songId ? null : songId)
-  }
-
-  const toggleLike = (songId: string) => {
-    setLikedSongs((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(songId)) {
-        newSet.delete(songId)
-      } else {
-        newSet.add(songId)
+  useEffect(() => {
+    // החלפת שקופיות אוטומטית
+    const slideInterval = setInterval(() => {
+      if (recentSongs.length > 0) {
+        setCurrentSlide((prev) => (prev + 1) % recentSongs.length)
       }
-      return newSet
+    }, 5000)
+
+    return () => clearInterval(slideInterval)
+  }, [recentSongs])
+
+  const initScrollAnimations = () => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-in")
+          }
+        })
+      },
+      { threshold: 0.1 },
+    )
+
+    const sections = document.querySelectorAll(".animate-on-scroll")
+    sections.forEach((section) => {
+      observer.observe(section)
+    })
+  }
+
+  const loadRealData = async () => {
+    setLoading(true)
+    try {
+      // טעינת שירים אמיתיים
+      const songsData = await getAllPublic()
+
+      // שירים חדשים - לפי תאריך
+      const sortedByDate = [...songsData].sort(
+        (a: Song, b: Song) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime(),
+      )
+      setRecentSongs(sortedByDate.slice(0, 8))
+
+      // שירים פופולריים - לפי השמעות
+      const sortedByPlays = [...songsData].sort((a: Song, b: Song) => (b.plays || 0) - (a.plays || 0))
+      setPopularSongs(sortedByPlays.slice(0, 6))
+
+      // טעינת אמנים אמיתיים
+      const artistsData = await artistList()
+      const sortedArtists = [...artistsData].sort(
+        (a: UserWithCountList, b: UserWithCountList) => (b.countSongs || 0) - (a.countSongs || 0),
+      )
+      setTopArtists(sortedArtists.slice(0, 8))
+
+      // חישוב סטטיסטיקות אמיתיות
+      const totalPlays = songsData.reduce((sum: number, song: Song) => sum + (song.plays || 0), 0)
+
+      // אנימציית ספירה לסטטיסטיקות
+      animateStats({
+        totalSongs: songsData.length,
+        totalArtists: artistsData.length,
+        totalPlays: totalPlays,
+        activeUsers: artistsData.filter((artist: UserWithCountList) => artist.countSongs > 0).length,
+      })
+    } catch (error) {
+      console.error("שגיאה בטעינת נתונים:", error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const animateStats = (finalStats: typeof stats) => {
+    const duration = 2000
+    const steps = 60
+    const stepDuration = duration / steps
+    let currentStep = 0
+
+    const interval = setInterval(() => {
+      currentStep++
+      const progress = currentStep / steps
+
+      setStats({
+        totalSongs: Math.floor(finalStats.totalSongs * progress),
+        totalArtists: Math.floor(finalStats.totalArtists * progress),
+        totalPlays: Math.floor(finalStats.totalPlays * progress),
+        activeUsers: Math.floor(finalStats.activeUsers * progress),
+      })
+
+      if (currentStep >= steps) {
+        clearInterval(interval)
+        setStats(finalStats)
+      }
+    }, stepDuration)
+  }
+
+  const handlePlaySong = (song: Song) => {
+    dispatch(loadSong(song))
+  }
+
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying)
+  }
+
+  const nextSlide = () => {
+    if (recentSongs.length > 0) {
+      setCurrentSlide((prev) => (prev + 1) % recentSongs.length)
+    }
+  }
+
+  const prevSlide = () => {
+    if (recentSongs.length > 0) {
+      setCurrentSlide((prev) => (prev - 1 + recentSongs.length) % recentSongs.length)
+    }
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString("he-IL", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     })
   }
 
   const formatNumber = (num: number) => {
-    if (num >= 1000000000) return (num / 1000000000).toFixed(1) + "B"
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + "M"
-    if (num >= 1000) return (num / 1000).toFixed(1) + "K"
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + "M"
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + "K"
+    }
     return num.toString()
   }
 
-  return (
-    <div className={`futuristic-home ${isLoaded ? "loaded" : ""}`}>
-      {/* Particle Canvas */}
-      <canvas ref={canvasRef} className="particle-canvas" />
-
-      {/* Cursor Follower */}
-      <div
-        className="cursor-follower"
-        style={{
-          left: mousePosition.x - 10,
-          top: mousePosition.y - 10,
-        }}
-      />
-
-      {/* Loading Screen */}
-      {!isLoaded && (
-        <div className="quantum-loader">
-          <div className="quantum-ring">
-            <div className="quantum-particle"></div>
-            <div className="quantum-particle"></div>
-            <div className="quantum-particle"></div>
+  if (loading) {
+    return (
+      <div className="home-loading-premium">
+        <div className="loading-logo-premium">
+          <Music size={60} className="loading-icon-premium" />
+          <div className="loading-waves-premium">
+            <div className="loading-wave-premium"></div>
+            <div className="loading-wave-premium"></div>
+            <div className="loading-wave-premium"></div>
+            <div className="loading-wave-premium"></div>
+            <div className="loading-wave-premium"></div>
           </div>
-          <div className="loading-text">
-            <span>I</span>
-            <span>N</span>
-            <span>I</span>
-            <span>T</span>
-            <span>I</span>
-            <span>A</span>
-            <span>L</span>
-            <span>I</span>
-            <span>Z</span>
-            <span>I</span>
-            <span>N</span>
-            <span>G</span>
+        </div>
+        <p className="loading-text-premium">טוען את עולם המוזיקה שלך...</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="home-container-premium">
+      {/* רקע מתקדם */}
+      <div className="home-background-premium">
+        <div className="home-orb-premium home-orb-1"></div>
+        <div className="home-orb-premium home-orb-2"></div>
+        <div className="home-orb-premium home-orb-3"></div>
+        <div className="home-orb-premium home-orb-4"></div>
+        <div className="home-orb-premium home-orb-5"></div>
+
+        <div className="home-grid-lines">
+          <div className="home-grid-line"></div>
+          <div className="home-grid-line"></div>
+          <div className="home-grid-line"></div>
+          <div className="home-grid-line"></div>
+          <div className="home-grid-line"></div>
+        </div>
+
+        <div className="home-floating-notes">
+          <div className="home-note">♪</div>
+          <div className="home-note">♫</div>
+          <div className="home-note">♬</div>
+          <div className="home-note">🎵</div>
+          <div className="home-note">🎶</div>
+        </div>
+      </div>
+
+      {/* סקציית גיבור מרשימה */}
+      <section ref={heroRef} className="home-hero-premium animate-on-scroll">
+        <div className="home-hero-content-premium">
+          <div className="home-hero-badge-premium">
+            <Sparkles className="badge-icon-premium" />
+            <span>הפלטפורמה המוזיקלית המובילה בישראל</span>
+          </div>
+
+          <h1 className="home-hero-title-premium">
+            <span className="home-title-line">גלה את</span>
+            <span className="home-title-line">
+              <span className="home-title-highlight">המוזיקה הישראלית</span>
+            </span>
+            <span className="home-title-line">האותנטית</span>
+          </h1>
+
+          <p className="home-hero-description-premium">
+            <span className="home-hero-stat-premium">{stats.totalSongs}</span> שירים אמיתיים מ-
+            <span className="home-hero-stat-premium">{stats.totalArtists}</span> אמנים ישראליים.
+            <br />
+            הצטרף לקהילה שכבר צברה <span className="home-hero-stat-premium">{formatNumber(stats.totalPlays)}</span>{" "}
+            השמעות!
+          </p>
+
+          <div className="home-hero-buttons-premium">
+            <button
+              className="home-btn-premium home-btn-primary-premium"
+              onClick={() => navigate("/musicLibrary/songList")}
+            >
+              <Play className="btn-icon-premium" />
+              <span>גלה שירים</span>
+              <div className="btn-glow-premium"></div>
+            </button>
+            {user?.id ? (
+              <button className="home-btn-premium home-btn-secondary-premium" onClick={() => navigate("/mySongs")}>
+                <Upload className="btn-icon-premium" />
+                <span>השירים שלי</span>
+              </button>
+            ) : (
+              <button className="home-btn-premium home-btn-secondary-premium" onClick={() => navigate("/register")}>
+                <Users className="btn-icon-premium" />
+                <span>הצטרף עכשיו</span>
+              </button>
+            )}
+          </div>
+
+          <div className="home-hero-features-premium">
+            <div className="home-hero-feature-premium">
+              <div className="feature-icon-container-premium">
+                <Music className="feature-icon-premium" />
+              </div>
+              <span>שירים איכותיים</span>
+            </div>
+            <div className="home-hero-feature-premium">
+              <div className="feature-icon-container-premium">
+                <Users className="feature-icon-premium" />
+              </div>
+              <span>קהילה תומכת</span>
+            </div>
+            <div className="home-hero-feature-premium">
+              <div className="feature-icon-container-premium">
+                <Zap className="feature-icon-premium" />
+              </div>
+              <span>חשיפה מקסימלית</span>
+            </div>
+          </div>
+        </div>
+
+        {/* סליידר שירים מרשים */}
+        <div className="home-hero-slider-premium">
+          {recentSongs.length > 0 && (
+            <>
+              <div className="home-slider-controls-premium">
+                <button className="home-slider-arrow-premium" onClick={prevSlide}>
+                  <ChevronRight />
+                </button>
+                <div className="home-slider-indicators-premium">
+                  {recentSongs.slice(0, 5).map((_, index) => (
+                    <div
+                      key={index}
+                      className={`home-slider-dot-premium ${index === currentSlide % 5 ? "active" : ""}`}
+                      onClick={() => setCurrentSlide(index)}
+                    ></div>
+                  ))}
+                </div>
+                <button className="home-slider-arrow-premium" onClick={nextSlide}>
+                  <ChevronLeft />
+                </button>
+              </div>
+
+              <div className="home-slider-container-premium">
+                <div className="home-slider-track-premium" style={{ transform: `translateX(${currentSlide * 100}%)` }}>
+                  {recentSongs.map((song, index) => (
+                    <div
+                      key={song.id}
+                      className={`home-slider-slide-premium ${index === currentSlide ? "active" : ""}`}
+                      onClick={() => handlePlaySong(song)}
+                    >
+                      <div className="home-slide-content-premium">
+                        <div
+                          className="home-slide-image-premium"
+                          style={{
+                            backgroundImage: song.pathPicture ? `url(${song.pathPicture})` : "none",
+                            backgroundColor: song.pathPicture ? "transparent" : "#d59039",
+                          }}
+                        >
+                          {!song.pathPicture && <Music size={40} color="white" />}
+                        </div>
+                        <div className="home-slide-info-premium">
+                          <h3>{song.title}</h3>
+                          <p>{song.gener || "כללי"}</p>
+                          <div className="home-slide-stats-premium">
+                            <div className="home-slide-stat-premium">
+                              <Headphones size={16} />
+                              <span>{song.plays || 0}</span>
+                            </div>
+                            <div className="home-slide-stat-premium">
+                              <Clock size={16} />
+                              <span>{formatDate(song.create_at)}</span>
+                            </div>
+                          </div>
+                          <button className="home-slide-play-premium">
+                            <Play size={20} />
+                            <span>נגן עכשיו</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="home-slide-vinyl-premium">
+                        <div className="home-vinyl-disc-premium">
+                          <div className="home-vinyl-center-premium"></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </section>
+
+      {/* נגן מרשים */}
+      {currentSong && (
+        <div className="home-current-player-premium">
+          <div className="home-player-visualizer-premium">
+            <div className="home-visualizer-bar-premium"></div>
+            <div className="home-visualizer-bar-premium"></div>
+            <div className="home-visualizer-bar-premium"></div>
+            <div className="home-visualizer-bar-premium"></div>
+            <div className="home-visualizer-bar-premium"></div>
+            <div className="home-visualizer-bar-premium"></div>
+            <div className="home-visualizer-bar-premium"></div>
+          </div>
+
+          <div className="home-player-content-premium">
+            <div
+              className="home-player-cover-premium"
+              style={{
+                backgroundImage: currentSong.pathPicture ? `url(${currentSong.pathPicture})` : "none",
+                backgroundColor: currentSong.pathPicture ? "transparent" : "#d59039",
+              }}
+            >
+              {!currentSong.pathPicture && <Music size={32} color="white" />}
+              <div className="home-player-disc-premium"></div>
+            </div>
+
+            <div className="home-player-info-premium">
+              <div className="home-player-title-premium">
+                <Music className="home-player-icon-premium" />
+                <span>מנגן עכשיו</span>
+              </div>
+              <h4>{currentSong.title}</h4>
+              <p>{currentSong.gener || "כללי"}</p>
+            </div>
+
+            <div className="home-player-controls-premium">
+              <button className="home-player-btn-premium">
+                <Shuffle size={16} />
+              </button>
+              <button className="home-player-btn-premium">
+                <SkipForward size={16} style={{ transform: "rotate(180deg)" }} />
+              </button>
+              <button className="home-player-btn-premium home-player-btn-primary-premium" onClick={togglePlayPause}>
+                {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+              </button>
+              <button className="home-player-btn-premium">
+                <SkipForward size={16} />
+              </button>
+              <button className="home-player-btn-premium">
+                <Repeat size={16} />
+              </button>
+            </div>
+
+            <div className="home-player-progress-premium">
+              <div className="home-player-progress-bar-premium">
+                <div className="home-player-progress-fill-premium"></div>
+                <div className="home-player-progress-handle-premium"></div>
+              </div>
+            </div>
+
+            <div className="home-player-volume-premium">
+              <Volume2 size={16} />
+              <div className="home-player-volume-bar-premium">
+                <div className="home-player-volume-fill-premium"></div>
+                <div className="home-player-volume-handle-premium"></div>
+              </div>
+            </div>
           </div>
         </div>
       )}
 
-      {/* Main Content */}
-      <div className="main-content">
-        {/* Hero Section */}
-        <section className="hero-quantum">
-          <div className="hero-grid">
-            <div className="hero-content">
-              <div className="quantum-badge">
-                <Atom className="quantum-icon" />
-                <span>QUANTUM MUSIC EXPERIENCE</span>
-                <div className="badge-glow"></div>
-              </div>
-
-              <h1 className="quantum-title">
-                <span className="title-line">ENTER THE</span>
-                <span className="title-main">SOUND</span>
-                <span className="title-dimension">DIMENSION</span>
-                <div className="title-hologram"></div>
-              </h1>
-
-              <p className="quantum-description">
-                Experience music like never before in our immersive digital universe. Where sound meets technology and
-                creativity knows no bounds.
-              </p>
-
-              <div className="quantum-actions">
-                <Button className="quantum-btn primary">
-                  <Rocket className="btn-icon" />
-                  <span>LAUNCH EXPERIENCE</span>
-                  <div className="btn-energy"></div>
-                </Button>
-                <Button className="quantum-btn secondary">
-                  <Globe className="btn-icon" />
-                  <span>EXPLORE UNIVERSE</span>
-                </Button>
-              </div>
-
-              <div className="quantum-stats-mini">
-                <div className="stat-mini">
-                  <div className="stat-value">{formatNumber(stats.totalUsers)}</div>
-                  <div className="stat-label">EXPLORERS</div>
-                </div>
-                <div className="stat-mini">
-                  <div className="stat-value">{formatNumber(stats.totalSongs)}</div>
-                  <div className="stat-label">TRACKS</div>
-                </div>
-                <div className="stat-mini">
-                  <div className="stat-value">{formatNumber(stats.totalPlays)}</div>
-                  <div className="stat-label">PLAYS</div>
-                </div>
-              </div>
+      {/* סטטיסטיקות מרשימות */}
+      <section ref={statsRef} className="home-stats-premium animate-on-scroll">
+        <div className="home-stats-grid-premium">
+          <div className="home-stat-card-premium">
+            <div className="home-stat-icon-premium">
+              <Music className="stat-icon-inner-premium" />
+              <div className="stat-icon-glow-premium"></div>
             </div>
-
-            <div className="hero-visual">
-              <div className="quantum-sphere">
-                <div className="sphere-core">
-                  <Music className="core-icon" />
-                </div>
-                <div className="sphere-ring ring-1"></div>
-                <div className="sphere-ring ring-2"></div>
-                <div className="sphere-ring ring-3"></div>
-                <div className="energy-particles">
-                  {[...Array(20)].map((_, i) => (
-                    <div key={i} className={`energy-particle particle-${i}`}></div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="hologram-display">
-                <div className="hologram-content">
-                  <div className="waveform-display">
-                    {[...Array(12)].map((_, i) => (
-                      <div key={i} className="wave-bar" style={{ animationDelay: `${i * 0.1}s` }}></div>
-                    ))}
-                  </div>
-                  <div className="frequency-text">FREQUENCY: 440Hz</div>
-                </div>
-              </div>
+            <div className="home-stat-number-premium">{stats.totalSongs}</div>
+            <div className="home-stat-label-premium">שירים ישראליים</div>
+            <div className="home-stat-desc-premium">מכל הז'אנרים</div>
+            <div className="home-stat-trend-premium">
+              <TrendingUp size={16} />
+              <span>+15% החודש</span>
             </div>
           </div>
-        </section>
-
-        {/* Quantum Stats */}
-        <section className="quantum-stats">
-          <div className="stats-container">
-            <div className="stat-card">
-              <div className="stat-icon-container">
-                <Music className="stat-icon" />
-                <div className="icon-orbit"></div>
-              </div>
-              <div className="stat-data">
-                <div className="stat-number">{formatNumber(stats.totalSongs)}</div>
-                <div className="stat-label">QUANTUM TRACKS</div>
-                <div className="stat-progress">
-                  <div className="progress-bar" style={{ width: "85%" }}></div>
-                </div>
-              </div>
+          <div className="home-stat-card-premium">
+            <div className="home-stat-icon-premium">
+              <Users className="stat-icon-inner-premium" />
+              <div className="stat-icon-glow-premium"></div>
             </div>
-
-            <div className="stat-card">
-              <div className="stat-icon-container">
-                <Users className="stat-icon" />
-                <div className="icon-orbit"></div>
-              </div>
-              <div className="stat-data">
-                <div className="stat-number">{formatNumber(stats.totalArtists)}</div>
-                <div className="stat-label">DIGITAL ARTISTS</div>
-                <div className="stat-progress">
-                  <div className="progress-bar" style={{ width: "92%" }}></div>
-                </div>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon-container">
-                <Headphones className="stat-icon" />
-                <div className="icon-orbit"></div>
-              </div>
-              <div className="stat-data">
-                <div className="stat-number">{formatNumber(stats.totalPlays)}</div>
-                <div className="stat-label">NEURAL CONNECTIONS</div>
-                <div className="stat-progress">
-                  <div className="progress-bar" style={{ width: "78%" }}></div>
-                </div>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon-container">
-                <Orbit className="stat-icon" />
-                <div className="icon-orbit"></div>
-              </div>
-              <div className="stat-data">
-                <div className="stat-number">{formatNumber(stats.totalUsers)}</div>
-                <div className="stat-label">ACTIVE MINDS</div>
-                <div className="stat-progress">
-                  <div className="progress-bar" style={{ width: "96%" }}></div>
-                </div>
-              </div>
+            <div className="home-stat-number-premium">{stats.totalArtists}</div>
+            <div className="home-stat-label-premium">אמנים רשומים</div>
+            <div className="home-stat-desc-premium">יוצרים פעילים</div>
+            <div className="home-stat-trend-premium">
+              <TrendingUp size={16} />
+              <span>+12% החודש</span>
             </div>
           </div>
-        </section>
-
-        {/* Trending Tracks */}
-        <section className="trending-quantum">
-          <div className="section-header-quantum">
-            <div className="section-title-container">
-              <Fire className="section-icon" />
-              <h2 className="section-title">TRENDING IN THE MATRIX</h2>
-              <div className="title-underline"></div>
+          <div className="home-stat-card-premium">
+            <div className="home-stat-icon-premium">
+              <Headphones className="stat-icon-inner-premium" />
+              <div className="stat-icon-glow-premium"></div>
             </div>
-            <Button className="quantum-btn-small">
-              <Eye className="btn-icon" />
-              VIEW ALL
-            </Button>
+            <div className="home-stat-number-premium">{formatNumber(stats.totalPlays)}</div>
+            <div className="home-stat-label-premium">השמעות כולל</div>
+            <div className="home-stat-desc-premium">מאז ההקמה</div>
+            <div className="home-stat-trend-premium">
+              <TrendingUp size={16} />
+              <span>+42% החודש</span>
+            </div>
           </div>
+          <div className="home-stat-card-premium">
+            <div className="home-stat-icon-premium">
+              <Fire className="stat-icon-inner-premium" />
+              <div className="stat-icon-glow-premium"></div>
+            </div>
+            <div className="home-stat-number-premium">{stats.activeUsers}</div>
+            <div className="home-stat-label-premium">אמנים פעילים</div>
+            <div className="home-stat-desc-premium">עם שירים</div>
+            <div className="home-stat-trend-premium">
+              <TrendingUp size={16} />
+              <span>+28% החודש</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <div className="tracks-grid">
-            {songs.map((song, index) => (
-              <Card key={song.id} className="track-card-quantum" style={{ animationDelay: `${index * 0.2}s` }}>
-                <CardContent className="track-content">
-                  <div className="track-rank">#{index + 1}</div>
+      {/* שירים פופולריים */}
+      <section ref={songsRef} className="home-popular-songs-premium animate-on-scroll">
+        <div className="home-section-header-premium">
+          <div className="home-section-badge-premium">
+            <Fire className="badge-icon-premium" />
+            <span>שירים פופולריים</span>
+          </div>
+          <h2 className="home-section-title-premium">
+            <span className="home-title-highlight">השירים החמים</span> ביותר
+          </h2>
+          <p className="home-section-subtitle-premium">השירים עם הכי הרבה השמעות בפלטפורמה</p>
+        </div>
 
-                  <div className="track-cover-container">
-                    <img src={song.coverUrl || "/placeholder.svg"} alt={song.title} className="track-cover" />
-                    <div className="cover-overlay">
-                      <Button className="play-btn-quantum" onClick={() => togglePlay(song.id)}>
-                        {currentlyPlaying === song.id ? <Pause /> : <Play />}
-                      </Button>
-                    </div>
-                    <div className="holographic-border"></div>
-                  </div>
-
-                  <div className="track-info">
-                    <h3 className="track-title">{song.title}</h3>
-                    <p className="track-artist">{song.artist}</p>
-
-                    <div className="track-waveform">
-                      {song.waveform.map((height, i) => (
-                        <div
-                          key={i}
-                          className="waveform-bar"
-                          style={{
-                            height: `${height * 100}%`,
-                            animationDelay: `${i * 0.1}s`,
-                          }}
-                        ></div>
-                      ))}
-                    </div>
-
-                    <div className="track-meta">
-                      <Badge className="genre-badge-quantum">{song.genre}</Badge>
-                      <span className="track-duration">{song.duration}</span>
-                    </div>
-
-                    <div className="track-stats">
-                      <div className="stat-item">
-                        <Headphones className="stat-icon-small" />
-                        <span>{formatNumber(song.plays)}</span>
-                      </div>
-                      <div className="track-actions">
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          className={`action-btn ${likedSongs.has(song.id) ? "liked" : ""}`}
-                          onClick={() => toggleLike(song.id)}
-                        >
-                          <Heart className="action-icon" />
-                          <span>{formatNumber(song.likes)}</span>
-                        </Button>
-                        <Button size="sm" variant="ghost" className="action-btn">
-                          <Share2 className="action-icon" />
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+        {popularSongs.length > 0 ? (
+          <div className="home-songs-grid-premium">
+            {popularSongs.map((song, index) => (
+              <div
+                key={song.id}
+                className="home-song-card-wrapper-premium"
+                style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
+              >
+                <SongCard song={song} showActions={true} />
+              </div>
             ))}
           </div>
-        </section>
+        ) : (
+          <div className="home-empty-state-premium">
+            <Music size={64} />
+            <h3>אין שירים עדיין</h3>
+            <p>היה הראשון להעלות שיר!</p>
+            <button className="home-btn-premium home-btn-primary-premium" onClick={() => navigate("/mySongs")}>
+              <Upload size={20} />
+              <span>העלה שיר ראשון</span>
+            </button>
+          </div>
+        )}
 
-        {/* Featured Artists */}
-        <section className="artists-quantum">
-          <div className="section-header-quantum">
-            <div className="section-title-container">
-              <Crown className="section-icon" />
-              <h2 className="section-title">QUANTUM CREATORS</h2>
-              <div className="title-underline"></div>
+        <div className="home-section-cta-premium">
+          <button
+            className="home-btn-premium home-btn-outline-premium"
+            onClick={() => navigate("/musicLibrary/songList")}
+          >
+            <Music size={20} />
+            <span>צפה בכל השירים ({stats.totalSongs})</span>
+            <ArrowRight size={20} />
+          </button>
+        </div>
+      </section>
+
+      {/* אמנים מובילים */}
+      <section ref={artistsRef} className="home-top-artists-premium animate-on-scroll">
+        <div className="home-section-header-premium">
+          <div className="home-section-badge-premium">
+            <Star className="badge-icon-premium" />
+            <span>אמנים מובילים</span>
+          </div>
+          <h2 className="home-section-title-premium">
+            <span className="home-title-highlight">האמנים המובילים</span> בישראל
+          </h2>
+          <p className="home-section-subtitle-premium">האמנים עם הכי הרבה שירים ועוקבים</p>
+        </div>
+
+        {topArtists.length > 0 ? (
+          <div className="home-artists-grid-premium">
+            {topArtists.map((artist, index) => (
+              <div
+                key={artist.id}
+                className="home-artist-card-premium"
+                style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
+                onClick={() => navigate(`/artists/${artist.id}`)}
+              >
+                <div className="home-artist-card-glow-premium"></div>
+                <div className="home-artist-image-premium">
+                  {artist.pathProfile ? (
+                    <img src={artist.pathProfile || "/placeholder.svg"} alt={artist.userName} />
+                  ) : (
+                    <div className="home-artist-placeholder-premium">
+                      <Users size={40} />
+                    </div>
+                  )}
+                </div>
+
+                <div className="home-artist-info-premium">
+                  <div className="home-artist-name-premium">
+                    {artist.userName}
+                    <Verified className="home-verified-icon-premium" />
+                  </div>
+                  <div className="home-artist-stats-premium">
+                    <div className="home-artist-stat-premium">
+                      <Music size={14} />
+                      <span>{artist.countSongs || 0} שירים</span>
+                    </div>
+                    <div className="home-artist-stat-premium">
+                      <Users size={14} />
+                      <span>{artist.countFollowers || 0} עוקבים</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="home-artist-overlay-premium">
+                  <button className="home-artist-play-btn-premium">
+                    <Play size={24} />
+                  </button>
+                </div>
+
+                {/* אפקטים מיוחדים */}
+                <div className="home-artist-effects-premium">
+                  <div className="home-artist-note-premium">♪</div>
+                  <div className="home-artist-note-premium">♫</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="home-empty-state-premium">
+            <Users size={64} />
+            <h3>אין אמנים עדיין</h3>
+            <p>היה הראשון להירשם כאמן!</p>
+            <button className="home-btn-premium home-btn-primary-premium" onClick={() => navigate("/register")}>
+              <Users size={20} />
+              <span>הירשם כאמן</span>
+            </button>
+          </div>
+        )}
+
+        <div className="home-section-cta-premium">
+          <button
+            className="home-btn-premium home-btn-outline-premium"
+            onClick={() => navigate("/musicLibrary/artistList")}
+          >
+            <Users size={20} />
+            <span>צפה בכל האמנים ({stats.totalArtists})</span>
+            <ArrowRight size={20} />
+          </button>
+        </div>
+      </section>
+
+      {/* תכונות מרשימות */}
+      <section className="home-features-premium animate-on-scroll">
+        <div className="home-section-header-premium">
+          <div className="home-section-badge-premium">
+            <Zap className="badge-icon-premium" />
+            <span>תכונות הפלטפורמה</span>
+          </div>
+          <h2 className="home-section-title-premium">
+            <span className="home-title-highlight">למה לבחור</span> בנו?
+          </h2>
+          <p className="home-section-subtitle-premium">הכלים והתכונות שיעזרו לך להצליח</p>
+        </div>
+
+        <div className="home-features-grid-premium">
+          <div className="home-feature-card-premium">
+            <div className="home-feature-icon-premium">
+              <Upload className="feature-icon-inner-premium" />
+              <div className="feature-icon-glow-premium"></div>
+            </div>
+            <h3>העלאה פשוטה</h3>
+            <p>העלה שירים בקלות ובמהירות עם ממשק פשוט וידידותי</p>
+            <div className="feature-card-shine-premium"></div>
+          </div>
+          <div className="home-feature-card-premium">
+            <div className="home-feature-icon-premium">
+              <TrendingUp className="feature-icon-inner-premium" />
+              <div className="feature-icon-glow-premium"></div>
+            </div>
+            <h3>מעקב אחר ביצועים</h3>
+            <p>עקוב אחר מספר ההשמעות והפופולריות של השירים שלך</p>
+            <div className="feature-card-shine-premium"></div>
+          </div>
+          <div className="home-feature-card-premium">
+            <div className="home-feature-icon-premium">
+              <Users className="feature-icon-inner-premium" />
+              <div className="feature-icon-glow-premium"></div>
+            </div>
+            <h3>קהילה ישראלית</h3>
+            <p>התחבר עם אמנים ומאזינים ישראליים אחרים</p>
+            <div className="feature-card-shine-premium"></div>
+          </div>
+          <div className="home-feature-card-premium">
+            <div className="home-feature-icon-premium">
+              <Share2 className="feature-icon-inner-premium" />
+              <div className="feature-icon-glow-premium"></div>
+            </div>
+            <h3>שיתוף קל</h3>
+            <p>שתף את המוזיקה שלך בקלות ברשתות חברתיות ובמייל</p>
+            <div className="feature-card-shine-premium"></div>
+          </div>
+          <div className="home-feature-card-premium">
+            <div className="home-feature-icon-premium">
+              <Waveform className="feature-icon-inner-premium" />
+              <div className="feature-icon-glow-premium"></div>
+            </div>
+            <h3>איכות סאונד מעולה</h3>
+            <p>השמע את המוזיקה שלך באיכות גבוהה ללא דחיסה</p>
+            <div className="feature-card-shine-premium"></div>
+          </div>
+          <div className="home-feature-card-premium">
+            <div className="home-feature-icon-premium">
+              <MessageCircle className="feature-icon-inner-premium" />
+              <div className="feature-icon-glow-premium"></div>
+            </div>
+            <h3>תגובות ומשוב</h3>
+            <p>קבל משוב מקהילת המאזינים והאמנים</p>
+            <div className="feature-card-shine-premium"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* קריאה לפעולה מרשימה */}
+      <section className="home-cta-premium animate-on-scroll">
+        <div className="home-cta-background-premium">
+          <div className="home-cta-orb-premium home-cta-orb-1"></div>
+          <div className="home-cta-orb-premium home-cta-orb-2"></div>
+          <div className="home-cta-orb-premium home-cta-orb-3"></div>
+
+          <div className="home-cta-waves-premium">
+            <div className="home-cta-wave-premium"></div>
+            <div className="home-cta-wave-premium"></div>
+            <div className="home-cta-wave-premium"></div>
+          </div>
+        </div>
+
+        <div className="home-cta-content-premium">
+          <div className="home-cta-badge-premium">
+            <Crown className="badge-icon-premium" />
+            <span>הצטרף עכשיו</span>
+          </div>
+
+          <h2 className="home-cta-title-premium">
+            <span className="home-title-highlight">מוכן להתחיל</span> את המסע המוזיקלי שלך?
+          </h2>
+          <p className="home-cta-description-premium">
+            הצטרף ל-{stats.totalArtists} האמנים שכבר בחרו בנו ותהיה חלק מהקהילה המוזיקלית הישראלית הגדלה והמתפתחת
+          </p>
+
+          <div className="home-cta-features-premium">
+            <div className="home-cta-feature-premium">
+              <div className="cta-feature-icon-premium">
+                <Crown />
+              </div>
+              <span>חשבון חינם לחלוטין</span>
+            </div>
+            <div className="home-cta-feature-premium">
+              <div className="cta-feature-icon-premium">
+                <Mic2 />
+              </div>
+              <span>כלי הקלטה מתקדמים</span>
+            </div>
+            <div className="home-cta-feature-premium">
+              <div className="cta-feature-icon-premium">
+                <Globe />
+              </div>
+              <span>חשיפה מקסימלית</span>
             </div>
           </div>
 
-          <div className="artists-grid">
-            {artists.map((artist, index) => (
-              <Card key={artist.id} className="artist-card-quantum" style={{ animationDelay: `${index * 0.15}s` }}>
-                <CardContent className="artist-content">
-                  <div className="artist-level">LVL {artist.level}</div>
-
-                  <div className="artist-avatar-container">
-                    <Avatar className="artist-avatar-quantum">
-                      <AvatarImage src={artist.avatar || "/placeholder.svg"} alt={artist.name} />
-                      <AvatarFallback>{artist.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div className="avatar-ring"></div>
-                    <div className="avatar-glow"></div>
-                    {artist.isVerified && (
-                      <div className="verified-badge-quantum">
-                        <Zap className="verified-icon" />
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="artist-info">
-                    <h3 className="artist-name">{artist.name}</h3>
-                    <Badge className="artist-genre-badge">{artist.genre}</Badge>
-
-                    <div className="artist-stats">
-                      <div className="followers-count">
-                        <Users className="followers-icon" />
-                        <span>{formatNumber(artist.followers)}</span>
-                      </div>
-
-                      <div className="power-level">
-                        <div className="power-bar">
-                          <div className="power-fill" style={{ width: `${artist.level}%` }}></div>
-                        </div>
-                        <span className="power-text">POWER: {artist.level}%</span>
-                      </div>
-                    </div>
-
-                    <Button className="follow-btn-quantum">
-                      <Lightbulb className="btn-icon" />
-                      CONNECT
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="home-cta-buttons-premium">
+            {user?.id ? (
+              <>
+                <button
+                  className="home-btn-premium home-btn-primary-premium home-btn-large-premium"
+                  onClick={() => navigate("/mySongs")}
+                >
+                  <Upload size={20} />
+                  <span>העלה שיר חדש</span>
+                  <ArrowRight size={20} />
+                  <div className="btn-glow-premium"></div>
+                </button>
+                <button
+                  className="home-btn-premium home-btn-outline-premium home-btn-large-premium"
+                  onClick={() => navigate("/musicLibrary/songList")}
+                >
+                  <Eye size={20} />
+                  <span>גלה מוזיקה חדשה</span>
+                </button>
+              </>
+            ) : (
+              <>
+                <button
+                  className="home-btn-premium home-btn-primary-premium home-btn-large-premium"
+                  onClick={() => navigate("/register")}
+                >
+                  <Users size={20} />
+                  <span>הירשם בחינם</span>
+                  <ArrowRight size={20} />
+                  <div className="btn-glow-premium"></div>
+                </button>
+                <button
+                  className="home-btn-premium home-btn-outline-premium home-btn-large-premium"
+                  onClick={() => navigate("/musicLibrary/songList")}
+                >
+                  <Eye size={20} />
+                  <span>צפה בשירים</span>
+                </button>
+              </>
+            )}
           </div>
-        </section>
-      </div>
+
+          <div className="home-cta-guarantee-premium">
+            <Award size={16} />
+            <span>חינם לחלוטין • ללא התחייבות • תמיכה בעברית</span>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

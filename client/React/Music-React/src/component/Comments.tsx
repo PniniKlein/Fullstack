@@ -120,18 +120,6 @@ const Comments = ({ comments, currentUser, setComments }: CommentsProps) => {
 
   return (
     <div className="comments-elegant">
-      {/* Header */}
-      <div className="comments-header-elegant">
-        <div className="header-content-elegant">
-          <div className="header-title-elegant">
-            <MessageCircle className="header-icon-elegant" size={24} />
-            <h2>תגובות על השיר</h2>
-          </div>
-          <div className="comments-count-elegant">
-            <span>{comments.length} תגובות</span>
-          </div>
-        </div>
-      </div>
 
       {/* Comments List */}
       <div className="comments-list-elegant">
@@ -263,13 +251,13 @@ const Comments = ({ comments, currentUser, setComments }: CommentsProps) => {
                 <div className="comment-content-elegant">
                   <p
                     className={`comment-text-elegant ${
-                      comment.content.length > 150 && !isCommentExpanded(comment.id) ? "truncated" : ""
+                      comment.content.length > 1340 && !isCommentExpanded(comment.id) ? "truncated" : ""
                     }`}
                   >
-                    {comment.content}
+                    {!isCommentExpanded(comment.id) ? comment.content.slice(0,140) : comment.content}
                   </p>
 
-                  {comment.content.length > 150 && (
+                  {comment.content.length > 140 && (
                     <button className="expand-btn-elegant" onClick={() => toggleCommentExpand(comment.id)}>
                       {isCommentExpanded(comment.id) ? (
                         <>

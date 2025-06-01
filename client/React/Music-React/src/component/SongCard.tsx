@@ -424,7 +424,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
       </div>
 
       {/* Share Dialog */}
-      <dialog ref={shareDialogRef} className="share-dialog">
+      <dialog onClick={(e) => e.stopPropagation()} ref={shareDialogRef} className="song-card-share-dialog">
         <div className="share-dialog-header">
           <Mail size={20} />
           <h3>שיתוף השיר במייל</h3>
@@ -457,7 +457,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
             disabled={loadingStates.share || !shareEmails.trim()}
           >
             {loadingStates.share ? (
-              <div className="loading-spinner"></div>
+              <div className="loading-spinner-tiny"></div>
             ) : (
               <>
                 <Mail size={16} />
@@ -469,7 +469,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
       </dialog>
 
       {/* Delete Confirmation Dialog */}
-      <dialog ref={deleteDialogRef} className="delete-dialog">
+      <dialog onClick={(e) => e.stopPropagation()} ref={deleteDialogRef} className="delete-dialog">
         <div className="delete-dialog-header">
           <Trash2 size={20} color="#d32f2f" />
           <h3>מחיקת שיר</h3>
@@ -492,7 +492,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
             </button>
             <button className="confirm-delete-button" onClick={confirmDelete} disabled={loadingStates.delete}>
               {loadingStates.delete ? (
-                <div className="loading-spinner"></div>
+                <div className="loading-spinner-tiny"></div>
               ) : (
                 <>
                   <Trash2 size={16} />

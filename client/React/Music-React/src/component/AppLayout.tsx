@@ -69,6 +69,7 @@ import { loadSong } from "../store/songSlice"
 import MainSidebar from "./MainSidebar"
 import "../css/Applayout.css"
 import Loader from "./ui/Loader"
+import Footer from "./Footer"
 
 export const getUserDataFromToken = (token: string) => {
   try {
@@ -113,6 +114,7 @@ const AppLayout = () => {
       ):
       <main className={`main-content ${sidebarExpanded ? "sidebar-expanded" : "sidebar-collapsed"}`}>
         <Outlet />
+        {songPlayer.id == 0 && <Footer/>}
         {songPlayer.id != 0 && <div style={{ height: "80px" }}></div>}
         {songPlayer.id != 0 && <SongPlayer />}
       </main>}

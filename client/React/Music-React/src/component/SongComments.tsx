@@ -255,14 +255,14 @@ const SongComments = () => {
                 )}
               </div>
 
-              <motion.button
+              {/* <motion.button
                 className="song-comments-play-button-overlay"
                 onClick={() => dispatch(updateSong(song))}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
                 <Play size={24} fill="currentColor" />
-              </motion.button>
+              </motion.button> */}
 
               <div className="song-comments-status-badge">
                 {song.isPublic ? (
@@ -339,15 +339,6 @@ const SongComments = () => {
                   <span>ערוך</span>
                 </motion.button>
               )}
-
-              <motion.button
-                className={`song-comments-like-action-btn ${isLiked ? "liked" : ""}`}
-                onClick={handleLike}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <Heart size={16} fill={isLiked ? "currentColor" : "none"} />
-              </motion.button>
             </div>
 
             <div className="song-comments-utility-actions">
@@ -474,24 +465,18 @@ const SongComments = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.5 }}
                 >
-                  <div className="song-comments-header">
-                    <h2>תגובות המאזינים</h2>
-                    {averageRating > 0 && (
-                      <div className="song-comments-average-rating">
-                        <div className="song-comments-rating-stars">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star
-                              key={star}
-                              size={14}
-                              className={star <= averageRating ? "filled" : "empty"}
-                              fill={star <= averageRating ? "currentColor" : "none"}
-                            />
-                          ))}
-                        </div>
-                        <span>{averageRating.toFixed(1)}</span>
-                      </div>
-                    )}
-                  </div>
+                       <div className="comments-header-elegant">
+                         <div className="header-content-elegant">
+                           <div className="header-title-elegant">
+                             <MessageCircle className="header-icon-elegant" size={24} />
+                             <h2>תגובות על השיר</h2>
+                           </div>
+                           <div className="comments-count-elegant">
+                             <span>{comments.length} תגובות</span>
+                           </div>
+                         </div>
+                       </div>
+                 
 
                   {comments.length > 0 ? (
                     <Comments comments={comments} currentUser={user.id} setComments={setComments} />

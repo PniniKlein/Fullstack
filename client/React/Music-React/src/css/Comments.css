@@ -1,15 +1,14 @@
-/* Comments Elegant Style */
-.comments-elegant {
-  max-width: 800px;
+Comments Elegant Style
+.commcomments-elegant {
+  max-width: 70%;
   margin: 0 auto;
   padding: 0;
 }
 
-/* Header */
 .comments-header-elegant {
   padding: 20px 0 24px 0;
-  margin-bottom: 24px;
-  border-bottom: 2px solid rgba(247, 194, 107, 0.3);
+  margin-bottom: 40px;
+  border-bottom: 1px solid rgba(64, 63, 61, 0.564);
   position: relative;
 }
 
@@ -20,7 +19,7 @@
   left: 0;
   width: 60px;
   height: 2px;
-  background: linear-gradient(90deg, #d59039, #f7c26b);
+  background: rgba(64, 63, 61, 0.564);
   border-radius: 1px;
 }
 
@@ -58,18 +57,17 @@
   border-radius: 12px;
   font-size: 0.9rem;
   font-weight: 600;
-  border: 1px solid rgba(247, 194, 107, 0.2);
+  /* border: 1px solid rgba(247, 194, 107, 0.2); */
 }
 
-/* Comments List */
 .comments-list-elegant {
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-/* Individual Comment */
 .comment-item-elegant {
+  min-height: 100px;;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
   border-radius: 16px;
   padding: 20px;
@@ -107,7 +105,6 @@
   opacity: 1;
 }
 
-/* Comment Header */
 .comment-header-elegant {
   display: flex;
   align-items: center;
@@ -204,16 +201,15 @@
   margin-left: 4px;
 }
 
-/* Comment Content */
 .comment-content-elegant {
-  margin: 16px 0 0 0;
+  margin-right:55px;
+  /* margin: 16px 0 0 0; */
 }
 
 .comment-text-elegant {
   color: rgba(255, 255, 255, 0.9);
   font-size: 1rem;
   line-height: 1.6;
-  margin: 0;
   direction: rtl;
   text-align: right;
   word-wrap: break-word;
@@ -226,7 +222,6 @@
   overflow: hidden;
 }
 
-/* Edit Mode */
 .comment-edit-elegant {
   margin-top: 12px;
 }
@@ -340,7 +335,6 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Comment Actions */
 .comment-actions-elegant {
   display: flex;
   align-items: center;
@@ -402,7 +396,6 @@
   animation: spin 1s linear infinite;
 }
 
-/* Expand Button */
 .expand-btn-elegant {
   display: flex;
   align-items: center;
@@ -421,7 +414,6 @@
   color: #f7c26b;
 }
 
-/* Show More Button */
 .show-more-container-elegant {
   display: flex;
   justify-content: center;
@@ -450,7 +442,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Summary */
 .comments-summary-elegant {
   margin-top: 50px;
   padding: 16px;
@@ -479,7 +470,6 @@
   font-weight: 600;
 }
 
-/* Animations */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -500,7 +490,6 @@
   }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .comments-elegant {
     padding: 0 16px;
@@ -574,7 +563,6 @@
   }
 }
 
-/* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   .comment-item-elegant,
   .action-button-elegant,
@@ -607,8 +595,7 @@
   }
 }
 
-/* Focus styles for accessibility */
-.action-button-elegant:focus,
+/* .action-button-elegant:focus,
 .edit-input-elegant:focus,
 .edit-send-btn-elegant:focus,
 .edit-cancel-btn-elegant:focus,
@@ -616,4 +603,4 @@
 .show-more-btn-elegant:focus {
   outline: 2px solid rgba(247, 194, 107, 0.6);
   outline-offset: 2px;
-}
+}  */

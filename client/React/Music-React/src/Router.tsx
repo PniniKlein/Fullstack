@@ -58,6 +58,7 @@ import SongComments from "./component/SongComments"
 import ArtistSongs from "./component/ArtistSongs"
 import Settings from "./component/Settings"
 import AddSong from "./component/AddSong"
+import About from "./component/About"
 
 export const router = createBrowserRouter([
   {
@@ -74,7 +75,7 @@ export const router = createBrowserRouter([
       { path: "updateSong", element: <UpdateSong /> },
       { path:"updateUser" ,element:<UpdateUser />},
       { path:"addSong" ,element:<AddSong />},
-      { path: "settings", element: <Settings /> },
+      { path: "about", element: <About /> },
       {
         path: "musicLibrary",
         element: <MusicLibrary />,

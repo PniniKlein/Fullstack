@@ -58,6 +58,7 @@ const MainSidebar = ({ expanded, setExpanded }: MainSidebarProps) => {
 
   const menuItems = [
     { label: "דף הבית", to: "/", icon: <Home size={22} /> },
+    { label: "אודות", to: "/about", icon: <Settings size={22} /> },
     { label: "ספריית מוזיקה", to: "/musicLibrary/songList", icon: <Library size={22} /> },
     { label: "אמנים", to: "/musicLibrary/artistList", icon: <Users size={22} /> },
   ]
@@ -65,9 +66,6 @@ const MainSidebar = ({ expanded, setExpanded }: MainSidebarProps) => {
   if (authState) {
     menuItems.push({ label: "אזור אישי", to: "/mySongs", icon: <Music size={22} /> })
   }
-
-  menuItems.push({ label: "הגדרות", to: "/settings", icon: <Settings size={22} /> })
-
   useEffect(() => {
     // Add index for animation delay
     setMenuItemsWithIndex(menuItems.map((item, index) => ({ ...item, index })))

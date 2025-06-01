@@ -707,7 +707,7 @@
   visibility: visible;
 }
 
-.share-dialog,
+.song-card-share-dialog,
 .delete-dialog {
   border: none;
   border-radius: 12px;
@@ -719,13 +719,13 @@
   background: #111;
 }
 
-.share-dialog::backdrop,
+.song-card-share-dialog::backdrop,
 .delete-dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
 }
 
-.share-dialog[open],
+.song-card-share-dialog[open],
 .delete-dialog[open] {
   animation: dialog-appear 0.3s ease;
 }
@@ -837,6 +837,7 @@
   width: 100%;
   padding: 10px 12px;
   border: 1px solid #ddd;
+  background-color: #222;
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.2s;
@@ -917,7 +918,7 @@
 }
 
 /* Loading Spinners */
-.loading-spinner {
+.loading-spinner-tiny {
   width: 20px;
   height: 20px;
   border: 2px solid rgba(255, 255, 255, 0.3);

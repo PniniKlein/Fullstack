@@ -1,229 +1,265 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Music, Heart, Users, Star, Target, Lightbulb, Globe } from "lucide-react"
 import "../css/About.css"
+import { Music, Users, Star, Headphones, Heart, TrendingUp } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+// import { useRouter } from "next/navigation"
 
 const About = () => {
-  const values = [
-    {
-      icon: <Music size={32} />,
-      title: "תשוקה למוזיקה",
-      description: "אנחנו מאמינים שמוזיקה היא השפה האוניברסלית שמחברת בין לבבות",
+  // const router = useRouter()
+  const navigate = useNavigate()
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
     },
-    {
-      icon: <Users size={32} />,
-      title: "קהילה תומכת",
-      description: "יצירת סביבה בטוחה ומעודדת לכל יוצר ומאזין",
-    },
-    {
-      icon: <Lightbulb size={32} />,
-      title: "חדשנות",
-      description: "פיתוח כלים מתקדמים שעוזרים לאמנים להגיע לקהל הרחב",
-    },
-    {
-      icon: <Globe size={32} />,
-      title: "נגישות",
-      description: "מוזיקה איכותית נגישה לכולם, בכל מקום ובכל זמן",
-    },
-  ]
+  }
 
-  const team = [
-    {
-      name: "אלכס כהן",
-      role: 'מייסד ומנכ"ל',
-      description: "מוזיקאי ויזמי עם ניסיון של 15 שנה בתעשיית המוזיקה",
-      avatar: "אכ",
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 },
     },
-    {
-      name: "מיכל לוי",
-      role: "מנהלת פיתוח",
-      description: "מפתחת תוכנה מנוסה עם התמחות בפלטפורמות מוזיקליות",
-      avatar: "מל",
-    },
-    {
-      name: "דני אברהם",
-      role: "מנהל קהילה",
-      description: "מפיק מוזיקלי שמתמחה בבניית קהילות אמנים",
-      avatar: "דא",
-    },
-  ]
+  }
 
-  const achievements = [
-    { number: "50K+", label: "משתמשים פעילים" },
-    { number: "15K+", label: "שירים הועלו" },
-    { number: "2.8K+", label: "אמנים" },
-    { number: "1M+", label: "השמעות חודשיות" },
-  ]
+  const goTo = (path: string) => {
+    navigate(path)
+  }
 
   return (
-    <div className="about-container">
-      {/* Background Effects */}
-      <div className="about-background">
-        <div className="about-gradient-orb orb-1"></div>
-        <div className="about-gradient-orb orb-2"></div>
-        <div className="about-gradient-orb orb-3"></div>
-
-        <div className="floating-about-notes">
-          <div className="about-note note-1">♪</div>
-          <div className="about-note note-2">♫</div>
-          <div className="about-note note-3">♬</div>
-          <div className="about-note note-4">🎵</div>
+    <motion.div
+      className="about-container"
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true }}
+    >
+      <div className="about-header">
+        <h2>אודות פלטפורמת המוזיקה שלנו</h2>
+        <div className="about-divider">
+          <span></span>
+          <div className="divider-icon">
+            <Music size={40} />
+          </div>
+          <span></span>
         </div>
       </div>
 
-      {/* Header */}
-      <motion.div
-        className="about-header"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <div className="about-icon-container">
-          <Heart size={48} className="about-main-icon" />
+      <motion.section className="about-section" variants={itemVariants}>
+        <div className="section-icon">
+          <span className="icon-bg">🎵</span>
         </div>
-        <h2>אודות SingSong</h2>
-        <div className="about-divider">
-          <div className="divider-line"></div>
-          <Music size={24} />
-          <div className="divider-line"></div>
+        <div className="section-content">
+          <h3>ברוכים הבאים לעולם המוזיקה החדש!</h3>
+          <p>
+            ברוכים הבאים לפלטפורמת המוזיקה המתקדמת ביותר בישראל! כאן תמצאו את כל מה שאתם צריכים כדי ליהנות, לגלות ולחלוק
+            מוזיקה באופן שלא הכרתם קודם. הפלטפורמה שלנו מאפשרת לאמנים לפרסם את היצירות שלהם, למאזינים לגלות מוזיקה חדשה
+            ומרגשת, ולכולם ליצור קהילה מוזיקלית תוססת ומחברת.
+          </p>
         </div>
-        <p className="about-intro">
-          אנחנו מאמינים שלכל אדם יש סיפור מוזיקלי ייחודי לספר. SingSong נוצרה כדי לתת במה לכל יוצר, מהחובב הביתי ועד
-          האמן המקצועי, לשתף את המוזיקה שלו עם העולם.
+      </motion.section>
+
+      <motion.section className="about-section" variants={itemVariants}>
+        <div className="section-icon">
+          <span className="icon-bg">🎤</span>
+        </div>
+        <div className="section-content">
+          <h3>פלטפורמה לאמנים ומאזינים</h3>
+          <p>
+            הפלטפורמה שלנו נבנתה במיוחד כדי לתת מענה מושלם הן לאמנים והן למאזינים. אמנים יכולים להעלות את השירים שלהם,
+            לקבל משובים מהקהילה, לעקוב אחר הסטטיסטיקות שלהם ולבנות קהל מעריצים נאמן. מאזינים יכולים לגלות מוזיקה חדשה,
+            ליצור פלייליסטים אישיים, לעקוב אחר האמנים הישראליים הטובים ביותר ולהיות חלק מקהילה מוזיקלית ייחודית.
+          </p>
+          <ul className="feature-list">
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>העלאת שירים ללא הגבלה לאמנים רשומים</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>גילוי מוזיקה חדשה ומגוונת מכל הסגנונות</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>מערכת המלצות חכמה המבוססת על הטעם האישי שלכם</span>
+            </li>
+          </ul>
+        </div>
+      </motion.section>
+
+      <motion.section className="about-section" variants={itemVariants}>
+        <div className="section-icon">
+          <span className="icon-bg">📊</span>
+        </div>
+        <div className="section-content">
+          <h3>אנליטיקס ותובנות לאמנים</h3>
+          <p>
+            אמנים בפלטפורמה שלנו מקבלים גישה לכלי אנליטיקס מתקדמים שעוזרים להם להבין טוב יותר את הקהל שלהם ואת הביצועים
+            של השירים שלהם. המערכת מספקת נתונים מפורטים על השמעות, לייקים, שיתופים, והתפלגות גיאוגרפית של המאזינים.
+          </p>
+          <ul className="feature-list">
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>מעקב אחר מספר השמעות בזמן אמת</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>ניתוח דמוגרפי של המאזינים</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>גרפים ודוחות מפורטים על ביצועי השירים</span>
+            </li>
+          </ul>
+        </div>
+      </motion.section>
+
+      <motion.section className="about-section" variants={itemVariants}>
+        <div className="section-icon">
+          <span className="icon-bg">💬</span>
+        </div>
+        <div className="section-content">
+          <h3>קהילה אינטראקטיבית ותגובות</h3>
+          <p>
+            הפלטפורמה שלנו מעודדת אינטראקציה בין אמנים למאזינים. כל שיר יכול לקבל תגובות, דירוגים ושיתופים. המאזינים
+            יכולים לבטא את דעתם, לתת משוב בונה לאמנים, ולהמליץ על שירים לחברים שלהם. זה יוצר סביבה תומכת ומעשירה לכל
+            המעורבים.
+          </p>
+          <ul className="feature-list">
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>מערכת תגובות מתקדמת לכל שיר</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>דירוג שירים ואמנים</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>שיתוף שירים ברשתות חברתיות</span>
+            </li>
+          </ul>
+        </div>
+      </motion.section>
+
+      <motion.section className="about-section" variants={itemVariants}>
+        <div className="section-icon">
+          <span className="icon-bg">🔍</span>
+        </div>
+        <div className="section-content">
+          <h3>חיפוש וגילוי מוזיקה מתקדם</h3>
+          <p>
+            מנוע החיפוש שלנו מאפשר למצוא בדיוק את מה שאתם מחפשים. ניתן לחפש לפי שם אמן, שם שיר, סגנון מוזיקלי, או אפילו
+            לפי מילות השיר. בנוסף, המערכת מציעה המלצות אישיות המבוססות על ההיסטוריה המוזיקלית שלכם והעדפותיכם.
+          </p>
+          <ul className="feature-list">
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>חיפוש מתקדם לפי קטגוריות שונות</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>המלצות אישיות חכמות</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>גילוי אמנים חדשים ועולים</span>
+            </li>
+          </ul>
+        </div>
+      </motion.section>
+
+      <motion.section className="about-section" variants={itemVariants}>
+        <div className="section-icon">
+          <span className="icon-bg">📱</span>
+        </div>
+        <div className="section-content">
+          <h3>חוויית משתמש מושלמת</h3>
+          <p>
+            הפלטפורמה עוצבה עם דגש על חוויית משתמש מעולה. הממשק נקי, אינטואיטיבי וקל לשימוש, עם עיצוב מודרני שמתאים לכל
+            המכשירים. הפלטפורמה מותאמת לשימוש במחשב, טאבלט וסמארטפון, כך שתוכלו ליהנות מהמוזיקה שלכם בכל מקום ובכל זמן.
+          </p>
+          <ul className="feature-list">
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>עיצוב רספונסיבי לכל המכשירים</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>ממשק משתמש אינטואיטיבי וידידותי</span>
+            </li>
+            <li className="feature-item">
+              <span className="feature-check">✓</span>
+              <span>ביצועים מהירים וחוויה חלקה</span>
+            </li>
+          </ul>
+        </div>
+      </motion.section>
+
+      <motion.section className="about-section why-choose" variants={itemVariants}>
+        <div className="section-icon">
+          <span className="icon-bg">🏆</span>
+        </div>
+        <div className="section-content">
+          <h3>למה לבחור בפלטפורמה שלנו?</h3>
+          <div className="why-choose-grid">
+            <div className="why-choose-item">
+              <div className="why-icon">
+                <Music />
+              </div>
+              <p>פלטפורמה ישראלית המתמחה במוזיקה מקומית ובינלאומית</p>
+            </div>
+            <div className="why-choose-item">
+              <div className="why-icon">
+                <Users />
+              </div>
+              <p>קהילה תוססת של אמנים ומאזינים פעילים</p>
+            </div>
+            <div className="why-choose-item">
+              <div className="why-icon">
+                <TrendingUp />
+              </div>
+              <p>כלי אנליטיקס מתקדמים לאמנים</p>
+            </div>
+            <div className="why-choose-item">
+              <div className="why-icon">
+                <Heart />
+              </div>
+              <p>תמיכה מלאה באמנים ישראליים מתחילים ומנוסים</p>
+            </div>
+            <div className="why-choose-item">
+              <div className="why-icon">
+                <Headphones />
+              </div>
+              <p>איכות שמע גבוהה וחוויית האזנה מעולה</p>
+            </div>
+            <div className="why-choose-item">
+              <div className="why-icon">
+                <Star />
+              </div>
+              <p>מערכת המלצות חכמה ואישית</p>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+
+      <motion.footer className="about-footer" variants={itemVariants}>
+        <h3>הצטרפו למהפכה המוזיקלית!</h3>
+        <p>
+          אם אתם אמנים שרוצים להגיע לקהל חדש, או מאזינים שמחפשים מוזיקה איכותית וחדשה, הפלטפורמה שלנו היא הבית החדש
+          שלכם. הצטרפו אלינו עוד היום ותהיו חלק מהקהילה המוזיקלית הכי תוססת בישראל!
         </p>
-      </motion.div>
-
-      {/* Mission */}
-      <motion.div
-        className="about-mission"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        viewport={{ once: true }}
-      >
-        <div className="mission-content">
-          <div className="mission-icon">
-            <Target size={64} />
-          </div>
-          <div className="mission-text">
-            <h3>המשימה שלנו</h3>
-            <p>
-              ליצור פלטפורמה מוזיקלית שמחברת בין יוצרים למאזינים, מעודדת יצירתיות ומאפשרת לכל אדם לגלות ולשתף את האהבה
-              שלו למוזיקה. אנחנו שואפים לבנות קהילה גלובלית שבה מוזיקה איכותית נגישה לכולם.
-            </p>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Values */}
-      <motion.div
-        className="about-values"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.4 }}
-        viewport={{ once: true }}
-      >
-        <h3>הערכים שלנו</h3>
-        <div className="values-grid">
-          {values.map((value, index) => (
-            <motion.div
-              key={index}
-              className="value-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -5, scale: 1.02 }}
-            >
-              <div className="value-icon">{value.icon}</div>
-              <h4>{value.title}</h4>
-              <p>{value.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Achievements */}
-      <motion.div
-        className="about-achievements"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-        viewport={{ once: true }}
-      >
-        <h3>ההישגים שלנו</h3>
-        <div className="achievements-grid">
-          {achievements.map((achievement, index) => (
-            <motion.div
-              key={index}
-              className="achievement-item"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.05 }}
-            >
-              <div className="achievement-number">{achievement.number}</div>
-              <div className="achievement-label">{achievement.label}</div>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Team */}
-      <motion.div
-        className="about-team"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.8 }}
-        viewport={{ once: true }}
-      >
-        <h3>הצוות שלנו</h3>
-        <div className="team-grid">
-          {team.map((member, index) => (
-            <motion.div
-              key={index}
-              className="team-card"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              viewport={{ once: true }}
-              whileHover={{ y: -10 }}
-            >
-              <div className="team-avatar">{member.avatar}</div>
-              <h4>{member.name}</h4>
-              <span className="team-role">{member.role}</span>
-              <p>{member.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Vision */}
-      <motion.div
-        className="about-vision"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 1 }}
-        viewport={{ once: true }}
-      >
-        <div className="vision-content">
-          <div className="vision-icon">
-            <Star size={64} />
-          </div>
-          <div className="vision-text">
-            <h3>החזון שלנו</h3>
-            <p>
-              אנחנו רואים עתיד שבו כל יוצר מוזיקלי, ללא קשר למיקום או רקע, יכול להגיע לקהל גלובלי ולהשפיע על חיים
-              באמצעות המוזיקה שלו. SingSong תהיה הפלטפורמה המובילה לגילוי כישרונות חדשים ולחיבור בין תרבויות שונות דרך
-              השפה האוניברסלית של המוזיקה.
-            </p>
-          </div>
-        </div>
-      </motion.div>
-    </div>
+        <button className="about-cta" onClick={() => goTo("/register")}>
+          הצטרף עכשיו
+        </button>
+      </motion.footer>
+    </motion.div>
   )
 }
 

@@ -1,852 +1,587 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react"
+
+import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { useSelector, useDispatch } from "react-redux"
-import type { StoreType, Dispatch } from "../store/store"
+import { useSelector } from "react-redux"
+import { motion } from "framer-motion"
+import type { StoreType } from "../store/store"
 import {
   Play,
   Music,
   Users,
   Headphones,
+  Star,
   ArrowRight,
+  Volume2,
+  Heart,
   Sparkles,
+  Mic,
+  Radio,
   TrendingUp,
   Award,
-  Upload,
-  Eye,
-  Verified,
-  Star,
-  Clock,
-  FlameIcon as Fire,
-  Zap,
-  Crown,
-  Share2,
-  Volume2,
-  Pause,
-  SkipForward,
-  Shuffle,
-  Repeat,
-  ChevronRight,
-  ChevronLeft,
-  AudioWaveformIcon as Waveform,
-  Mic2,
   Globe,
-  MessageCircle,
+  Zap,
+  Shield,
+  Clock,
+  Download,
 } from "lucide-react"
-import { getAllPublic } from "../services/SongsService"
-import { artistList } from "../services/UserService"
-import type { Song } from "../model/Song"
-import type { UserWithCountList } from "../model/userWithCountList"
-import SongCard from "./SongCard"
-import { loadSong } from "../store/songSlice"
+// import Footer from "./Footer"
 import "../css/Home.css"
+import Footer from "./Footer"
 
-const Home: React.FC = () => {
+const HomePage = () => {
   const navigate = useNavigate()
-  const dispatch = useDispatch<Dispatch>()
-  const user = useSelector((state: StoreType) => state.user.user)
-  const currentSong = useSelector((state: StoreType) => state.songPlayer.song)
+  const authState = useSelector((state: StoreType) => state.user.authState)
+  const [currentFeature, setCurrentFeature] = useState(0)
+  const [isVisible, setIsVisible] = useState(false)
 
-  const [recentSongs, setRecentSongs] = useState<Song[]>([])
-  const [topArtists, setTopArtists] = useState<UserWithCountList[]>([])
-  const [popularSongs, setPopularSongs] = useState<Song[]>([])
-  const [loading, setLoading] = useState(true)
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [currentSlide, setCurrentSlide] = useState(0)
-  const [stats, setStats] = useState({
-    totalSongs: 0,
-    totalArtists: 0,
-    totalPlays: 0,
-    activeUsers: 0,
-  })
+  const features = [
+    {
+      icon: <Music size={32} />,
+      title: "העלה שירים",
+      description: "שתף את היצירות שלך עם העולם",
+      color: "#d59039",
+    },
+    {
+      icon: <Users size={32} />,
+      title: "קהילה חיה",
+      description: "התחבר לאמנים ומאזינים",
+      color: "#f7c26b",
+    },
+    {
+      icon: <Headphones size={32} />,
+      title: "האזן וגלה",
+      description: "מוזיקה חדשה כל יום",
+      color: "#e3aa50",
+    },
+  ]
 
-  // רפרנסים לאנימציות
-  const heroRef = useRef<HTMLDivElement>(null)
-  const statsRef = useRef<HTMLDivElement>(null)
-  const songsRef = useRef<HTMLDivElement>(null)
-  const artistsRef = useRef<HTMLDivElement>(null)
+  const stats = [
+    { number: "15K+", label: "שירים", icon: <Music size={24} />, color: "#d59039" },
+    { number: "8K+", label: "אמנים", icon: <Users size={24} />, color: "#f7c26b" },
+    { number: "250K+", label: "השמעות", icon: <Play size={24} />, color: "#e3aa50" },
+    { number: "75K+", label: "לייקים", icon: <Heart size={24} />, color: "#c67c28" },
+  ]
+
+  const testimonials = [
+    {
+      name: "דני כהן",
+      role: "מוזיקאי עצמאי",
+      content: "SingSong שינה לי את החיים! הצלחתי להגיע לקהל חדש ולקבל פידבק מדהים על השירים שלי.",
+      avatar: "🎸",
+      rating: 5,
+    },
+    {
+      name: "מיכל לוי",
+      role: "זמרת",
+      content: "הפלטפורמה הכי טובה למוזיקאים! קל להעלות, יפה לשתף ומלא אנשים מעולים.",
+      avatar: "🎤",
+      rating: 5,
+    },
+    {
+      name: "יוסי אברהם",
+      role: "מפיק מוזיקלי",
+      content: "מצאתי כאן כמה מהכישרונות הכי מבטיחים. המקום המושלם לגלות מוזיקה חדשה.",
+      avatar: "🎹",
+      rating: 5,
+    },
+  ]
 
   useEffect(() => {
-    loadRealData()
-    initScrollAnimations()
-
-    // אנימציית רקע
+    setIsVisible(true)
     const interval = setInterval(() => {
-      const orbs = document.querySelectorAll(".home-orb-premium")
-      orbs.forEach((orb) => {
-        const randomX = Math.random() * 10 - 5
-        const randomY = Math.random() * 10 - 5
-        orb.animate(
-          [
-            { transform: `translate(${randomX}px, ${randomY}px)` },
-            { transform: `translate(${-randomX}px, ${-randomY}px)` },
-          ],
-          {
-            duration: 10000,
-            easing: "ease-in-out",
-            fill: "forwards",
-          },
-        )
-      })
-    }, 10000)
-
+      setCurrentFeature((prev) => (prev + 1) % features.length)
+    }, 4000)
     return () => clearInterval(interval)
   }, [])
 
-  useEffect(() => {
-    // החלפת שקופיות אוטומטית
-    const slideInterval = setInterval(() => {
-      if (recentSongs.length > 0) {
-        setCurrentSlide((prev) => (prev + 1) % recentSongs.length)
-      }
-    }, 5000)
-
-    return () => clearInterval(slideInterval)
-  }, [recentSongs])
-
-  const initScrollAnimations = () => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate-in")
-          }
-        })
-      },
-      { threshold: 0.1 },
-    )
-
-    const sections = document.querySelectorAll(".animate-on-scroll")
-    sections.forEach((section) => {
-      observer.observe(section)
-    })
-  }
-
-  const loadRealData = async () => {
-    setLoading(true)
-    try {
-      // טעינת שירים אמיתיים
-      const songsData = await getAllPublic()
-
-      // שירים חדשים - לפי תאריך
-      const sortedByDate = [...songsData].sort(
-        (a: Song, b: Song) => new Date(b.create_at).getTime() - new Date(a.create_at).getTime(),
-      )
-      setRecentSongs(sortedByDate.slice(0, 8))
-
-      // שירים פופולריים - לפי השמעות
-      const sortedByPlays = [...songsData].sort((a: Song, b: Song) => (b.plays || 0) - (a.plays || 0))
-      setPopularSongs(sortedByPlays.slice(0, 6))
-
-      // טעינת אמנים אמיתיים
-      const artistsData = await artistList()
-      const sortedArtists = [...artistsData].sort(
-        (a: UserWithCountList, b: UserWithCountList) => (b.countSongs || 0) - (a.countSongs || 0),
-      )
-      setTopArtists(sortedArtists.slice(0, 8))
-
-      // חישוב סטטיסטיקות אמיתיות
-      const totalPlays = songsData.reduce((sum: number, song: Song) => sum + (song.plays || 0), 0)
-
-      // אנימציית ספירה לסטטיסטיקות
-      animateStats({
-        totalSongs: songsData.length,
-        totalArtists: artistsData.length,
-        totalPlays: totalPlays,
-        activeUsers: artistsData.filter((artist: UserWithCountList) => artist.countSongs > 0).length,
-      })
-    } catch (error) {
-      console.error("שגיאה בטעינת נתונים:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const animateStats = (finalStats: typeof stats) => {
-    const duration = 2000
-    const steps = 60
-    const stepDuration = duration / steps
-    let currentStep = 0
-
-    const interval = setInterval(() => {
-      currentStep++
-      const progress = currentStep / steps
-
-      setStats({
-        totalSongs: Math.floor(finalStats.totalSongs * progress),
-        totalArtists: Math.floor(finalStats.totalArtists * progress),
-        totalPlays: Math.floor(finalStats.totalPlays * progress),
-        activeUsers: Math.floor(finalStats.activeUsers * progress),
-      })
-
-      if (currentStep >= steps) {
-        clearInterval(interval)
-        setStats(finalStats)
-      }
-    }, stepDuration)
-  }
-
-  const handlePlaySong = (song: Song) => {
-    dispatch(loadSong(song))
-  }
-
-  const togglePlayPause = () => {
-    setIsPlaying(!isPlaying)
-  }
-
-  const nextSlide = () => {
-    if (recentSongs.length > 0) {
-      setCurrentSlide((prev) => (prev + 1) % recentSongs.length)
-    }
-  }
-
-  const prevSlide = () => {
-    if (recentSongs.length > 0) {
-      setCurrentSlide((prev) => (prev - 1 + recentSongs.length) % recentSongs.length)
-    }
-  }
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString("he-IL", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  }
-
-  const formatNumber = (num: number) => {
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + "M"
-    }
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + "K"
-    }
-    return num.toString()
-  }
-
-  if (loading) {
-    return (
-      <div className="home-loading-premium">
-        <div className="loading-logo-premium">
-          <Music size={60} className="loading-icon-premium" />
-          <div className="loading-waves-premium">
-            <div className="loading-wave-premium"></div>
-            <div className="loading-wave-premium"></div>
-            <div className="loading-wave-premium"></div>
-            <div className="loading-wave-premium"></div>
-            <div className="loading-wave-premium"></div>
-          </div>
-        </div>
-        <p className="loading-text-premium">טוען את עולם המוזיקה שלך...</p>
-      </div>
-    )
-  }
-
   return (
-    <div className="home-container-premium">
-      {/* רקע מתקדם */}
-      <div className="home-background-premium">
-        <div className="home-orb-premium home-orb-1"></div>
-        <div className="home-orb-premium home-orb-2"></div>
-        <div className="home-orb-premium home-orb-3"></div>
-        <div className="home-orb-premium home-orb-4"></div>
-        <div className="home-orb-premium home-orb-5"></div>
+    <div className="homepage-container">
+      <div className="homepage-background">
+        <div className="homepage-gradient-orb orb-1"></div>
+        <div className="homepage-gradient-orb orb-2"></div>
+        <div className="homepage-gradient-orb orb-3"></div>
+        <div className="homepage-gradient-orb orb-4"></div>
+        <div className="homepage-gradient-orb orb-5"></div>
 
-        <div className="home-grid-lines">
-          <div className="home-grid-line"></div>
-          <div className="home-grid-line"></div>
-          <div className="home-grid-line"></div>
-          <div className="home-grid-line"></div>
-          <div className="home-grid-line"></div>
+        <div className="floating-music-elements">
+          <div className="music-element element-1">♪</div>
+          <div className="music-element element-2">♫</div>
+          <div className="music-element element-3">♬</div>
+          <div className="music-element element-4">🎵</div>
+          <div className="music-element element-5">🎶</div>
+          <div className="music-element element-6">♪</div>
+          <div className="music-element element-7">♫</div>
+          <div className="music-element element-8">♬</div>
+          <div className="music-element element-9">🎼</div>
+          <div className="music-element element-10">🎺</div>
         </div>
 
-        <div className="home-floating-notes">
-          <div className="home-note">♪</div>
-          <div className="home-note">♫</div>
-          <div className="home-note">♬</div>
-          <div className="home-note">🎵</div>
-          <div className="home-note">🎶</div>
+        <div className="animated-lines">
+          <div className="line line-1"></div>
+          <div className="line line-2"></div>
+          <div className="line line-3"></div>
         </div>
       </div>
 
-      {/* סקציית גיבור מרשימה */}
-      <section ref={heroRef} className="home-hero-premium animate-on-scroll">
-        <div className="home-hero-content-premium">
-          <div className="home-hero-badge-premium">
-            <Sparkles className="badge-icon-premium" />
-            <span>הפלטפורמה המוזיקלית המובילה בישראל</span>
-          </div>
-
-          <h1 className="home-hero-title-premium">
-            <span className="home-title-line">גלה את</span>
-            <span className="home-title-line">
-              <span className="home-title-highlight">המוזיקה הישראלית</span>
-            </span>
-            <span className="home-title-line">האותנטית</span>
-          </h1>
-
-          <p className="home-hero-description-premium">
-            <span className="home-hero-stat-premium">{stats.totalSongs}</span> שירים אמיתיים מ-
-            <span className="home-hero-stat-premium">{stats.totalArtists}</span> אמנים ישראליים.
-            <br />
-            הצטרף לקהילה שכבר צברה <span className="home-hero-stat-premium">{formatNumber(stats.totalPlays)}</span>{" "}
-            השמעות!
-          </p>
-
-          <div className="home-hero-buttons-premium">
-            <button
-              className="home-btn-premium home-btn-primary-premium"
-              onClick={() => navigate("/musicLibrary/songList")}
-            >
-              <Play className="btn-icon-premium" />
-              <span>גלה שירים</span>
-              <div className="btn-glow-premium"></div>
-            </button>
-            {user?.id ? (
-              <button className="home-btn-premium home-btn-secondary-premium" onClick={() => navigate("/mySongs")}>
-                <Upload className="btn-icon-premium" />
-                <span>השירים שלי</span>
-              </button>
-            ) : (
-              <button className="home-btn-premium home-btn-secondary-premium" onClick={() => navigate("/register")}>
-                <Users className="btn-icon-premium" />
-                <span>הצטרף עכשיו</span>
-              </button>
-            )}
-          </div>
-
-          <div className="home-hero-features-premium">
-            <div className="home-hero-feature-premium">
-              <div className="feature-icon-container-premium">
-                <Music className="feature-icon-premium" />
-              </div>
-              <span>שירים איכותיים</span>
-            </div>
-            <div className="home-hero-feature-premium">
-              <div className="feature-icon-container-premium">
-                <Users className="feature-icon-premium" />
-              </div>
-              <span>קהילה תומכת</span>
-            </div>
-            <div className="home-hero-feature-premium">
-              <div className="feature-icon-container-premium">
-                <Zap className="feature-icon-premium" />
-              </div>
-              <span>חשיפה מקסימלית</span>
-            </div>
-          </div>
-        </div>
-
-        {/* סליידר שירים מרשים */}
-        <div className="home-hero-slider-premium">
-          {recentSongs.length > 0 && (
-            <>
-              <div className="home-slider-controls-premium">
-                <button className="home-slider-arrow-premium" onClick={prevSlide}>
-                  <ChevronRight />
-                </button>
-                <div className="home-slider-indicators-premium">
-                  {recentSongs.slice(0, 5).map((_, index) => (
-                    <div
-                      key={index}
-                      className={`home-slider-dot-premium ${index === currentSlide % 5 ? "active" : ""}`}
-                      onClick={() => setCurrentSlide(index)}
-                    ></div>
-                  ))}
-                </div>
-                <button className="home-slider-arrow-premium" onClick={nextSlide}>
-                  <ChevronLeft />
-                </button>
-              </div>
-
-              <div className="home-slider-container-premium">
-                <div className="home-slider-track-premium" style={{ transform: `translateX(${currentSlide * 100}%)` }}>
-                  {recentSongs.map((song, index) => (
-                    <div
-                      key={song.id}
-                      className={`home-slider-slide-premium ${index === currentSlide ? "active" : ""}`}
-                      onClick={() => handlePlaySong(song)}
-                    >
-                      <div className="home-slide-content-premium">
-                        <div
-                          className="home-slide-image-premium"
-                          style={{
-                            backgroundImage: song.pathPicture ? `url(${song.pathPicture})` : "none",
-                            backgroundColor: song.pathPicture ? "transparent" : "#d59039",
-                          }}
-                        >
-                          {!song.pathPicture && <Music size={40} color="white" />}
-                        </div>
-                        <div className="home-slide-info-premium">
-                          <h3>{song.title}</h3>
-                          <p>{song.gener || "כללי"}</p>
-                          <div className="home-slide-stats-premium">
-                            <div className="home-slide-stat-premium">
-                              <Headphones size={16} />
-                              <span>{song.plays || 0}</span>
-                            </div>
-                            <div className="home-slide-stat-premium">
-                              <Clock size={16} />
-                              <span>{formatDate(song.create_at)}</span>
-                            </div>
-                          </div>
-                          <button className="home-slide-play-premium">
-                            <Play size={20} />
-                            <span>נגן עכשיו</span>
-                          </button>
-                        </div>
-                      </div>
-                      <div className="home-slide-vinyl-premium">
-                        <div className="home-vinyl-disc-premium">
-                          <div className="home-vinyl-center-premium"></div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      </section>
-
-      {/* נגן מרשים */}
-      {currentSong && (
-        <div className="home-current-player-premium">
-          <div className="home-player-visualizer-premium">
-            <div className="home-visualizer-bar-premium"></div>
-            <div className="home-visualizer-bar-premium"></div>
-            <div className="home-visualizer-bar-premium"></div>
-            <div className="home-visualizer-bar-premium"></div>
-            <div className="home-visualizer-bar-premium"></div>
-            <div className="home-visualizer-bar-premium"></div>
-            <div className="home-visualizer-bar-premium"></div>
-          </div>
-
-          <div className="home-player-content-premium">
-            <div
-              className="home-player-cover-premium"
-              style={{
-                backgroundImage: currentSong.pathPicture ? `url(${currentSong.pathPicture})` : "none",
-                backgroundColor: currentSong.pathPicture ? "transparent" : "#d59039",
-              }}
-            >
-              {!currentSong.pathPicture && <Music size={32} color="white" />}
-              <div className="home-player-disc-premium"></div>
-            </div>
-
-            <div className="home-player-info-premium">
-              <div className="home-player-title-premium">
-                <Music className="home-player-icon-premium" />
-                <span>מנגן עכשיו</span>
-              </div>
-              <h4>{currentSong.title}</h4>
-              <p>{currentSong.gener || "כללי"}</p>
-            </div>
-
-            <div className="home-player-controls-premium">
-              <button className="home-player-btn-premium">
-                <Shuffle size={16} />
-              </button>
-              <button className="home-player-btn-premium">
-                <SkipForward size={16} style={{ transform: "rotate(180deg)" }} />
-              </button>
-              <button className="home-player-btn-premium home-player-btn-primary-premium" onClick={togglePlayPause}>
-                {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-              </button>
-              <button className="home-player-btn-premium">
-                <SkipForward size={16} />
-              </button>
-              <button className="home-player-btn-premium">
-                <Repeat size={16} />
-              </button>
-            </div>
-
-            <div className="home-player-progress-premium">
-              <div className="home-player-progress-bar-premium">
-                <div className="home-player-progress-fill-premium"></div>
-                <div className="home-player-progress-handle-premium"></div>
-              </div>
-            </div>
-
-            <div className="home-player-volume-premium">
-              <Volume2 size={16} />
-              <div className="home-player-volume-bar-premium">
-                <div className="home-player-volume-fill-premium"></div>
-                <div className="home-player-volume-handle-premium"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* סטטיסטיקות מרשימות */}
-      <section ref={statsRef} className="home-stats-premium animate-on-scroll">
-        <div className="home-stats-grid-premium">
-          <div className="home-stat-card-premium">
-            <div className="home-stat-icon-premium">
-              <Music className="stat-icon-inner-premium" />
-              <div className="stat-icon-glow-premium"></div>
-            </div>
-            <div className="home-stat-number-premium">{stats.totalSongs}</div>
-            <div className="home-stat-label-premium">שירים ישראליים</div>
-            <div className="home-stat-desc-premium">מכל הז'אנרים</div>
-            <div className="home-stat-trend-premium">
-              <TrendingUp size={16} />
-              <span>+15% החודש</span>
-            </div>
-          </div>
-          <div className="home-stat-card-premium">
-            <div className="home-stat-icon-premium">
-              <Users className="stat-icon-inner-premium" />
-              <div className="stat-icon-glow-premium"></div>
-            </div>
-            <div className="home-stat-number-premium">{stats.totalArtists}</div>
-            <div className="home-stat-label-premium">אמנים רשומים</div>
-            <div className="home-stat-desc-premium">יוצרים פעילים</div>
-            <div className="home-stat-trend-premium">
-              <TrendingUp size={16} />
-              <span>+12% החודש</span>
-            </div>
-          </div>
-          <div className="home-stat-card-premium">
-            <div className="home-stat-icon-premium">
-              <Headphones className="stat-icon-inner-premium" />
-              <div className="stat-icon-glow-premium"></div>
-            </div>
-            <div className="home-stat-number-premium">{formatNumber(stats.totalPlays)}</div>
-            <div className="home-stat-label-premium">השמעות כולל</div>
-            <div className="home-stat-desc-premium">מאז ההקמה</div>
-            <div className="home-stat-trend-premium">
-              <TrendingUp size={16} />
-              <span>+42% החודש</span>
-            </div>
-          </div>
-          <div className="home-stat-card-premium">
-            <div className="home-stat-icon-premium">
-              <Fire className="stat-icon-inner-premium" />
-              <div className="stat-icon-glow-premium"></div>
-            </div>
-            <div className="home-stat-number-premium">{stats.activeUsers}</div>
-            <div className="home-stat-label-premium">אמנים פעילים</div>
-            <div className="home-stat-desc-premium">עם שירים</div>
-            <div className="home-stat-trend-premium">
-              <TrendingUp size={16} />
-              <span>+28% החודש</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* שירים פופולריים */}
-      <section ref={songsRef} className="home-popular-songs-premium animate-on-scroll">
-        <div className="home-section-header-premium">
-          <div className="home-section-badge-premium">
-            <Fire className="badge-icon-premium" />
-            <span>שירים פופולריים</span>
-          </div>
-          <h2 className="home-section-title-premium">
-            <span className="home-title-highlight">השירים החמים</span> ביותר
-          </h2>
-          <p className="home-section-subtitle-premium">השירים עם הכי הרבה השמעות בפלטפורמה</p>
-        </div>
-
-        {popularSongs.length > 0 ? (
-          <div className="home-songs-grid-premium">
-            {popularSongs.map((song, index) => (
-              <div
-                key={song.id}
-                className="home-song-card-wrapper-premium"
-                style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
-              >
-                <SongCard song={song} showActions={true} />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="home-empty-state-premium">
-            <Music size={64} />
-            <h3>אין שירים עדיין</h3>
-            <p>היה הראשון להעלות שיר!</p>
-            <button className="home-btn-premium home-btn-primary-premium" onClick={() => navigate("/mySongs")}>
-              <Upload size={20} />
-              <span>העלה שיר ראשון</span>
-            </button>
-          </div>
-        )}
-
-        <div className="home-section-cta-premium">
-          <button
-            className="home-btn-premium home-btn-outline-premium"
-            onClick={() => navigate("/musicLibrary/songList")}
+      <section className="hero-section">
+        <div className="hero-content">
+          <motion.div
+            className="hero-text"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 50 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <Music size={20} />
-            <span>צפה בכל השירים ({stats.totalSongs})</span>
-            <ArrowRight size={20} />
-          </button>
-        </div>
-      </section>
+            <div className="hero-badge">
+              <Sparkles size={16} />
+              <span>הפלטפורמה המוזיקלית החדשה של ישראל</span>
+              <div className="badge-glow"></div>
+            </div>
 
-      {/* אמנים מובילים */}
-      <section ref={artistsRef} className="home-top-artists-premium animate-on-scroll">
-        <div className="home-section-header-premium">
-          <div className="home-section-badge-premium">
-            <Star className="badge-icon-premium" />
-            <span>אמנים מובילים</span>
-          </div>
-          <h2 className="home-section-title-premium">
-            <span className="home-title-highlight">האמנים המובילים</span> בישראל
-          </h2>
-          <p className="home-section-subtitle-premium">האמנים עם הכי הרבה שירים ועוקבים</p>
-        </div>
+            <h1 className="hero-title">
+              <span className="title-line">ברוכים הבאים ל</span>
+              <span className="title-brand">
+                SingSong
+                <div className="brand-underline"></div>
+              </span>
+              <span className="title-subtitle">המקום שלך למוזיקה מקורית</span>
+            </h1>
 
-        {topArtists.length > 0 ? (
-          <div className="home-artists-grid-premium">
-            {topArtists.map((artist, index) => (
-              <div
-                key={artist.id}
-                className="home-artist-card-premium"
-                style={{ "--delay": `${index * 0.1}s` } as React.CSSProperties}
-                onClick={() => navigate(`/artists/${artist.id}`)}
+            <p className="hero-description">
+              גלה, שתף והתחבר דרך המוזיקה. הצטרף לקהילה של אמנים ומאזינים שחולקים את התשוקה למוזיקה איכותית ומקורית. כאן
+              כל שיר מספר סיפור, וכל אמן מוצא את הבמה שלו.
+            </p>
+
+            <div className="hero-features-mini">
+              <div className="mini-feature">
+                <Shield size={16} />
+                <span>בטוח ומאובטח</span>
+              </div>
+              <div className="mini-feature">
+                <Clock size={16} />
+                <span>זמין 24/7</span>
+              </div>
+              <div className="mini-feature">
+                <Download size={16} />
+                <span>חינם לחלוטין</span>
+              </div>
+            </div>
+
+            <div className="hero-buttons">
+              <motion.button
+                className="cta-button primary"
+                onClick={() => navigate(authState ? "/musicLibrary/songList" : "/register")}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <div className="home-artist-card-glow-premium"></div>
-                <div className="home-artist-image-premium">
-                  {artist.pathProfile ? (
-                    <img src={artist.pathProfile || "/placeholder.svg"} alt={artist.userName} />
-                  ) : (
-                    <div className="home-artist-placeholder-premium">
-                      <Users size={40} />
-                    </div>
-                  )}
+                <Play size={20} />
+                <span>{authState ? "גלה מוזיקה" : "הצטרף עכשיו"}</span>
+                <ArrowRight size={16} />
+                <div className="button-glow"></div>
+              </motion.button>
+
+              <motion.button
+                className="cta-button secondary"
+                onClick={() => navigate("/musicLibrary/songList")}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Headphones size={20} />
+                <span>האזן עכשיו</span>
+              </motion.button>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="hero-visual"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: isVisible ? 1 : 0, x: isVisible ? 0 : 50 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <div className="hero-music-player">
+              <div className="player-glow"></div>
+              <div className="player-content">
+                <div className="player-header">
+                  <div className="player-controls">
+                    <div className="control-dot red"></div>
+                    <div className="control-dot yellow"></div>
+                    <div className="control-dot green"></div>
+                  </div>
+                  <div className="player-title">SingSong Player</div>
                 </div>
 
-                <div className="home-artist-info-premium">
-                  <div className="home-artist-name-premium">
-                    {artist.userName}
-                    <Verified className="home-verified-icon-premium" />
-                  </div>
-                  <div className="home-artist-stats-premium">
-                    <div className="home-artist-stat-premium">
-                      <Music size={14} />
-                      <span>{artist.countSongs || 0} שירים</span>
-                    </div>
-                    <div className="home-artist-stat-premium">
-                      <Users size={14} />
-                      <span>{artist.countFollowers || 0} עוקבים</span>
+                <div className="player-body">
+                  <div className="album-art">
+                    <div className="album-glow"></div>
+                    <div className="album-image">
+                      <Music size={40} />
+                      <div className="vinyl-effect"></div>
                     </div>
                   </div>
-                </div>
 
-                <div className="home-artist-overlay-premium">
-                  <button className="home-artist-play-btn-premium">
-                    <Play size={24} />
-                  </button>
-                </div>
+                  <div className="track-info">
+                    <h4>השיר הבא שלך</h4>
+                    <p>מחכה להתגלות...</p>
+                    <div className="track-progress">
+                      <div className="progress-bar">
+                        <div className="progress-fill"></div>
+                      </div>
+                      <div className="time-stamps">
+                        <span>0:00</span>
+                        <span>3:24</span>
+                      </div>
+                    </div>
+                  </div>
 
-                {/* אפקטים מיוחדים */}
-                <div className="home-artist-effects-premium">
-                  <div className="home-artist-note-premium">♪</div>
-                  <div className="home-artist-note-premium">♫</div>
+                  <div className="player-controls-bottom">
+                    <button className="control-btn">
+                      <ArrowRight size={16} style={{ transform: "rotate(180deg)" }} />
+                    </button>
+                    <button className="play-btn">
+                      <Play size={24} />
+                    </button>
+                    <button className="control-btn">
+                      <ArrowRight size={16} />
+                    </button>
+                  </div>
+
+                  <div className="sound-waves">
+                    <div className="wave"></div>
+                    <div className="wave"></div>
+                    <div className="wave"></div>
+                    <div className="wave"></div>
+                    <div className="wave"></div>
+                    <div className="wave"></div>
+                    <div className="wave"></div>
+                  </div>
                 </div>
               </div>
+
+              <div className="player-floating-elements">
+                <div className="floating-note note-1">♪</div>
+                <div className="floating-note note-2">♫</div>
+                <div className="floating-note note-3">♬</div>
+                <div className="floating-heart">💖</div>
+                <div className="floating-star">⭐</div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="stats-section">
+        <div className="stats-container">
+          {stats.map((stat, index) => (
+            <motion.div
+              key={index}
+              className="stat-card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              style={{ "--stat-color": stat.color } as React.CSSProperties}
+            >
+              <div className="stat-icon">{stat.icon}</div>
+              <div className="stat-number">{stat.number}</div>
+              <div className="stat-label">{stat.label}</div>
+              <div className="stat-glow"></div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <section className="features-section">
+        <div className="features-container">
+          <motion.div
+            className="features-header"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2>למה SingSong?</h2>
+            <p>הפלטפורמה המושלמת לכל חובבי המוזיקה</p>
+          </motion.div>
+
+          <div className="features-grid">
+            <motion.div
+              className="feature-card main-feature"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <div className="feature-icon-large">
+                <Mic size={48} />
+                <div className="icon-pulse"></div>
+              </div>
+              <h3>הקלט ושתף</h3>
+              <p>העלה את השירים שלך בקלות ושתף אותם עם העולם. פלטפורמה פשוטה ואינטואיטיבית לכל אמן.</p>
+              <div className="feature-highlight">
+                <Zap size={16} />
+                <span>העלאה מהירה ואיכותית</span>
+              </div>
+              <div className="feature-bg-effect"></div>
+            </motion.div>
+
+            <motion.div
+              className="feature-card"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <div className="feature-icon">
+                <Radio size={32} />
+              </div>
+              <h4>גלה מוזיקה חדשה</h4>
+              <p>אלגוריתם חכם שמציע לך מוזיקה שתאהב על בסיס הטעם המוזיקלי שלך.</p>
+              <div className="feature-tags">
+                <span className="tag">AI מתקדם</span>
+                <span className="tag">המלצות אישיות</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="feature-card"
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              <div className="feature-icon">
+                <Globe size={32} />
+              </div>
+              <h4>קהילה גלובלית</h4>
+              <p>התחבר לאמנים ומאזינים מכל העולם. שתף, תגיב ובנה קשרים חדשים.</p>
+              <div className="feature-tags">
+                <span className="tag">רשת חברתית</span>
+                <span className="tag">שיתוף פעולה</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="feature-card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              <div className="feature-icon">
+                <TrendingUp size={32} />
+              </div>
+              <h4>נתונים ותובנות</h4>
+              <p>עקוב אחרי הביצועים של השירים שלך וקבל תובנות על הקהל שלך.</p>
+              <div className="feature-tags">
+                <span className="tag">אנליטיקה</span>
+                <span className="tag">דוחות</span>
+              </div>
+            </motion.div>
+
+            <motion.div
+              className="feature-card"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              viewport={{ once: true }}
+            >
+              <div className="feature-icon">
+                <Award size={32} />
+              </div>
+              <h4>איכות גבוהה</h4>
+              <p>נגן מוזיקה באיכות גבוהה עם ממשק משתמש מתקדם ונוח לשימוש.</p>
+              <div className="feature-tags">
+                <span className="tag">HD Audio</span>
+                <span className="tag">UX מתקדם</span>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section className="testimonials-section">
+        <div className="testimonials-container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <h2>מה אומרים עלינו</h2>
+            <p>ביקורות מאמנים ומאזינים מרוצים</p>
+          </motion.div>
+
+          <div className="testimonials-grid">
+            {testimonials.map((testimonial, index) => (
+              <motion.div
+                key={index}
+                className="testimonial-card"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+              >
+                <div className="testimonial-content">
+                  <div className="quote-mark">"</div>
+                  <p>{testimonial.content}</p>
+                  <div className="rating">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} size={16} fill="#f7c26b" color="#f7c26b" />
+                    ))}
+                  </div>
+                </div>
+                <div className="testimonial-author">
+                  <div className="author-avatar">{testimonial.avatar}</div>
+                  <div className="author-info">
+                    <h4>{testimonial.name}</h4>
+                    <p>{testimonial.role}</p>
+                  </div>
+                </div>
+                <div className="testimonial-glow"></div>
+              </motion.div>
             ))}
           </div>
-        ) : (
-          <div className="home-empty-state-premium">
-            <Users size={64} />
-            <h3>אין אמנים עדיין</h3>
-            <p>היה הראשון להירשם כאמן!</p>
-            <button className="home-btn-premium home-btn-primary-premium" onClick={() => navigate("/register")}>
-              <Users size={20} />
-              <span>הירשם כאמן</span>
-            </button>
-          </div>
-        )}
+        </div>
+      </section>
 
-        <div className="home-section-cta-premium">
-          <button
-            className="home-btn-premium home-btn-outline-premium"
-            onClick={() => navigate("/musicLibrary/artistList")}
+     <section className="how-it-works-section">
+        <div className="how-it-works-container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
           >
-            <Users size={20} />
-            <span>צפה בכל האמנים ({stats.totalArtists})</span>
-            <ArrowRight size={20} />
-          </button>
-        </div>
-      </section>
+            <h2>איך זה עובד?</h2>
+            <p>שלושה שלבים פשוטים להתחיל</p>
+          </motion.div>
 
-      {/* תכונות מרשימות */}
-      <section className="home-features-premium animate-on-scroll">
-        <div className="home-section-header-premium">
-          <div className="home-section-badge-premium">
-            <Zap className="badge-icon-premium" />
-            <span>תכונות הפלטפורמה</span>
-          </div>
-          <h2 className="home-section-title-premium">
-            <span className="home-title-highlight">למה לבחור</span> בנו?
-          </h2>
-          <p className="home-section-subtitle-premium">הכלים והתכונות שיעזרו לך להצליח</p>
-        </div>
+          <div className="steps-container">
+            <motion.div
+              className="step-card"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              <div className="step-number">1</div>
+              <div className="step-content">
+                <h3>הירשם</h3>
+                <p>צור חשבון חינם ובנה את הפרופיל המוזיקלי שלך</p>
+              </div>
+              <div className="step-icon">
+                <Users size={32} />
+              </div>
+              <div className="step-connector"></div>
+            </motion.div>
 
-        <div className="home-features-grid-premium">
-          <div className="home-feature-card-premium">
-            <div className="home-feature-icon-premium">
-              <Upload className="feature-icon-inner-premium" />
-              <div className="feature-icon-glow-premium"></div>
-            </div>
-            <h3>העלאה פשוטה</h3>
-            <p>העלה שירים בקלות ובמהירות עם ממשק פשוט וידידותי</p>
-            <div className="feature-card-shine-premium"></div>
-          </div>
-          <div className="home-feature-card-premium">
-            <div className="home-feature-icon-premium">
-              <TrendingUp className="feature-icon-inner-premium" />
-              <div className="feature-icon-glow-premium"></div>
-            </div>
-            <h3>מעקב אחר ביצועים</h3>
-            <p>עקוב אחר מספר ההשמעות והפופולריות של השירים שלך</p>
-            <div className="feature-card-shine-premium"></div>
-          </div>
-          <div className="home-feature-card-premium">
-            <div className="home-feature-icon-premium">
-              <Users className="feature-icon-inner-premium" />
-              <div className="feature-icon-glow-premium"></div>
-            </div>
-            <h3>קהילה ישראלית</h3>
-            <p>התחבר עם אמנים ומאזינים ישראליים אחרים</p>
-            <div className="feature-card-shine-premium"></div>
-          </div>
-          <div className="home-feature-card-premium">
-            <div className="home-feature-icon-premium">
-              <Share2 className="feature-icon-inner-premium" />
-              <div className="feature-icon-glow-premium"></div>
-            </div>
-            <h3>שיתוף קל</h3>
-            <p>שתף את המוזיקה שלך בקלות ברשתות חברתיות ובמייל</p>
-            <div className="feature-card-shine-premium"></div>
-          </div>
-          <div className="home-feature-card-premium">
-            <div className="home-feature-icon-premium">
-              <Waveform className="feature-icon-inner-premium" />
-              <div className="feature-icon-glow-premium"></div>
-            </div>
-            <h3>איכות סאונד מעולה</h3>
-            <p>השמע את המוזיקה שלך באיכות גבוהה ללא דחיסה</p>
-            <div className="feature-card-shine-premium"></div>
-          </div>
-          <div className="home-feature-card-premium">
-            <div className="home-feature-icon-premium">
-              <MessageCircle className="feature-icon-inner-premium" />
-              <div className="feature-icon-glow-premium"></div>
-            </div>
-            <h3>תגובות ומשוב</h3>
-            <p>קבל משוב מקהילת המאזינים והאמנים</p>
-            <div className="feature-card-shine-premium"></div>
+            <motion.div
+              className="step-card"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <div className="step-number">2</div>
+              <div className="step-content">
+                <h3>העלה מוזיקה</h3>
+                <p>שתף את השירים שלך או גלה מוזיקה חדשה מאמנים אחרים</p>
+              </div>
+              <div className="step-icon">
+                <Music size={32} />
+              </div>
+              <div className="step-connector"></div>
+            </motion.div>
+
+            <motion.div
+              className="step-card"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              <div className="step-number">3</div>
+              <div className="step-content">
+                <h3>התחבר וצמח</h3>
+                <p>בנה קהילה, קבל פידבק וצמח כאמן</p>
+              </div>
+              <div className="step-icon">
+                <Star size={32} />
+              </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* קריאה לפעולה מרשימה */}
-      <section className="home-cta-premium animate-on-scroll">
-        <div className="home-cta-background-premium">
-          <div className="home-cta-orb-premium home-cta-orb-1"></div>
-          <div className="home-cta-orb-premium home-cta-orb-2"></div>
-          <div className="home-cta-orb-premium home-cta-orb-3"></div>
-
-          <div className="home-cta-waves-premium">
-            <div className="home-cta-wave-premium"></div>
-            <div className="home-cta-wave-premium"></div>
-            <div className="home-cta-wave-premium"></div>
-          </div>
-        </div>
-
-        <div className="home-cta-content-premium">
-          <div className="home-cta-badge-premium">
-            <Crown className="badge-icon-premium" />
-            <span>הצטרף עכשיו</span>
-          </div>
-
-          <h2 className="home-cta-title-premium">
-            <span className="home-title-highlight">מוכן להתחיל</span> את המסע המוזיקלי שלך?
-          </h2>
-          <p className="home-cta-description-premium">
-            הצטרף ל-{stats.totalArtists} האמנים שכבר בחרו בנו ותהיה חלק מהקהילה המוזיקלית הישראלית הגדלה והמתפתחת
-          </p>
-
-          <div className="home-cta-features-premium">
-            <div className="home-cta-feature-premium">
-              <div className="cta-feature-icon-premium">
-                <Crown />
+       <section className="final-cta-section">
+        <div className="final-cta-container">
+          <motion.div
+            className="cta-content"
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <div className="cta-icon">
+              <Volume2 size={48} />
+              <div className="icon-rings">
+                <div className="ring ring-1"></div>
+                <div className="ring ring-2"></div>
+                <div className="ring ring-3"></div>
               </div>
-              <span>חשבון חינם לחלוטין</span>
             </div>
-            <div className="home-cta-feature-premium">
-              <div className="cta-feature-icon-premium">
-                <Mic2 />
-              </div>
-              <span>כלי הקלטה מתקדמים</span>
-            </div>
-            <div className="home-cta-feature-premium">
-              <div className="cta-feature-icon-premium">
-                <Globe />
-              </div>
-              <span>חשיפה מקסימלית</span>
-            </div>
-          </div>
+            <h2>מוכן להתחיל את המסע המוזיקלי שלך?</h2>
+            <p>הצטרף לאלפי אמנים ומאזינים שכבר חלק מהקהילה שלנו</p>
 
-          <div className="home-cta-buttons-premium">
-            {user?.id ? (
-              <>
-                <button
-                  className="home-btn-premium home-btn-primary-premium home-btn-large-premium"
-                  onClick={() => navigate("/mySongs")}
-                >
-                  <Upload size={20} />
-                  <span>העלה שיר חדש</span>
-                  <ArrowRight size={20} />
-                  <div className="btn-glow-premium"></div>
-                </button>
-                <button
-                  className="home-btn-premium home-btn-outline-premium home-btn-large-premium"
-                  onClick={() => navigate("/musicLibrary/songList")}
-                >
-                  <Eye size={20} />
-                  <span>גלה מוזיקה חדשה</span>
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  className="home-btn-premium home-btn-primary-premium home-btn-large-premium"
-                  onClick={() => navigate("/register")}
-                >
-                  <Users size={20} />
-                  <span>הירשם בחינם</span>
-                  <ArrowRight size={20} />
-                  <div className="btn-glow-premium"></div>
-                </button>
-                <button
-                  className="home-btn-premium home-btn-outline-premium home-btn-large-premium"
-                  onClick={() => navigate("/musicLibrary/songList")}
-                >
-                  <Eye size={20} />
-                  <span>צפה בשירים</span>
-                </button>
-              </>
-            )}
-          </div>
+            <div className="cta-stats-mini">
+              <div className="mini-stat">
+                <strong>15K+</strong>
+                <span>משתמשים פעילים</span>
+              </div>
+              <div className="mini-stat">
+                <strong>250K+</strong>
+                <span>השמעות חודשיות</span>
+              </div>
+              <div className="mini-stat">
+                <strong>4.9★</strong>
+                <span>דירוג ממוצע</span>
+              </div>
+            </div>
 
-          <div className="home-cta-guarantee-premium">
-            <Award size={16} />
-            <span>חינם לחלוטין • ללא התחייבות • תמיכה בעברית</span>
-          </div>
+            <div className="cta-buttons-final">
+              <motion.button
+                className="cta-button primary large"
+                onClick={() => navigate(authState ? "/mySongs" : "/register")}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Play size={24} />
+                <span>{authState ? "התחל ליצור" : "הצטרף חינם"}</span>
+                <ArrowRight size={20} />
+                <div className="button-glow"></div>
+              </motion.button>
+
+              <motion.button
+                className="cta-button secondary large"
+                onClick={() => navigate("/musicLibrary/songList")}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Headphones size={24} />
+                <span>חקור מוזיקה</span>
+              </motion.button>
+            </div>
+          </motion.div>
         </div>
       </section>
+
+      <Footer /> 
     </div>
   )
 }
 
-export default Home
+export default HomePage

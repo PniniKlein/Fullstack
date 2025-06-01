@@ -16,8 +16,8 @@ let userEmpty: User = {
     followees: [],
 };
 
-// const baseURL = 'https://singsong-api.onrender.com/api/Auth';
-const baseURL = 'https://localhost:7093/api/Auth';
+const baseURL = 'https://singsong-api.onrender.com/api/Auth';
+// const baseURL = 'https://localhost:7093/api/Auth';
  
 
 export const loginUser = createAsyncThunk('user/login',

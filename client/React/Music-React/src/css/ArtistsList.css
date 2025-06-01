@@ -482,7 +482,7 @@
   filter: drop-shadow(0 0 5px rgba(213, 144, 57, 0.3));
 }
 
-.trending-badge {
+.artistList-trending-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;

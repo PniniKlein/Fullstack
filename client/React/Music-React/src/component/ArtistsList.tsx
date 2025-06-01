@@ -227,7 +227,7 @@ const ArtistsList = () => {
                     {/* Trending Badge */}
                     {artist.countSongs>5 && artist.countFollowers>0 && (
                       <motion.div
-                        className="trending-badge"
+                        className="artistList-trending-badge"
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.1 + 0.8 }}

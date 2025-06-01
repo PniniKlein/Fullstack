@@ -759,7 +759,7 @@
   font-weight: 500;
 }
 
-.close-button {
+.song-card-close-button {
   position: absolute;
   left: 15px;
   top: 50%;
@@ -779,7 +779,7 @@
   transition: background-color 0.2s;
 }
 
-.close-button:hover {
+.song-card-close-button:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 

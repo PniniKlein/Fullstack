@@ -1,8 +1,8 @@
 // ShareSongButton.tsx
 import { Share } from "@mui/icons-material";
 import { Song } from "../model/Song";
-// import Swal from "sweetalert2";
-// import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import { getUserDataFromToken } from "./AppLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { StoreType, Dispatch } from "../store/store";
@@ -11,24 +11,39 @@ import { sendEmail, loadUser } from "../store/userSlice";
 // import SnackbarGreen from "./SnackbarGreen";
 import GradientIconButton from "./GradientIconButton";
 import '../css/ShareSong.css'
-import { useState } from "react";
-import { Mail } from "lucide-react";
 
-// const MySwal = withReactContent(Swal);
+const MySwal = withReactContent(Swal);
 
-const ShareSong = ({ song, className }: { song: Song; className?: string }) => {
-
+const ShareSongButton = ({ song, className }: { song: Song; className?: string }) => {
   const user = useSelector((store: StoreType) => store.user.user);
-  const [openShare, setOpenShare] = useState(false);
-  const [shareEmails, setShareEmails] = useState("");
-  const [isLoading, setIsLoading] = useState(false)
-
   const dispatch = useDispatch<Dispatch>();
   // const [snackbarOpen, setSnackbarOpen] = useState(false);
   // const [snackbarMessage, setSnackbarMessage] = useState("");
 
-  const sendEmailShare = async (emailList:string[]) => {
-    if (shareEmails) {
+  const handleShare = async () => {
+    const { value: email } = await MySwal.fire({
+        title: "שיתוף שיר במייל",
+        input: "email",
+        inputLabel: "הכנס כתובת מייל לשיתוף",
+        inputPlaceholder: "someone@example.com",
+        showCancelButton: true,
+        confirmButtonText: "שלח",
+        cancelButtonText: "ביטול",
+        customClass: {
+          popup: "singsong-popup",
+          title: "singsong-title",
+          input: "singsong-input",
+          confirmButton: "singsong-confirm",
+          cancelButton: "singsong-cancel"
+        },
+        inputValidator: (value) => {
+          if (!value) return "יש להזין כתובת מייל";
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          if (!emailRegex.test(value)) return "כתובת מייל לא תקינה";
+        },
+      });
+
+    if (email) {
       const subject = "שיר ששותף איתך ב-singsong";
       const body = `
         <div style="direction: rtl; background-color: #f4f4f4; padding: 40px 0; font-family: Arial, sans-serif;">
@@ -49,14 +64,14 @@ const ShareSong = ({ song, className }: { song: Song; className?: string }) => {
       `;
 
       try {
-        const result = await dispatch(sendEmail({ to: emailList, subject, body }));
+        const result = await dispatch(sendEmail({ to: [email], subject, body }));
         if (result.meta.requestStatus === "fulfilled") {
           console.log("המייל נשלח בהצלחה!");
         } else {
           console.log("שגיאה בשליחת המייל.");
         }
       } catch {
-        console.log("שגיאה בשליחת המייל.");
+          console.log("שגיאה בשליחת המייל.");
       } finally {
         // setSnackbarOpen(true);
         const token = localStorage.getItem("authToken");
@@ -70,91 +85,17 @@ const ShareSong = ({ song, className }: { song: Song; className?: string }) => {
     }
   };
 
-    const handleShare = async () => {
-    if (!shareEmails.trim()) return
+  
+    return (
+      <GradientIconButton
+        className={className}
+        onClick={() => handleShare()}
+        icon={<Share sx={{ fontSize: 27 }} />}
+      />
+    );
+  };
 
-    setIsLoading(true)
-    try {
-      const emailList = shareEmails
-        .split(",")
-        .map((email) => email.trim())
-        .filter((email) => email)
-      await sendEmailShare(emailList)
-      // setSnackbarMessage("השיר נשלח בהצלחה!")
-      // setSnackbarOpen(true)
-      setOpenShare(false)
-      setShareEmails("")
-    } catch (error) {
-      // setSnackbarMessage("שגיאה בשליחת השיר")
-      // setSnackbarOpen(true)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-
-  return (<>
-    <GradientIconButton
-      className={className}
-      // onClick={() => handleShare()}
-      onClick={() => setOpenShare(true)}
-      icon={<Share sx={{ fontSize: 27 }} />}
-    />
-    {openShare && (
-      <div
-        className="share-comp-dialog-overlay"
-        onClick={() => setOpenShare(false)}
-      >
-        <div className="share-dialog" onClick={(e) => e.stopPropagation()}>
-          <div className="share-dialog-header">
-            <Mail size={20} />
-            <h3>שיתוף השיר במייל</h3>
-            <button className="share-close-button" onClick={() => setOpenShare(false)}>
-              ×
-            </button>
-          </div>
-          <div className="share-dialog-content">
-            <div className="share-song-share-info">
-              <div className="share-song-share-image" style={{ backgroundImage: `url(${song.pathPicture})` }}></div>
-              <div className="share-song-share-details">
-                <h4>{song.title}</h4>
-                <p>{song.gener || "כללי"}</p>
-              </div>
-            </div>
-            <div className="share-input-container">
-              <label htmlFor="share-emails">כתובות אימייל (הפרד בפסיקים)</label>
-              <input
-                id="share-emails"
-                type="text"
-                value={shareEmails}
-                onChange={(e) => setShareEmails(e.target.value)}
-                placeholder="example@mail.com, another@mail.com"
-                dir="ltr"
-              />
-            </div>
-            <button
-              className="share-submit-button"
-              onClick={handleShare}
-              disabled={isLoading || !shareEmails.trim()}
-            >
-              {isLoading ? (
-                <div className="share-loading-spinner"></div>
-              ) : (
-                <>
-                  <Mail size={16} />
-                  <span>שלח</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-    )}
-  </>
-  );
-};
-
-export default ShareSong;
+export default ShareSongButton;
 
 
 // snackbarMessage={snackbarMessage}

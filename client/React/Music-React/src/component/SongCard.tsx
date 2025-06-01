@@ -13,7 +13,7 @@ import "../css/SongCard.css"
 import { deleteSong, handleDownload, updateSongToPublic } from "../services/SongsService"
 import { getUserDataFromToken } from "./AppLayout"
 import { loadUser, sendEmail } from "../store/userSlice"
-import SnackbarWarn from "./SnackbarWarn"
+// import SnackbarWarn from "./SnackbarWarn"
 
 interface SongCardProps {
   song: Song
@@ -35,9 +35,9 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
     makePublic: false,
     view: false,
   })
-  const [snackbarOpen, setSnackbarOpen] = useState(false)
-  const [snackbarMessage, setSnackbarMessage] = useState("")
-  const [snackbarColor, setSnackbarColor] = useState("green")
+  // const [snackbarOpen, setSnackbarOpen] = useState(false)
+  // const [snackbarMessage, setSnackbarMessage] = useState("")
+  // const [snackbarColor, setSnackbarColor] = useState("green")
 
   const shareDialogRef = useRef<HTMLDialogElement>(null)
   const deleteDialogRef = useRef<HTMLDialogElement>(null)
@@ -51,11 +51,11 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
     setLoadingStates((prev) => ({ ...prev, [action]: isLoading }))
   }
 
-  const showSnackbar = (message: string, isSuccess = true) => {
-    setSnackbarMessage(message)
-    setSnackbarColor(isSuccess ? "green" : "red")
-    setSnackbarOpen(true)
-  }
+  // const showSnackbar = (message: string, isSuccess = true) => {
+  //   setSnackbarMessage(message)
+  //   setSnackbarColor(isSuccess ? "green" : "red")
+  //   setSnackbarOpen(true)
+  // }
 
   const sendEmailShare = async (emails: string[], song: Song) => {
     const subject = "שיר ששותף איתך ב-singsong"
@@ -108,7 +108,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
     try {
       dispatch(updateSong(song))
     } catch (error) {
-      showSnackbar("שגיאה בהפעלת השיר", false)
+      // showSnackbar("שגיאה בהפעלת השיר", false)
     } finally {
       setTimeout(() => setLoading("play", false), 500)
     }
@@ -119,9 +119,9 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
     setLoading("download", true)
     try {
       await handleDownload(song)
-      showSnackbar("השיר הורד בהצלחה!")
+      // showSnackbar("השיר הורד בהצלחה!")
     } catch (error) {
-      showSnackbar("שגיאה בהורדת השיר", false)
+      // showSnackbar("שגיאה בהורדת השיר", false)
     } finally {
       setLoading("download", false)
       setShowOptions(false)
@@ -146,14 +146,14 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
 
       const success = await sendEmailShare(emailList, song)
       if (success) {
-        showSnackbar("השיר נשלח בהצלחה!")
+        // showSnackbar("השיר נשלח בהצלחה!")
         shareDialogRef.current?.close()
         setShareEmails("")
       } else {
-        showSnackbar("שגיאה בשליחת השיר", false)
+        // showSnackbar("שגיאה בשליחת השיר", false)
       }
     } catch (error) {
-      showSnackbar("שגיאה בשליחת השיר", false)
+      // showSnackbar("שגיאה בשליחת השיר", false)
     } finally {
       setLoading("share", false)
     }
@@ -165,7 +165,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
     try {
       navigate("/updateSong", { state: { song } })
     } catch (error) {
-      showSnackbar("שגיאה בפתיחת עריכת השיר", false)
+      // showSnackbar("שגיאה בפתיחת עריכת השיר", false)
     } finally {
       setTimeout(() => setLoading("edit", false), 500)
     }
@@ -182,7 +182,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
     try {
       if (await deleteSong(song.id)) {
         if (song.id == songPlayer.id) dispatch(resetSong())
-        showSnackbar("השיר נמחק בהצלחה!")
+        // showSnackbar("השיר נמחק בהצלחה!")
         const token = localStorage.getItem("authToken")
         if (token) {
           const id = getUserDataFromToken(token)
@@ -192,10 +192,10 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
         }
         deleteDialogRef.current?.close()
       } else {
-        showSnackbar("שגיאה במחיקת השיר", false)
+        // showSnackbar("שגיאה במחיקת השיר", false)
       }
     } catch (error) {
-      showSnackbar("שגיאה במחיקת השיר", false)
+      // showSnackbar("שגיאה במחיקת השיר", false)
     } finally {
       setLoading("delete", false)
     }
@@ -219,10 +219,10 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
         }
       }
 
-      showSnackbar("השיר הפך לציבורי!")
+      // showSnackbar("השיר הפך לציבורי!")
       setShowOptions(false)
     } catch (error) {
-      showSnackbar("שגיאה בהפיכת השיר לציבורי", false)
+      // showSnackbar("שגיאה בהפיכת השיר לציבורי", false)
     } finally {
       setLoading("makePublic", false)
       setShowOptions(false)
@@ -235,7 +235,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
     try {
       navigate(`/songComments/${song.id}`)
     } catch (error) {
-      showSnackbar("שגיאה בפתיחת פרטי השיר", false)
+      // showSnackbar("שגיאה בפתיחת פרטי השיר", false)
     } finally {
       setTimeout(() => setLoading("view", false), 500)
     }
@@ -405,12 +405,12 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
           <div className="divider-line"></div>
         </div>
 
-        <div className="action-buttons-elegant">
-          <button className="action-button-elegant" onClick={handleView} disabled={loadingStates.view}>
+        <div className="song-card-action-buttons-elegant">
+          <button className="song-card-action-button-elegant" onClick={handleView} disabled={loadingStates.view}>
             {loadingStates.view ? <div className="loading-spinner-tiny"></div> : <Eye size={14} />}
             <span>פרטים</span>
           </button>
-          <button className="action-button-elegant" onClick={handleDownload2} disabled={loadingStates.download}>
+          <button className="song-card-action-button-elegant" onClick={handleDownload2} disabled={loadingStates.download}>
             {loadingStates.download ? <div className="loading-spinner-tiny"></div> : <Download size={14} />}
             <span>הורדה</span>
           </button>
@@ -428,7 +428,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
         <div className="share-dialog-header">
           <Mail size={20} />
           <h3>שיתוף השיר במייל</h3>
-          <button className="close-button" onClick={() => shareDialogRef.current?.close()}>
+          <button className="song-card-close-button" onClick={() => shareDialogRef.current?.close()}>
             ×
           </button>
         </div>
@@ -473,7 +473,7 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
         <div className="delete-dialog-header">
           <Trash2 size={20} color="#d32f2f" />
           <h3>מחיקת שיר</h3>
-          <button className="close-button" onClick={() => deleteDialogRef.current?.close()}>
+          <button className="song-card-close-button" onClick={() => deleteDialogRef.current?.close()}>
             ×
           </button>
         </div>
@@ -505,12 +505,12 @@ const SongCard = ({ song, onCardClick }: SongCardProps) => {
       </dialog>
 
       {/* Snackbar */}
-      <SnackbarWarn
+      {/* <SnackbarWarn
         snackbarMessage={snackbarMessage}
         snackbarOpen={snackbarOpen}
         setSnackbarOpen={setSnackbarOpen}
         col={snackbarColor}
-      />
+      /> */}
     </div>
   )
 }

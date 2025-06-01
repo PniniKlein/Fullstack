@@ -67,7 +67,7 @@ import { useEffect, useState } from "react"
 import SongPlayer from "./SongPlayer"
 import { loadSong } from "../store/songSlice"
 import MainSidebar from "./MainSidebar"
-// import "../css/AppLayout.css"
+import "../css/AppLayout.css"
 import Loader from "./ui/Loader"
 
 export const getUserDataFromToken = (token: string) => {

@@ -454,7 +454,7 @@ const AddSong = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>מידע נוסף</label>
+                    <label>מילות השיר (אופציונלי)</label>
                     <textarea
                       value={songData.lyrics || ""}
                       onChange={(e) => setSongData({ ...songData, lyrics: e.target.value })}
@@ -493,13 +493,13 @@ const AddSong = () => {
 
                 <div className="edit-actions">
                   <button className="back-button" onClick={resetForm}>
-                    <ArrowLeft size={20} />
                     <span>חזור</span>
+                    <ArrowRight size={20} />
                   </button>
 
                   <button className="save-button" onClick={handleSaveSong} disabled={!songData.title}>
                     <span>שמור שיר</span>
-                    <ArrowRight size={20} />
+                    <ArrowLeft size={20} />
                   </button>
                 </div>
               </div>

@@ -102,7 +102,7 @@ const SongComments = () => {
     setIsTranscribing(true)
     try {
       if (song?.lyrics === "") {
-        const response = await axios.post("http://singsong-python.onrender.com/transcribe", {
+        const response = await axios.post("https://singsong-python.onrender.com/transcribe", {
           url: song.pathSong,
         })
         setTranscription(response.data.corrected_lyrics)

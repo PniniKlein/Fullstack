@@ -29,7 +29,6 @@ import {
   MessageCircle,
   Eye,
   EyeOff,
-  Heart,
   Mic,
   FileText,
   Copy,
@@ -49,7 +48,7 @@ const SongComments = () => {
   const [comments, setComments] = useState<Comment[]>([])
   const [open, setOpen] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState(true)
-  const [isLiked, setIsLiked] = useState(false)
+  // const [isLiked, setIsLiked] = useState(false)
   const [transcription, setTranscription] = useState<string>("")
   const [isTranscribing, setIsTranscribing] = useState(false)
   const [activeTab, setActiveTab] = useState<"comments" | "transcription">("comments")

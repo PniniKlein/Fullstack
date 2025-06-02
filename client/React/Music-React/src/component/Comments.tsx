@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { Comment } from "../model/Comment"
-import { Edit, Trash2, ChevronDown, ChevronUp, MessageCircle, Star, Calendar, Heart, Send } from "lucide-react"
+import { Edit, Trash2, ChevronDown, ChevronUp, Star, Calendar, Heart, Send } from "lucide-react"
 import "../css/Comments.css"
 import { deleteComment, updateComment } from "../services/CommentsService"
 

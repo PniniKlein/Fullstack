@@ -103,7 +103,7 @@ const SongComments = () => {
     setIsTranscribing(true)
     try {
       if (song?.lyrics === "") {
-        const response = await axios.post("http://localhost:5000/transcribe", {
+        const response = await axios.post("http://singsong-python.onrender.com/transcribe", {
           url: song.pathSong,
         })
         setTranscription(response.data.corrected_lyrics)
@@ -115,19 +115,8 @@ const SongComments = () => {
       console.error("שגיאה בתמלול:", error)
       await new Promise((resolve) => setTimeout(resolve, 2000))
       setTranscription(`
-תמלול השיר "${song?.title}":
-
-[פסוק 1]
-בלילות הקרים כשהעולם שקט
-אני חושב עליך ועל מה שהיה
-הזכרונות שלנו כמו כוכבים בשמיים
-מאירים את הדרך בחושך הזה
-
-[פזמון]
-ואת שם רחוק ממני
-אבל הלב שלי איתך
-כל מילה שאמרת לי
-עדיין חיה בתוכי
+שגיאה בתמלול השיר
+תנסו שוב במועד מאוחר יותר
     `)
     } finally {
       setIsTranscribing(false)
@@ -147,10 +136,6 @@ const SongComments = () => {
   //   const remainingSeconds = seconds % 60
   //   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`
   // }
-
-  const handleLike = () => {
-    setIsLiked(!isLiked)
-  }
 
   const copyTranscription = () => {
     navigator.clipboard.writeText(transcription)

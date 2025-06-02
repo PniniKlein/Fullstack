@@ -9,7 +9,7 @@ import type { StoreType } from "../store/store"
 import { logOut } from "../store/userSlice"
 import { resetSong } from "../store/songSlice"
 import { Avatar, Tooltip, Menu, MenuItem, Divider } from "@mui/material"
-import { Home, Music, Settings, LogIn, MenuIcon, ChevronRight, LogOut, Edit, Library, Users } from "lucide-react"
+import {Info, Home, Music, Settings, LogIn, MenuIcon, ChevronRight, LogOut, Edit, Library, Users } from "lucide-react"
 import { useIsMobile } from "../hooks/use-mobile"
 import MicrophoneIcon from "./icons/MicrophoneIcon"
 import "../css/MainSidebar.css"
@@ -58,7 +58,7 @@ const MainSidebar = ({ expanded, setExpanded }: MainSidebarProps) => {
 
   const menuItems = [
     { label: "דף הבית", to: "/", icon: <Home size={22} /> },
-    { label: "אודות", to: "/about", icon: <Settings size={22} /> },
+    { label: "אודות", to: "/about", icon: <Info size={22} /> },
     { label: "ספריית מוזיקה", to: "/musicLibrary/songList", icon: <Library size={22} /> },
     { label: "אמנים", to: "/musicLibrary/artistList", icon: <Users size={22} /> },
   ]

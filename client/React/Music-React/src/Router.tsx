@@ -56,7 +56,6 @@ import UpdateSong from "./component/UpdateSong"
 import MediaPlayer from "./component/SongPlayer"
 import SongComments from "./component/SongComments"
 import ArtistSongs from "./component/ArtistSongs"
-import Settings from "./component/Settings"
 import AddSong from "./component/AddSong"
 import About from "./component/About"
 

@@ -20,7 +20,7 @@ const Footer = () => {
       <div className="footer-bottom">
         <div className="footer-bottom-content">
           <div className="copyright">
-            <span>© 2024 SingSong. כל הזכויות שמורות.</span>
+            <span>© 2025 SingSong. כל הזכויות שמורות.</span>
             <span className="made-with">
               נוצר עם <Heart size={14} fill="#d59039" color="#d59039" /> בישראל
             </span>

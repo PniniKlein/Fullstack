@@ -29,12 +29,10 @@ import {
 } from "lucide-react"
 // import Footer from "./Footer"
 import "../css/Home.css"
-import Footer from "./Footer"
-
 const HomePage = () => {
   const navigate = useNavigate()
   const authState = useSelector((state: StoreType) => state.user.authState)
-  const [currentFeature, setCurrentFeature] = useState(0)
+  const [_,setCurrentFeature] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
 
   const features = [
@@ -237,13 +235,13 @@ const HomePage = () => {
 
                   <div className="player-controls-bottom">
                     <button className="control-btn">
-                      <ArrowRight size={16} style={{ transform: "rotate(180deg)" }} />
+                      <ArrowRight size={16} />
                     </button>
                     <button className="play-btn">
                       <Play size={24} />
                     </button>
                     <button className="control-btn">
-                      <ArrowRight size={16} />
+                      <ArrowRight size={16} style={{ transform: "rotate(180deg)" }} />
                     </button>
                   </div>
 
@@ -460,56 +458,56 @@ const HomePage = () => {
             <p>שלושה שלבים פשוטים להתחיל</p>
           </motion.div>
 
-          <div className="steps-container">
+          <div className="home-steps-container">
             <motion.div
-              className="step-card"
+              className="home-step-card"
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
               viewport={{ once: true }}
             >
-              <div className="step-number">1</div>
-              <div className="step-content">
+              <div className="home-step-number">1</div>
+              <div className="home-step-content">
                 <h3>הירשם</h3>
                 <p>צור חשבון חינם ובנה את הפרופיל המוזיקלי שלך</p>
               </div>
-              <div className="step-icon">
+              <div className="home-step-icon">
                 <Users size={32} />
               </div>
-              <div className="step-connector"></div>
+              <div className="home-step-connector"></div>
             </motion.div>
 
             <motion.div
-              className="step-card"
+              className="home-step-card"
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               viewport={{ once: true }}
             >
-              <div className="step-number">2</div>
-              <div className="step-content">
+              <div className="home-step-number">2</div>
+              <div className="home-step-content">
                 <h3>העלה מוזיקה</h3>
                 <p>שתף את השירים שלך או גלה מוזיקה חדשה מאמנים אחרים</p>
               </div>
-              <div className="step-icon">
+              <div className="home-step-icon">
                 <Music size={32} />
               </div>
-              <div className="step-connector"></div>
+              <div className="home-step-connector"></div>
             </motion.div>
 
             <motion.div
-              className="step-card"
+              className="home-step-card"
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
               viewport={{ once: true }}
             >
-              <div className="step-number">3</div>
-              <div className="step-content">
+              <div className="home-step-number">3</div>
+              <div className="home-step-content">
                 <h3>התחבר וצמח</h3>
                 <p>בנה קהילה, קבל פידבק וצמח כאמן</p>
               </div>
-              <div className="step-icon">
+              <div className="home-step-icon">
                 <Star size={32} />
               </div>
             </motion.div>
@@ -578,8 +576,6 @@ const HomePage = () => {
           </motion.div>
         </div>
       </section>
-
-      <Footer /> 
     </div>
   )
 }

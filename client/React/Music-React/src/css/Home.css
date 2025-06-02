@@ -1053,14 +1053,14 @@
   margin: 0;
 }
 
-.steps-container {
+.home-steps-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 50px;
   position: relative;
 }
 
-.step-card {
+.home-step-card {
   background: linear-gradient(145deg, rgba(26, 26, 26, 0.9), rgba(18, 18, 18, 0.95));
   backdrop-filter: blur(25px);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1072,13 +1072,13 @@
   overflow: hidden;
 }
 
-.step-card:hover {
+.home-step-card:hover {
   transform: translateY(-8px);
   border-color: rgba(213, 144, 57, 0.4);
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
 }
 
-.step-number {
+.home-step-number {
   width: 70px;
   height: 70px;
   border-radius: 50%;
@@ -1094,7 +1094,7 @@
   position: relative;
 }
 
-.step-number::before {
+.home-step-number::before {
   content: "";
   position: absolute;
   top: -5px;
@@ -1106,26 +1106,26 @@
   animation: pulse-step-ring 3s ease-in-out infinite;
 }
 
-.step-content h3 {
+.home-step-content h3 {
   font-size: 1.8rem;
   font-weight: 800;
   color: #ffffff;
   margin: 0 0 18px;
 }
 
-.step-content p {
+.home-step-content p {
   color: rgba(255, 255, 255, 0.8);
   line-height: 1.7;
   margin: 0 0 25px;
   font-size: 16px;
 }
 
-.step-icon {
+.home-step-icon {
   color: #d59039;
   filter: drop-shadow(0 0 15px rgba(213, 144, 57, 0.4));
 }
 
-.step-connector {
+.home-step-connector {
   position: absolute;
   top: 50%;
   right: -25px;
@@ -1135,7 +1135,7 @@
   transform: translateY(-50%);
 }
 
-.step-card:last-child .step-connector {
+.home-step-card:last-child .home-step-connector {
   display: none;
 }
 

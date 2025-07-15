@@ -156,7 +156,7 @@ const SongAnalytics = () => {
   const [songs, setSongs] = useState<Song[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedChart, setSelectedChart] = useState<"overview" | "engagement" | "quality" | "trends">("overview")
-  const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("month")
+  const [timeRange, setTimeRange] = useState<"week" | "month" | "year">("year")
   const [exportLoading, setExportLoading] = useState(false)
   // const [showShareModal, setShowShareModal] = useState(false)
   // const [shareLoading, setShareLoading] = useState("")
@@ -181,7 +181,6 @@ const SongAnalytics = () => {
     setLoading(true)
     try {
       const songsData = await getFullSongsByUserId(user.id)
-      console.log("Songs data:", songsData)
       setSongs(songsData || [])
     } catch (error) {
       console.error("Error loading songs data:", error)
@@ -192,7 +191,6 @@ const SongAnalytics = () => {
   const generateAdvancedAnalytics = async () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 800))
-
       if (!songs || songs.length === 0) {
         setAnalyticsData({
           totalPlays: 0,

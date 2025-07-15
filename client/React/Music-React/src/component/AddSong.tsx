@@ -8,8 +8,10 @@ import axios from "axios"
 import api from "../interceptor/axiosConfig"
 import * as mm from "music-metadata-browser"
 import { Buffer } from "buffer"
-import {Upload,Music,Edit3,Save,ArrowRight,ArrowLeft,FileAudio,Disc3,Sparkles,CheckCircle
-  ,AlertCircle,Globe,Lock,Camera,} from "lucide-react"
+import {
+  Upload, Music, Edit3, Save, ArrowRight, ArrowLeft, FileAudio, Disc3, Sparkles, CheckCircle
+  , AlertCircle, Globe, Lock, Camera,
+} from "lucide-react"
 import "../css/AddSong.css"
 import { SongPostModel } from "../model/PostModel/SongPostModel"
 
@@ -257,7 +259,7 @@ const AddSong = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        <div className={`step ${currentStep === "upload" ? "active" : ""}`}>
+        <div className={`step ${currentStep === "upload" ? "active" : currentStep === "metadata" || currentStep === "edit" || currentStep === "saving" ? "completed" : ""}`}>
           <div className="step-icon">
             <Upload size={20} />
           </div>
@@ -381,8 +383,8 @@ const AddSong = () => {
                 <p>שולף מידע מהקובץ</p>
 
                 <div className="progress-container">
-                  <div className="progress-bar">
-                    <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                  <div className="progress-bar-icon">
+                    <div className="progress-fill-icon" style={{ width: `${progress}%` }}></div>
                   </div>
                   <span className="progress-text">{progress}%</span>
                 </div>
@@ -453,7 +455,7 @@ const AddSong = () => {
                     />
                   </div>
 
-                  <div className="form-group">
+                  {/* <div className="form-group">
                     <label>מילות השיר (אופציונלי)</label>
                     <textarea
                       value={songData.lyrics || ""}
@@ -461,7 +463,7 @@ const AddSong = () => {
                       placeholder="הוסף מידע נוסף על השיר..."
                       rows={4}
                     />
-                  </div>
+                  </div> */}
 
                   <div className="form-group">
                     <label>הגדרות פרטיות</label>
@@ -525,14 +527,15 @@ const AddSong = () => {
                     </div>
 
                     <h3>מעלה ושומר...</h3>
-                    <p>מעלה את הקבצים לשרת</p>
+                    <p>מעלה את הקבצים </p>
 
                     <div className="progress-container">
-                      <div className="progress-bar">
-                        <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                      <div className="progress-bar-icon">
+                        <div className="progress-fill-icon" style={{ width: `${progress}%` }}></div>
                       </div>
                       <span className="progress-text">{progress}%</span>
                     </div>
+
                   </>
                 ) : (
                   <>

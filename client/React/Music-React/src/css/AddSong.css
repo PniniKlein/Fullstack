@@ -238,7 +238,7 @@
   backdrop-filter: blur(20px);
   border: 2px dashed rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: clamp(40px, 6vw, 60px);
+  padding: 40px 50px;
   text-align: center;
   transition: all 0.4s ease;
   cursor: pointer;
@@ -314,7 +314,7 @@
 }
 
 .supported-formats {
-  margin-top: 20px;
+  margin-top: 40px;
   padding: 10px 20px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
@@ -370,22 +370,24 @@
   margin: 30px 0;
 }
 
-.progress-bar {
+.progress-bar-icon {
   width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  height: 8px; /* גובה הפס */
+  background-color:rgba(255, 255, 255, 0.1); /* צבע רקע הפס */
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 10px; /* רווח מהאייקון */
 }
 
-.progress-fill {
+.progress-fill-icon {
+  /* position: relative; */
   height: 100%;
-  background: linear-gradient(90deg, #d59039, #f7c26b);
+  background: linear-gradient(to right, #d59039, #f7c26b);
   border-radius: 4px;
-  transition: width 0.3s ease;
-  position: relative;
+  width: 0;
+  transition: width 0.4s ease;
 }
+
 
 .progress-text {
   font-size: 14px;

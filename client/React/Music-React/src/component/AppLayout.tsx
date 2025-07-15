@@ -69,7 +69,6 @@ import { loadSong } from "../store/songSlice"
 import MainSidebar from "./MainSidebar"
 import "../css/Applayout.css"
 import Loader from "./ui/Loader"
-import Footer from "./Footer"
 
 export const getUserDataFromToken = (token: string) => {
   try {
